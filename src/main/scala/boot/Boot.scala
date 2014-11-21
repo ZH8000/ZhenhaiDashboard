@@ -40,11 +40,21 @@ object ProductHelper extends RestHelper {
       JsonResponse(MonthlyJSON(year, month, week, date))
     case AsInt(year) :: AsInt(month) :: AsInt(week) :: AsInt(date) :: machineID :: Nil Get req => 
       JsonResponse(MonthlyJSON(year, month, week, date, machineID))
-
-
-
   })
- 
+
+  serve( "api" / "json" / "daily" prefix {
+    case AsInt(year) :: AsInt(month) :: Nil Get req => 
+      JsonResponse(DailyJSON(year, month))
+    case AsInt(year) :: AsInt(month) :: AsInt(date) :: Nil Get req => 
+      JsonResponse(DailyJSON(year, month, date))
+    case AsInt(year) :: AsInt(month) :: AsInt(date) :: machineID :: Nil Get req => 
+      JsonResponse(DailyJSON(year, month, date, machineID))
+  })
+
+  serve {
+    case "api" :: "json" :: "alert" :: Nil Get req => JsonResponse(AlertJSON.overview)
+  }
+
 }
 
 class Boot 
