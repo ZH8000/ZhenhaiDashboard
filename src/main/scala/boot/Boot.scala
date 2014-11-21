@@ -18,17 +18,33 @@ object ProductHelper extends RestHelper {
     case Nil Get req => 
       JsonResponse(ProductJSON.overview)
     case productName :: Nil Get req => 
-      JsonResponse(ProductJSON.product(productName))
+      JsonResponse(ProductJSON(productName))
     case productName :: AsInt(year) :: AsInt(month) :: Nil Get req => 
-      JsonResponse(ProductJSON.productMonth(productName, year, month))
+      JsonResponse(ProductJSON(productName, year, month))
     case productName :: AsInt(year) :: AsInt(month) :: AsInt(week) :: Nil Get req => 
-      JsonResponse(ProductJSON.productMonthWeek(productName, year, month, week))
+      JsonResponse(ProductJSON(productName, year, month, week))
     case productName :: AsInt(year) :: AsInt(month) :: AsInt(week) :: AsInt(date) :: Nil Get req => 
-      JsonResponse(ProductJSON.productMonthWeekDate(productName, year, month, week, date))
+      JsonResponse(ProductJSON(productName, year, month, week, date))
     case productName :: AsInt(year) :: AsInt(month) :: AsInt(week) :: AsInt(date) :: machineID :: Nil Get req => 
-      JsonResponse(ProductJSON.machineDetail(productName, year, month, week, date, machineID))
+      JsonResponse(ProductJSON(productName, year, month, week, date, machineID))
   })
-  
+
+  serve( "api" / "json" / "monthly" prefix {
+    case AsInt(year) :: Nil Get req => 
+      JsonResponse(MonthlyJSON(year))
+    case AsInt(year) :: AsInt(month) :: Nil Get req => 
+      JsonResponse(MonthlyJSON(year, month))
+    case AsInt(year) :: AsInt(month) :: AsInt(week) :: Nil Get req => 
+      JsonResponse(MonthlyJSON(year, month, week))
+    case AsInt(year) :: AsInt(month) :: AsInt(week) :: AsInt(date) :: Nil Get req => 
+      JsonResponse(MonthlyJSON(year, month, week, date))
+    case AsInt(year) :: AsInt(month) :: AsInt(week) :: AsInt(date) :: machineID :: Nil Get req => 
+      JsonResponse(MonthlyJSON(year, month, week, date, machineID))
+
+
+
+  })
+ 
 }
 
 class Boot 
