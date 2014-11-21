@@ -38,6 +38,15 @@ object TableSorting {
 
 object ProductJSON {
 
+  def getSumQty(dataList: List[DBObject]) = dataList.map(data => data("count_qty").toString.toInt).sum
+  def getYearMonth(entry: DBObject) = entry("timestamp").toString.substring(0, 7)
+  def getMachineID(entry: DBObject) = entry("mach_id").toString
+  def getDate(entry: DBObject) = entry("timestamp").toString.split("-")(2).toInt
+  def getWeek(entry: DBObject) = {
+    val Array(year, month, date) = entry("timestamp").toString.split("-")
+    DateUtils.getWeek(year.toInt, month.toInt, date.toInt)
+  }
+
   def overview: JValue = {
 
     val sortedProducts = MongoDB.zhenhaiDB("product").toList.sortBy(_("product").toString)
@@ -53,14 +62,7 @@ object ProductJSON {
   def apply(productName: String): JValue = {
 
     val data = MongoDB.zhenhaiDB(s"product-$productName")
-    val dataByMonth = HashMap.empty[String, Long]
-
-    data.foreach { case entry => 
-      val yearMonth = entry("timestamp").toString.substring(0, 7)
-      val addValue = entry("count_qty").toString.toLong
-      val newValue = dataByMonth.get(yearMonth).getOrElse(0L) + addValue
-      dataByMonth(yearMonth) = newValue
-    }
+    val dataByMonth = data.toList.groupBy(getYearMonth).mapValues(getSumQty)
 
     val sortedData = dataByMonth.toList.sortBy(_._1)
     val sortedJSON = sortedData.map{ case (yearMonth, value) =>
@@ -80,16 +82,7 @@ object ProductJSON {
     val endDate = f"$year-${month+1}%02d"
 
     val data = MongoDB.zhenhaiDB(s"product-$productName").find("timestamp" $gte startDate $lt endDate)
-    val dataByWeek = HashMap.empty[Int, Long]
-
-    data.foreach { case entry => 
-      val Array(year, month, date) = entry("timestamp").toString.split("-")
-      val week = DateUtils.getWeek(year.toInt, month.toInt, date.toInt)
-      val addValue = entry("count_qty").toString.toLong
-      val newValue = dataByWeek.get(week).getOrElse(0L) + addValue
-      dataByWeek(week) = newValue
-    }
-
+    val dataByWeek = data.toList.groupBy(getWeek).mapValues(getSumQty)
     val sortedData = dataByWeek.toList.sortBy(_._1)
     val sortedJSON = sortedData.map{ case (week, value) =>
       ("name" -> s"第 $week 週") ~
@@ -112,15 +105,7 @@ object ProductJSON {
       DateUtils.getWeek(year, month, date) == week
     }
 
-    val dataByDate = HashMap.empty[Int, Long]
-
-    dataInWeek.foreach { case entry => 
-      val Array(year, month, date) = entry("timestamp").toString.split("-").map(_.toInt)
-      val addValue = entry("count_qty").toString.toLong
-      val newValue = dataByDate.get(date).getOrElse(0L) + addValue
-      dataByDate(date) = newValue
-    }
-
+    val dataByDate = dataInWeek.toList.groupBy(getDate).mapValues(getSumQty)
     val sortedData = dataByDate.toList.sortBy(_._1)
     val sortedJSON = sortedData.map{ case (date, value) =>
       ("name" -> s"$date 日") ~
@@ -135,18 +120,10 @@ object ProductJSON {
   def apply(productName: String, year: Int, month: Int, week: Int, date: Int): JValue = {
 
     val startDate = f"$year-$month%02d-${date}%02d"
-    val endDate = f"$year-${month+1}%02d-${date+1}%02d"
+    val endDate = f"$year-$month%02d-${date+1}%02d"
 
     val data = MongoDB.zhenhaiDB(s"product-$productName").find("timestamp" $gte startDate $lt endDate)
-    val dataByMachine = HashMap.empty[String, Long]
-
-    data.foreach { case entry => 
-      val machineID = entry("mach_id").toString
-      val addValue = entry("count_qty").toString.toLong
-      val newValue = dataByMachine.get(machineID).getOrElse(0L) + addValue
-      dataByMachine(machineID) = newValue
-    }
-
+    val dataByMachine = data.toList.groupBy(getMachineID).mapValues(getSumQty)
     val sortedData = dataByMachine.toList.sortBy(_._1)
     val sortedJSON = sortedData.map{ case (machineID, value) =>
       ("name" -> s"$machineID") ~
@@ -166,7 +143,7 @@ object ProductJSON {
               find(MongoDBObject("product" -> productName, "mach_id" -> machineID)).
               sort(MongoDBObject("timestamp" -> 1))
 
-    val jsonData = data.map { case entry => 
+    val jsonData = data.map { entry => 
       ("timestamp" -> entry("timestamp").toString) ~
       ("defact_id" -> entry("defact_id").toString) ~
       ("count_qty" -> entry("count_qty").toString.toLong) ~
