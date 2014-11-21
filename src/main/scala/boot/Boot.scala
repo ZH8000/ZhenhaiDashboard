@@ -14,7 +14,7 @@ object ProductHelper extends RestHelper {
 
   import net.liftweb.util.BasicTypesHelpers.AsInt
 
-  serve( "api" / "json" / "total" prefix {
+  serve("api" / "json" / "total" prefix {
     case Nil Get req => 
       JsonResponse(ProductJSON.overview)
     case productName :: Nil Get req => 
@@ -29,7 +29,7 @@ object ProductHelper extends RestHelper {
       JsonResponse(ProductJSON(productName, year, month, week, date, machineID))
   })
 
-  serve( "api" / "json" / "monthly" prefix {
+  serve("api" / "json" / "monthly" prefix {
     case AsInt(year) :: Nil Get req => 
       JsonResponse(MonthlyJSON(year))
     case AsInt(year) :: AsInt(month) :: Nil Get req => 
@@ -42,7 +42,7 @@ object ProductHelper extends RestHelper {
       JsonResponse(MonthlyJSON(year, month, week, date, machineID))
   })
 
-  serve( "api" / "json" / "daily" prefix {
+  serve("api" / "json" / "daily" prefix {
     case AsInt(year) :: AsInt(month) :: Nil Get req => 
       JsonResponse(DailyJSON(year, month))
     case AsInt(year) :: AsInt(month) :: AsInt(date) :: Nil Get req => 
@@ -54,6 +54,15 @@ object ProductHelper extends RestHelper {
   serve {
     case "api" :: "json" :: "alert" :: Nil Get req => JsonResponse(AlertJSON.overview)
   }
+
+  serve("api" / "json" / "machine" prefix {
+    case Nil Get req => JsonResponse(MachineJSON.overview)
+    case machineType :: Nil Get req => JsonResponse(MachineJSON(machineType))
+    case machineType :: machineModel :: Nil Get req => JsonResponse(MachineJSON(machineType, machineModel))
+    case machineType :: machineModel :: machineID :: "pie" :: Nil Get req => JsonResponse(MachineJSON.detailPie(machineID))
+    case machineType :: machineModel :: machineID :: "table" :: Nil Get req => JsonResponse(MachineJSON.detailTable(machineID))
+  })
+
 
 }
 

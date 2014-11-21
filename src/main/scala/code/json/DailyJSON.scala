@@ -13,6 +13,8 @@ import com.mongodb.casbah.Imports._
 object DailyJSON {
 
   def getSumQty(dataList: List[DBObject]) = dataList.map(data => data("count_qty").toString.toInt).sum
+  def getDate(entry: DBObject) = entry("timestamp").toString.split("-")(2).toInt
+  def getMachineID(entry: DBObject) = entry("mach_id").toString
 
   def apply(year: Int, month: Int): JValue = {
 
@@ -20,8 +22,6 @@ object DailyJSON {
     val endDate = f"$year-${month+1}"
 
     val data = MongoDB.zhenhaiDB("daily").find("timestamp" $gte startDate $lt endDate)
-
-    def getDate(entry: DBObject) = entry("timestamp").toString.split("-")(2).toInt
     val dataByDate = data.toList.groupBy(getDate).mapValues(getSumQty)
 
     val sortedData = dataByDate.toList.sortBy(_._1)
@@ -40,8 +40,6 @@ object DailyJSON {
     val endDate = f"$year-$month%02d-${date+1}%02d"
 
     val data = MongoDB.zhenhaiDB(s"daily").find("timestamp" $gte startDate $lt endDate)
-
-    def getMachineID(entry: DBObject) = entry("mach_id").toString
     val dataByMachine = data.toList.groupBy(getMachineID).mapValues(getSumQty)
 
     val sortedData = dataByMachine.toList.sortBy(_._1)
