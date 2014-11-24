@@ -5,10 +5,41 @@ import code.json._
 
 import net.liftweb.http.LiftRules
 import net.liftweb.http.Req
-import net.liftweb.http.XHtmlInHtml5OutProperties
 
 import net.liftweb.http.rest.RestHelper
 import net.liftweb.http.JsonResponse
+
+import net.liftweb.common.{Box, Empty}
+import net.liftweb.common.Box._
+
+import com.mongodb.casbah.Imports._
+
+case class User(id: String, username: String)
+
+object User {
+
+  import code.db._
+  import net.liftweb.util.BCrypt
+
+  def loginAs(username: String, password: String): Box[User] = {
+
+    val users = MongoDB.zhenhaiDB("user")
+    val loggedInUser = for {
+      userRecord <- users.findOne(MongoDBObject("username" -> username))
+      id <- userRecord._id
+      username <- userRecord.getAs[String]("username")
+      hashedPassword <- userRecord.getAs[String]("password") if BCrypt.checkpw(password, hashedPassword)
+    } yield { 
+      User(id.toString, username) 
+    }
+
+    loggedInUser
+  }
+}
+
+object Authentication {
+
+}
 
 object ProductHelper extends RestHelper {
 
@@ -73,7 +104,6 @@ class Boot
     // Force the request to be UTF-8
     LiftRules.early.append(_.setCharacterEncoding("UTF-8"))
     LiftRules.addToPackages("code")
-    LiftRules.htmlProperties.default.set { r: Req => new XHtmlInHtml5OutProperties(r.userAgent) }
     LiftRules.dispatch.append(ProductHelper)
   }
 }
