@@ -1,4 +1,4 @@
-package code.db
+package code.model
 
 import com.mongodb.casbah.Imports._
 

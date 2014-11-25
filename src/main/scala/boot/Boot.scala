@@ -14,32 +14,6 @@ import net.liftweb.common.Box._
 
 import com.mongodb.casbah.Imports._
 
-case class User(id: String, username: String)
-
-object User {
-
-  import code.db._
-  import net.liftweb.util.BCrypt
-
-  def loginAs(username: String, password: String): Box[User] = {
-
-    val users = MongoDB.zhenhaiDB("user")
-    val loggedInUser = for {
-      userRecord <- users.findOne(MongoDBObject("username" -> username))
-      id <- userRecord._id
-      username <- userRecord.getAs[String]("username")
-      hashedPassword <- userRecord.getAs[String]("password") if BCrypt.checkpw(password, hashedPassword)
-    } yield { 
-      User(id.toString, username) 
-    }
-
-    loggedInUser
-  }
-}
-
-object Authentication {
-
-}
 
 object ProductHelper extends RestHelper {
 
@@ -99,11 +73,37 @@ object ProductHelper extends RestHelper {
 
 class Boot 
 {
+
+  import net.liftweb.sitemap._
+  import net.liftweb.http.Templates
+  import net.liftweb.sitemap.Loc.Template
+  import scala.xml.NodeSeq
+
+  private def getTemplate(path: String) = Template(() => Templates(path.split("/").toList) openOr NodeSeq.Empty)
+
+  lazy val siteMap = SiteMap(
+    Menu("Home") / "index",
+    Menu("Dashboard") / "dashboard",
+    Menu("Total") / "total" >> getTemplate("total/overview"),
+    Menu("Total1") / "total" / * >> getTemplate("total/overview"),
+    Menu("Total2") / "total" / * / * / * >> getTemplate("total/overview"),
+    Menu("Total3") / "total" / * / * / * / * >> getTemplate("total/overview"),
+    Menu("Total4") / "total" / * / * / * / * / * >> getTemplate("total/overview"),
+    Menu("Total5") / "total" / * / * / * / * / * / * >> getTemplate("total/machine")
+
+  )
+
+  val ensureSession: PartialFunction[Req, Unit] = {
+    case req if true =>
+  }
+
   def boot 
   {
+    import net.liftweb.util.PartialFunctionWrapper
     // Force the request to be UTF-8
     LiftRules.early.append(_.setCharacterEncoding("UTF-8"))
     LiftRules.addToPackages("code")
-    LiftRules.dispatch.append(ProductHelper)
+    LiftRules.setSiteMap(siteMap)
+    LiftRules.dispatch.append(new PartialFunctionWrapper(ensureSession) guard ProductHelper)
   }
 }

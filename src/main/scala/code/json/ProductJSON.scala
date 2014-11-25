@@ -1,7 +1,7 @@
 package code.json
 
 import code.util._
-import code.db._
+import code.model._
 
 import net.liftweb.json._
 import net.liftweb.json.JsonDSL._
