@@ -3,6 +3,7 @@ package code.snippet
 import code.model._
 import com.mongodb.casbah.Imports._
 import net.liftweb.util.Helpers._
+import net.liftweb.util._
 
 class Dashboard {
 
@@ -34,7 +35,7 @@ class Dashboard {
 
     val calendar = Calendar.getInstance
     val currentYear = calendar.get(Calendar.YEAR)
-    val currentMonth = calendar.get(Calendar.MONTH + 1)
+    val currentMonth = calendar.get(Calendar.MONTH) + 1
 
     "#monthlyReportButton [href]" #> s"/monthly/$currentYear" &
     "#dailyReportButton [href]" #> s"/daily/$currentYear/$currentMonth"
@@ -48,6 +49,17 @@ class Dashboard {
       "option *" #> year &
       "option [value]" #> year &
       "option [onclick]" #> s"window.location='/monthly/$year'"
+    }
+  }
+
+  def alertLink = {
+
+    val alertTable = MongoDB.zhenhaiDB("alert")
+    val firstAlert = alertTable.headOption
+
+    firstAlert.isEmpty match {
+      case true => "a [class+]" #> "disabled"
+      case false => "a [href]" #> "/alert"
     }
   }
   

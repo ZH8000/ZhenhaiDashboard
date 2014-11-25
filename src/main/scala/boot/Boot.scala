@@ -84,13 +84,21 @@ class Boot
   lazy val siteMap = SiteMap(
     Menu("Home") / "index",
     Menu("Dashboard") / "dashboard",
-    Menu("Total") / "total" >> getTemplate("total/overview"),
-    Menu("Total1") / "total" / * >> getTemplate("total/overview"),
-    Menu("Total2") / "total" / * / * / * >> getTemplate("total/overview"),
-    Menu("Total3") / "total" / * / * / * / * >> getTemplate("total/overview"),
-    Menu("Total4") / "total" / * / * / * / * / * >> getTemplate("total/overview"),
-    Menu("Total5") / "total" / * / * / * / * / * / * >> getTemplate("total/machine")
-
+    Menu("Dashboard") / "alert",
+    Menu("Total1") / "total" >> getTemplate("total/overview"),
+    Menu("Total2") / "total" / * >> getTemplate("total/overview"),
+    Menu("Total3") / "total" / * / * / * >> getTemplate("total/overview"),
+    Menu("Total4") / "total" / * / * / * / * >> getTemplate("total/overview"),
+    Menu("Total5") / "total" / * / * / * / * / * >> getTemplate("total/overview"),
+    Menu("Total6") / "total" / * / * / * / * / * / * >> getTemplate("total/machine"),
+    Menu("Monthly1") / "monthly" / * >> getTemplate("monthly/overview"),
+    Menu("Monthly2") / "monthly" / * / * >> getTemplate("monthly/overview"),
+    Menu("Monthly3") / "monthly" / * / * / * >> getTemplate("monthly/overview"),
+    Menu("Monthly4") / "monthly" / * / * / * / * >> getTemplate("monthly/overview"),
+    Menu("Monthly4") / "monthly" / * / * / * / * / * >> getTemplate("monthly/machine"),
+    Menu("Daily1") / "daily" / * / * >> getTemplate("daily/overview"),
+    Menu("Daily2") / "daily" / * / * / * >> getTemplate("daily/overview"),
+    Menu("Daily2") / "daily" / * / * / * / * >> getTemplate("daily/machine")
   )
 
   val ensureSession: PartialFunction[Req, Unit] = {
