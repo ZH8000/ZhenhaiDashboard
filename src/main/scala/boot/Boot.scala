@@ -8,20 +8,34 @@ import net.liftweb.http.S
 import net.liftweb.http.Templates
 import net.liftweb.sitemap._
 import net.liftweb.sitemap.Loc.If
+import net.liftweb.sitemap.Loc.EarlyResponse
 import net.liftweb.sitemap.Loc.Template
 
 import net.liftweb.util.BasicTypesHelpers._
 
 import scala.xml.NodeSeq
 
+import net.liftweb.common.{Full, Empty}
+import net.liftweb.http._
+
+
 class Boot 
 {
   private def getTemplate(path: String) = Template(() => Templates(path.split("/").toList) openOr NodeSeq.Empty)
   private def needLogin = If(() => User.isLoggedIn, () => S.redirectTo("/", () => S.notice("請先登入")))
   private def redirectToDashboardIfLoggedIn = If(() => !User.isLoggedIn, () => S.redirectTo("/dashboard"))
+  private def logout = EarlyResponse{ () =>
+    User.isLoggedIn match {
+      case false => Full(NotFoundResponse("NotFound"))
+      case true => 
+        User.CurrentUser(Empty)
+        S.redirectTo("/", () => S.notice("已登出"))
+    }
+  }
 
   lazy val siteMap = SiteMap(
     Menu("Home") / "index" >> redirectToDashboardIfLoggedIn,
+    Menu("Logout") / "user" / "logout" >> logout,
     Menu("Dashboard") / "dashboard" >> needLogin,
     Menu("Dashboard") / "alert" >> needLogin,
     Menu("Total1") / "total" >> getTemplate("total/overview") >> needLogin,
