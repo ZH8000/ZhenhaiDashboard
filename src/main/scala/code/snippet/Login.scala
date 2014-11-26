@@ -13,15 +13,13 @@ import net.liftweb.http.SessionVar
 
 import com.mongodb.casbah.Imports._
 
-object CurrentUser extends SessionVar[Box[User]](Empty)
-
 class Login {
 
   private var usernameBox: Box[String] = Empty
   private var passwordBox: Box[String] = Empty
 
   private def setupSessionAndRedirect(user: User) = {
-    CurrentUser(Full(user))
+    User.CurrentUser(Full(user))
     S.redirectTo("/dashboard")
   }
 

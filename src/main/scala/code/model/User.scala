@@ -4,10 +4,15 @@ import com.mongodb.casbah.Imports._
 
 import net.liftweb.util.BCrypt
 import net.liftweb.common.{Box, Full, Empty, Failure}
+import net.liftweb.http.SessionVar
 
 case class User(id: String, username: String)
 
 object User {
+
+  object CurrentUser extends SessionVar[Box[User]](Empty)
+
+  def isLoggedIn = !CurrentUser.is.isEmpty
 
   def loginAs(username: String, password: String): Box[User] = {
 

@@ -109,40 +109,45 @@ class Boot
 {
 
   import net.liftweb.sitemap._
+  import net.liftweb.http.S
   import net.liftweb.http.Templates
   import net.liftweb.sitemap.Loc.Template
+  import net.liftweb.sitemap.Loc.If
+
   import scala.xml.NodeSeq
+  import code.model.User
+  import net.liftweb.util.BasicTypesHelpers._
 
   private def getTemplate(path: String) = Template(() => Templates(path.split("/").toList) openOr NodeSeq.Empty)
+  private def needLogin = If(() => User.isLoggedIn, () => S.redirectTo("/", () => S.notice("請先登入")))
+  private def redirectToDashboardIfLoggedIn = If(() => !User.isLoggedIn, () => S.redirectTo("/dashboard"))
 
   lazy val siteMap = SiteMap(
-    Menu("Home") / "index",
-    Menu("Dashboard") / "dashboard",
-    Menu("Dashboard") / "alert",
-    Menu("Total1") / "total" >> getTemplate("total/overview"),
-    Menu("Total2") / "total" / * >> getTemplate("total/overview"),
-    Menu("Total3") / "total" / * / * / * >> getTemplate("total/overview"),
-    Menu("Total4") / "total" / * / * / * / * >> getTemplate("total/overview"),
-    Menu("Total5") / "total" / * / * / * / * / * >> getTemplate("total/overview"),
-    Menu("Total6") / "total" / * / * / * / * / * / * >> getTemplate("total/machine"),
-    Menu("Monthly1") / "monthly" / * >> getTemplate("monthly/overview"),
-    Menu("Monthly2") / "monthly" / * / * >> getTemplate("monthly/overview"),
-    Menu("Monthly3") / "monthly" / * / * / * >> getTemplate("monthly/overview"),
-    Menu("Monthly4") / "monthly" / * / * / * / * >> getTemplate("monthly/overview"),
-    Menu("Monthly4") / "monthly" / * / * / * / * / * >> getTemplate("monthly/machine"),
-    Menu("Daily1") / "daily" / * / * >> getTemplate("daily/overview"),
-    Menu("Daily2") / "daily" / * / * / * >> getTemplate("daily/overview"),
-    Menu("Daily2") / "daily" / * / * / * / * >> getTemplate("daily/machine"),
-    Menu("Machine1") / "machine" >> getTemplate("machine/overview"),
-    Menu("Machine1") / "machine" / * >> getTemplate("machine/overview"),
-    Menu("Machine1") / "machine" / * / * >> getTemplate("machine/overview"),
-    Menu("Machine1") / "machine" / * / * / * >> getTemplate("machine/detail")
-
-
+    Menu("Home") / "index" >> redirectToDashboardIfLoggedIn,
+    Menu("Dashboard") / "dashboard" >> needLogin,
+    Menu("Dashboard") / "alert" >> needLogin,
+    Menu("Total1") / "total" >> getTemplate("total/overview") >> needLogin,
+    Menu("Total2") / "total" / * >> getTemplate("total/overview") >> needLogin,
+    Menu("Total3") / "total" / * / * / * >> getTemplate("total/overview") >> needLogin,
+    Menu("Total4") / "total" / * / * / * / * >> getTemplate("total/overview") >> needLogin,
+    Menu("Total5") / "total" / * / * / * / * / * >> getTemplate("total/overview") >> needLogin,
+    Menu("Total6") / "total" / * / * / * / * / * / * >> getTemplate("total/machine") >> needLogin,
+    Menu("Monthly1") / "monthly" / * >> getTemplate("monthly/overview") >> needLogin,
+    Menu("Monthly2") / "monthly" / * / * >> getTemplate("monthly/overview") >> needLogin,
+    Menu("Monthly3") / "monthly" / * / * / * >> getTemplate("monthly/overview") >> needLogin,
+    Menu("Monthly4") / "monthly" / * / * / * / * >> getTemplate("monthly/overview") >> needLogin,
+    Menu("Monthly4") / "monthly" / * / * / * / * / * >> getTemplate("monthly/machine") >> needLogin,
+    Menu("Daily1") / "daily" / * / * >> getTemplate("daily/overview") >> needLogin,
+    Menu("Daily2") / "daily" / * / * / * >> getTemplate("daily/overview") >> needLogin,
+    Menu("Daily2") / "daily" / * / * / * / * >> getTemplate("daily/machine") >> needLogin,
+    Menu("Machine1") / "machine" >> getTemplate("machine/overview") >> needLogin,
+    Menu("Machine1") / "machine" / * >> getTemplate("machine/overview") >> needLogin,
+    Menu("Machine1") / "machine" / * / * >> getTemplate("machine/overview") >> needLogin,
+    Menu("Machine1") / "machine" / * / * / * >> getTemplate("machine/detail") >> needLogin
   )
 
-  val ensureSession: PartialFunction[Req, Unit] = {
-    case req if true =>
+  val ensureLogin: PartialFunction[Req, Unit] = {
+    case req if User.isLoggedIn =>
   }
 
   def boot 
@@ -152,6 +157,6 @@ class Boot
     LiftRules.early.append(_.setCharacterEncoding("UTF-8"))
     LiftRules.addToPackages("code")
     LiftRules.setSiteMap(siteMap)
-    LiftRules.dispatch.append(new PartialFunctionWrapper(ensureSession) guard ProductHelper)
+    LiftRules.dispatch.append(ensureLogin guard ProductHelper)
   }
 }
