@@ -890,13 +890,13 @@ object MachineInfo {
       "P49" -> "UART_RX",
       "P50" -> "GND"
     ),
-    "GT-1318T" ->   Map(
+    "GT-1318P" ->   Map(
       "P1" -> "良品數",
       "P2" -> "cx不良數",
       "P3" -> "dx不良數",
       "P4" -> "lc不良數"
     ),
-    "GT-480T" ->   Map(
+    "GT-480P" ->   Map(
       "P1" -> "良品數",
       "P2" -> "cx不良數",
       "P3" -> "dx不良數",

@@ -79,11 +79,13 @@ class MonthlyReport {
     "#week [value]" #> week &
     "#date [value]" #> date &
     "#dataURL [value]" #> s"/api/json${S.uri}" &
+    "#csvURL [href]" #> s"/api/csv${S.uri}" &
     showStepsSelector
   }
 
   def render = {
     "#dataURL [value]" #> s"/api/json${S.uri}" &
+    "#csvURL [href]" #> s"/api/csv${S.uri}" &
     showStepsSelector
   }
 

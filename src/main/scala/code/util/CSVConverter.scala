@@ -31,14 +31,14 @@ object CSVConverter {
     val csvTitle = (titles ++ List(descTitle)).mkString(",")
     val csvRecords = dataSet.map { record =>
       val csvRecords = fields.map(field => toCSVField(record, field))
-      val JString(defactID) = (record \\ defactIDField)
+      val defactID = (record \\ defactIDField).values.toString
       val description = for {
         machineModel <- MachineInfo.machineModel.get(machineID)
         pinDefine <- MachineInfo.pinDefine.get(machineModel)
         pinDesc <- pinDefine.get(s"P${defactID}")
       } yield pinDesc
 
-      (csvRecords ++ List(description.getOrElse(""))).mkString(",")
+      (csvRecords ++ List(s""""${description.getOrElse("")}"""")).mkString(",")
     }
 
     csvTitle + "\n" + csvRecords.mkString("\n")
