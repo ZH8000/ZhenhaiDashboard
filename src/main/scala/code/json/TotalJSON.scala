@@ -2,6 +2,7 @@ package code.json
 
 import code.util._
 import code.model._
+import code.lib._
 
 import net.liftweb.json._
 import net.liftweb.json.JsonDSL._
@@ -36,7 +37,8 @@ object TableSorting {
 
 }
 
-object ProductJSON {
+
+object TotalJSON {
 
   def getSumQty(dataList: List[DBObject]) = dataList.map(data => data("count_qty").toString.toInt).sum
   def getYearMonth(entry: DBObject) = entry("timestamp").toString.substring(0, 7)

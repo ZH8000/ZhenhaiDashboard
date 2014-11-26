@@ -2,6 +2,7 @@ package bootstrap.liftweb
 
 import code.util._
 import code.json._
+import code.csv._
 
 import net.liftweb.http.LiftRules
 import net.liftweb.http.Req
@@ -13,7 +14,7 @@ import net.liftweb.common.{Box, Empty}
 import net.liftweb.common.Box._
 
 import com.mongodb.casbah.Imports._
-
+import net.liftweb.http.PlainTextResponse
 
 object ProductHelper extends RestHelper {
 
@@ -21,17 +22,30 @@ object ProductHelper extends RestHelper {
 
   serve("api" / "json" / "total" prefix {
     case Nil Get req => 
-      JsonResponse(ProductJSON.overview)
+      JsonResponse(TotalJSON.overview)
     case productName :: Nil Get req => 
-      JsonResponse(ProductJSON(productName))
+      JsonResponse(TotalJSON(productName))
     case productName :: AsInt(year) :: AsInt(month) :: Nil Get req => 
-      JsonResponse(ProductJSON(productName, year, month))
+      JsonResponse(TotalJSON(productName, year, month))
     case productName :: AsInt(year) :: AsInt(month) :: AsInt(week) :: Nil Get req => 
-      JsonResponse(ProductJSON(productName, year, month, week))
+      JsonResponse(TotalJSON(productName, year, month, week))
     case productName :: AsInt(year) :: AsInt(month) :: AsInt(week) :: AsInt(date) :: Nil Get req => 
-      JsonResponse(ProductJSON(productName, year, month, week, date))
+      JsonResponse(TotalJSON(productName, year, month, week, date))
     case productName :: AsInt(year) :: AsInt(month) :: AsInt(week) :: AsInt(date) :: machineID :: Nil Get req => 
-      JsonResponse(ProductJSON(productName, year, month, week, date, machineID))
+      JsonResponse(TotalJSON(productName, year, month, week, date, machineID))
+  })
+
+  def toCSVResponse(csvString: String) = PlainTextResponse(csvString, List("Content-Type" -> "text/csv"), 200)
+
+  serve("api" / "csv" / "total" prefix {
+    case Nil Get req => toCSVResponse(TotalCSV.overview)
+    case productName :: Nil Get req => toCSVResponse(TotalCSV(productName))
+    case productName :: AsInt(year) :: AsInt(month) :: Nil Get req => toCSVResponse(TotalCSV(productName, year, month))
+    case productName :: AsInt(year) :: AsInt(month) :: AsInt(week) :: Nil Get req => toCSVResponse(TotalCSV(productName, year, month, week))
+    case productName :: AsInt(year) :: AsInt(month) :: AsInt(week) :: AsInt(date) :: Nil Get req => toCSVResponse(TotalCSV(productName, year, month, week, date))
+    case productName :: AsInt(year) :: AsInt(month) :: AsInt(week) :: AsInt(date) :: machineID :: Nil Get req => toCSVResponse(TotalCSV(productName, year, month, week, date, machineID))
+
+
   })
 
   serve("api" / "json" / "monthly" prefix {
