@@ -98,7 +98,13 @@ class Boot
     Menu("Monthly4") / "monthly" / * / * / * / * / * >> getTemplate("monthly/machine"),
     Menu("Daily1") / "daily" / * / * >> getTemplate("daily/overview"),
     Menu("Daily2") / "daily" / * / * / * >> getTemplate("daily/overview"),
-    Menu("Daily2") / "daily" / * / * / * / * >> getTemplate("daily/machine")
+    Menu("Daily2") / "daily" / * / * / * / * >> getTemplate("daily/machine"),
+    Menu("Machine1") / "machine" >> getTemplate("machine/overview"),
+    Menu("Machine1") / "machine" / * >> getTemplate("machine/overview"),
+    Menu("Machine1") / "machine" / * / * >> getTemplate("machine/overview"),
+    Menu("Machine1") / "machine" / * / * / * >> getTemplate("machine/detail")
+
+
   )
 
   val ensureSession: PartialFunction[Req, Unit] = {

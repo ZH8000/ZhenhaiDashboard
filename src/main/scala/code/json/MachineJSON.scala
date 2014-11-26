@@ -86,7 +86,7 @@ object MachineJSON {
       ("bad_qty" -> entry("bad_qty").toString.toLong)
     }
 
-    ("dataSet" -> dataJSON)
+    dataJSON
   }
 
 }
