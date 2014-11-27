@@ -10,11 +10,7 @@ import scala.collection.mutable.HashMap
 
 import com.mongodb.casbah.Imports._
 
-object DailyJSON {
-
-  def getSumQty(dataList: List[DBObject]) = dataList.map(data => data("count_qty").toString.toInt).sum
-  def getDate(entry: DBObject) = entry("timestamp").toString.split("-")(2).toInt
-  def getMachineID(entry: DBObject) = entry("mach_id").toString
+object DailyJSON extends JsonReport {
 
   def apply(year: Int, month: Int): JValue = {
 
@@ -67,7 +63,7 @@ object DailyJSON {
       ("bad_qty" -> entry("bad_qty").toString.toLong)
     }
 
-    ("dataSet" -> jsonData.toList.sortWith(TableSorting.countQtyDefactID))
+    ("dataSet" -> jsonData.toList.sortBy(x => Record(x)))
   }
 
 }

@@ -10,17 +10,7 @@ import scala.collection.mutable.HashMap
 
 import com.mongodb.casbah.Imports._
 
-object MonthlyJSON {
-
-  def getSumQty(dataList: List[DBObject]) = dataList.map(data => data("count_qty").toString.toInt).sum
-
-  def getMachineID(entry: DBObject) = entry("mach_id").toString
-  def getDate(entry: DBObject) = entry("timestamp").toString.split("-")(2).toInt
-  def getYearMonth(entry: DBObject) = entry("timestamp").toString.substring(0, 7)
-  def getWeek(entry: DBObject) = {
-    val Array(year, month, date) = entry("timestamp").toString.split("-")
-    DateUtils.getWeek(year.toInt, month.toInt, date.toInt)
-  }
+object MonthlyJSON extends JsonReport {
 
   def apply(year: Int): JValue = {
 
@@ -117,7 +107,7 @@ object MonthlyJSON {
     }
 
     ("steps" -> List(f"$year-$month%02d", f"第 $week 週", f"$date 日", machineID)) ~
-    ("dataSet" -> jsonData.toList.sortWith(TableSorting.countQtyDefactID))
+    ("dataSet" -> jsonData.toList.sortBy(x => Record(x)))
   }
 
 }
