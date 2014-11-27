@@ -3,15 +3,11 @@ package code.snippet
 import code.model._
 
 import net.liftweb.common.{Box, Full, Empty, Failure}
-import net.liftweb.common.Box._
-
-import net.liftweb.util.Helpers._
 
 import net.liftweb.http.S
 import net.liftweb.http.SHtml
-import net.liftweb.http.SessionVar
 
-import com.mongodb.casbah.Imports._
+import net.liftweb.util.Helpers._
 
 class Login {
 

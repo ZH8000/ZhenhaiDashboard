@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Standard Meta -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Zhenhai Dashboard</title>
+
+  <link rel="stylesheet" type="text/css" href="/assets/sementicUI/css/semantic.css">
+  <link rel="stylesheet" type="text/css" href="/assets/custom/css/custom.css">
+  <link rel="stylesheet" type="text/css" href="/assets/jQueryUI/jquery-ui.min.css">
+
+  <script src="/assets/lib/javascript/jquery-2.1.1.js"></script>
+
+  <script src="/assets/sementicUI/javascript/semantic.js"></script>
+  <script src="/assets/jQueryUI/jquery-ui.min.js"></script>
+  <script src="/assets/lib/javascript/jquery.mtz.monthpicker.js"></script>
+
+</head>
+<body>
+  <div class="ui fixed transparent inverted main menu">
+    <div class="container">
+      <a href="/" class="item"><div class="ui header">Zhenhai Dashboard</div></a>
+      <div class="right menu">
+        <div class="item">Information Center</div>
+        <div class="ui simple dropdown item">
+          <div><i class="ui large list icon"></i></div>
+          <div class="menu">
+            <!-- <a class="item" href="/user">個人頁</a> -->
+            <a class="item" href="/user/logout"><i class="ui sign out icon"></i> 登出</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ui page grid" style="padding-top:60px; padding-bottom:20px">
+
+    <div class="column">
+
+      <div data-lift="lift:msgs?showAll=true">
+        <lift:error_msg class="ui red sys message"></lift:error_msg>
+        <lift:warning_msg class="ui yellow sys message"></lift:warning_msg>
+        <lift:notice_msg class="ui green sys message"></lift:notice_msg>
+      </div>
+
+      <form class="ui form segment" id="addWorkerForm" data-lift="WorkerAdd?form=post">
+        <div class="field">
+          <label>姓名</label>
+          <div class="ui input">
+            <input type="text" name="name">
+          </div>
+        </div>
+        <div class="field">
+          <label>工號</label>
+          <div class="ui input">
+            <input type="text" name="workerID">
+          </div>
+        </div>
+        <div class="field">
+          <label>部門</label>
+          <div class="ui input">
+            <input type="text" name="department">
+          </div>
+        </div>
+        <div class="field">
+          <label>組別</label>
+          <div class="ui input">
+            <input type="text" name="team">
+          </div>
+        </div>
+        <div class="inline fields">
+          <div class="field">
+            <label for="workerType">員工類別：</label>
+          </div>
+          <div class="field">
+            <div class="ui radio checkbox">
+              <input name="workerType" type="radio" value="normal" id="workerTypeNormal">
+              <label>生產人員</label>
+            </div>
+          </div>
+          <div class="field" style="margin-left: 20px">
+            <div class="ui radio checkbox">
+              <input name="workerType" type="radio" value="maintain" id="workerTypeMaintain">
+              <label>維修人員</label>
+            </div>
+          </div>
+        </div>
+        
+        <input class="ui right floated blue submit button" type="submit" value="新增員工資料"/>
+      </form> 
+    </div>
+  </div>
+  <script>
+    $(function() {
+      var validations = {
+        "name": {
+          "identifier": "name",
+          "rules": [{
+            "type": "empty",
+            "prompt": "請輸入員工名稱"
+          }]
+        },
+        "workerID": {
+          "identifier": "workerID",
+          "rules": [{
+            "type": "empty",
+            "prompt": "請輸入員工工號"
+          }]
+        },
+        "department": {
+          "identifier": "department",
+          "rules": [{
+            "type": "empty",
+            "prompt": "請輸入員工部門"
+          }]
+        },
+        "team": {
+          "identifier": "team",
+          "rules": [{
+            "type": "empty",
+            "prompt": "請輸入組別"
+          }]
+        },
+        "workerType": {
+          "identifier": "workerType",
+          "rules": [{
+            "type": "checked",
+            "prompt": "請選擇員工類型"
+          }]
+        }
+      }
+
+      $('.ui.radio.checkbox').checkbox();
+      $("#addWorkerForm").form(validations, {on: "blur", inline: true, onSuccess : function(){
+        $("type=submit").click();
+        return false;
+      }})
+
+    })
+  </script>
+
+</body>
+</html>

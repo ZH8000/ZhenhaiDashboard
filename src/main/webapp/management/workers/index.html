@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Standard Meta -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Zhenhai Dashboard</title>
+
+  <link rel="stylesheet" type="text/css" href="/assets/sementicUI/css/semantic.css">
+  <link rel="stylesheet" type="text/css" href="/assets/custom/css/custom.css">
+  <link rel="stylesheet" type="text/css" href="/assets/jQueryUI/jquery-ui.min.css">
+
+  <script src="/assets/lib/javascript/jquery-2.1.1.js"></script>
+  <script src="/assets/sementicUI/semantic.js"></script>
+  <script src="/assets/jQueryUI/jquery-ui.min.js"></script>
+  <script src="/assets/lib/javascript/jquery.mtz.monthpicker.js"></script>
+
+</head>
+<body>
+  <div class="ui fixed transparent inverted main menu">
+    <div class="container">
+      <a href="/" class="item"><div class="ui header">Zhenhai Dashboard</div></a>
+      <div class="right menu">
+        <div class="item">Information Center</div>
+        <div class="ui simple dropdown item">
+          <div><i class="ui large list icon"></i></div>
+          <div class="menu">
+            <!-- <a class="item" href="/user">個人頁</a> -->
+            <a class="item" href="/user/logout"><i class="ui sign out icon"></i> 登出</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ui page grid" style="padding-top:60px; padding-bottom:20px">
+
+    <div class="column">
+
+       <a class="ui right floated labled icon button"><i class="barcode icon"></i> 產生員工條碼</a>
+       <a href="/management/workers/add" class="ui right floated labled icon button"><i class="plus icon"></i> 新增員工資料</a>
+
+       <div style="clear: both; margin-bottom: 20px"></div>
+
+       <div data-lift="lift:msgs?showAll=true">
+         <lift:error_msg class="ui red sys message"></lift:error_msg>
+         <lift:warning_msg class="ui yellow sys message"></lift:warning_msg>
+         <lift:notice_msg class="ui green sys message"></lift:notice_msg>
+       </div>
+
+       <div id="tab" style="margin-top: 1em;" data-lift="WorkerList">
+         <div class="">
+           <div class="ui top attached tabular menu">
+             <a class="departmentItem item" data-tab="departmentName">departmentName</a>
+           </div>
+       
+           <div class="workerTable ui bottom attached tab segment" data-tab="">
+             <table class="ui four column celled table">
+               <thead>
+                  <tr><th>姓名</th><th>工號</th><th>組別</th><th>動作</th></tr>
+                  <tr id="" class="workerRow">
+                    <td class="workerName"></td>
+                    <td class="workerID"></td>
+                    <td class="workerTeam"></td>
+                    <td>
+                      <div class="ui small buttons">
+                        <a href="/management/editWorker/<%= worker.id %>" class="editLink ui icon button"><i class="ui edit icon"></i> 編輯</a>
+                        <div class="or"></div>
+                        <a href="javascript: void(0)" class="ui icon button deleteLink"><i class="ui trash icon"></i> 刪除</a>
+                      </div>
+                    </td>
+                  </tr>
+               </thead>
+               <tbody>
+               </tbody>
+             </table>
+           </div>
+
+         </div>
+         <script>
+           $('#tab .menu .item').tab({context: $('#tab')});
+         </script>
+       </div>
+    </div>
+  </div>
+</body>
+</html>

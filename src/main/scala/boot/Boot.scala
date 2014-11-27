@@ -1,6 +1,6 @@
 package bootstrap.liftweb
 
-import code.model.User
+import code.model._
 
 import net.liftweb.http.LiftRules
 import net.liftweb.http.Req
@@ -33,6 +33,8 @@ class Boot
     }
   }
 
+  val editWorkerMenu = Menu.param[Worker]("EditWorker", "EditWorker", id => Worker.find(id), worker => worker.id.get.toString)
+
   lazy val siteMap = SiteMap(
     Menu("Home") / "index" >> redirectToDashboardIfLoggedIn,
     Menu("Logout") / "user" / "logout" >> logout,
@@ -55,7 +57,13 @@ class Boot
     Menu("Machine1") / "machine" >> getTemplate("machine/overview") >> needLogin,
     Menu("Machine1") / "machine" / * >> getTemplate("machine/overview") >> needLogin,
     Menu("Machine1") / "machine" / * / * >> getTemplate("machine/overview") >> needLogin,
-    Menu("Machine1") / "machine" / * / * / * >> getTemplate("machine/detail") >> needLogin
+    Menu("Machine1") / "machine" / * / * / * >> getTemplate("machine/detail") >> needLogin,
+    Menu("Management1") / "management" / "index" >> needLogin,
+    Menu("Management1") / "management" / "workers" / "add",
+    Menu("Management1") / "management" / "workers" / "index",
+    editWorkerMenu / "management" / "workers" / "edit" / * >> getTemplate("management/workers/edit")
+
+
   )
 
   val ensureLogin: PartialFunction[Req, Unit] = {
@@ -64,6 +72,12 @@ class Boot
 
   def boot 
   {
+    import com.mongodb.MongoClient
+    import net.liftweb.mongodb.MongoDB
+    import net.liftweb.util.DefaultConnectionIdentifier
+
+    MongoDB.defineDb(DefaultConnectionIdentifier, new MongoClient, "zhenhai")
+
     // Force the request to be UTF-8
     LiftRules.early.append(_.setCharacterEncoding("UTF-8"))
     LiftRules.addToPackages("code")
