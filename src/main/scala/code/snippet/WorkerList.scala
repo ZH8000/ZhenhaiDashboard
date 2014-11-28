@@ -35,6 +35,7 @@ class WorkerList {
         ".workerName *" #> worker.name.get &
         ".workerID *" #> worker.workerID.get &
         ".workerTeam *" #> worker.team &
+        ".workerType *" #> worker.workerTypeTitle &
         ".editLink [href]" #> s"/management/workers/edit/${worker.id}" &
         ".deleteLink [onclick]" #> SHtml.onEventIf(s"確定要刪除【${worker.name}】嗎？", deleteWorker(worker)_)
       }

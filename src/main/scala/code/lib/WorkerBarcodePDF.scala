@@ -21,7 +21,9 @@ object WorkerBarcodePDF {
     val departmentTag = new Paragraph(s"【$department】 $workerID", chineseFont)
     val nameTag = new Paragraph(s"$workerName", chineseFont)
 
-    barCode.setCode(worker.id.toString)
+    val barcodePrefix = if (worker.workerType.get == "maintain") "M" else "P"
+
+    barCode.setCode(barcodePrefix + worker.id)
     nameTag.setAlignment(Element.ALIGN_CENTER)
     departmentTag.setAlignment(Element.ALIGN_CENTER)
 

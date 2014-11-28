@@ -62,7 +62,7 @@ class Boot
     Menu("Management1") / "management" / "index" >> needLogin,
     Menu("Management1") / "management" / "workers" / "add" >> needLogin,
     Menu("Management1") / "management" / "workers" / "index" >> needLogin,
-    Menu("Management1") / "management" / "workers" / "barcode" >> Worker.barcodePDF >> needLogin,
+    Menu("Management1") / "management" / "workers" / "barcode" >> Worker.barcodePDF,
     editWorkerMenu / "management" / "workers" / "edit" / * >> getTemplate("management/workers/edit") >> needLogin
   )
 
