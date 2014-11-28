@@ -9,8 +9,19 @@ import net.liftweb.record.field._
 
 object Worker extends Worker with MongoMetaRecord[Worker] {
   override def collectionName = "worker"
-  def hasNoDuplicateID(workerID: String) = findByWorkerID(workerID).filterNot(_.isDeleted.get).isEmpty
+
+  def hasNoDuplicateID(workerID: String, workerBox: Option[Worker] = None) = workerBox match {
+    case Some(worker) if workerID == worker.workerID.get => false
+    case _ => findByWorkerID(workerID).filterNot(_.isDeleted.get).isEmpty
+  }
+
+  def hasNoDuplicateName(name: String, workerBox: Option[Worker] = None) = workerBox match {
+    case Some(worker) if name == worker.name.get => false
+    case _ => findByWorkerName(name).filterNot(_.isDeleted.get).isEmpty
+  }
+
   def findByWorkerID(workerID: String) = Worker.find(MongoDBObject("workerID" -> workerID, "isDeleted" -> false))
+  def findByWorkerName(name: String) = Worker.find(MongoDBObject("name" -> name, "isDeleted" -> false))
 }
 
 class Worker extends MongoRecord[Worker] with ObjectIdPk[Worker] {

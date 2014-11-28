@@ -1,6 +1,5 @@
 package code.json
 
-import code.util._
 import code.model._
 import code.lib._
 

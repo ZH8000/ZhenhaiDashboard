@@ -1,6 +1,6 @@
 package code.json
 
-import code.util._
+import code.lib._
 import code.model._
 
 import net.liftweb.json._

@@ -22,10 +22,8 @@ class WorkerEdit(worker: Worker) extends StatefulSnippet {
     case "render" => render
   }
 
-  def checkWorkerID(workerID: String) = workerID match {
-    case id if id == worker.workerID.get => true
-    case id => Worker.hasNoDuplicateID(workerID)
-  }
+  def checkWorkerID(workerID: String) = Worker.hasNoDuplicateID(workerID, Some(worker))
+  def checkWorkerName(name: String) = Worker.hasNoDuplicateName(name, Some(worker))
 
   def process() {
     workerNameBox = S.param("name")
@@ -35,14 +33,15 @@ class WorkerEdit(worker: Worker) extends StatefulSnippet {
     teamBox = S.param("team")
 
     val result = for {
-      workerName    <- workerNameBox ?~ "姓名為必填欄位"
-      workerID      <- workerIDBox ?~ "工號為必填欄位"
-      noDuplicateID <- workerIDBox.filterMsg("系統內已有相同工號")(checkWorkerID _)
-      department    <- departmentBox ?~ "部門為必填欄位"
-      team          <- teamBox ?~ "組別為必填欄位"
-      workerType    <- workerTypeBox ?~ "員工類別"
-      worker        <- worker.name(workerName).workerID(workerID).department(department).team(team).
-                              workerType(workerType).saveTheRecord()
+      workerName      <- workerNameBox ?~ "姓名為必填欄位"
+      workerID        <- workerIDBox ?~ "工號為必填欄位"
+      noDuplicateName <- workerNameBox.filterMsg("系統內已有相同員工姓名")(checkWorkerName _)
+      noDuplicateID   <- workerIDBox.filterMsg("系統內已有相同工號")(checkWorkerID _)
+      department      <- departmentBox ?~ "部門為必填欄位"
+      team            <- teamBox ?~ "組別為必填欄位"
+      workerType      <- workerTypeBox ?~ "員工類別"
+      worker          <- worker.name(workerName).workerID(workerID).department(department).team(team).
+                                workerType(workerType).saveTheRecord()
     } yield worker
 
     result match {

@@ -1,10 +1,7 @@
-package code.util
-
+package code.lib
 
 import net.liftweb.json.JsonDSL._
 import net.liftweb.json._
-import code.lib.MachineInfo
-
 
 object CSVConverter {
 

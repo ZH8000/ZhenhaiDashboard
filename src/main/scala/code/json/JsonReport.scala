@@ -1,6 +1,6 @@
 package code.json
 
-import code.util._
+import code.lib._
 
 import net.liftweb.json._
 import net.liftweb.json.JsonDSL._
@@ -9,31 +9,29 @@ import scala.math.Ordering
 
 import com.mongodb.casbah.Imports._
 
-case class Record(json: JValue) {
-  val JString(timestamp) = (json \\ "timestamp")
-  val JInt(countQty) = (json \\ "count_qty")
-  val JString(defactID) = (json \\ "defact_id")
-}
-
-object TableSorting extends Ordering[Record]{
-  def compare(a: Record, b: Record): Int = {
-
-    if (a.timestamp != b.timestamp) {
-      a.timestamp compare b.timestamp
-    } else {
-      if (a.countQty == b.countQty) {
-        a.defactID compare a.defactID
-      } else {
-        b.countQty compare b.countQty
-      }
-    }
-  }
-}
-
 
 trait JsonReport {
 
-  implicit val sortByRecord = TableSorting
+  case class Record(json: JValue) {
+    val JString(timestamp) = (json \\ "timestamp")
+    val JInt(countQty) = (json \\ "count_qty")
+    val JString(defactID) = (json \\ "defact_id")
+  }
+  
+  implicit object TableSorting extends Ordering[Record]{
+    def compare(a: Record, b: Record): Int = {
+  
+      if (a.timestamp != b.timestamp) {
+        a.timestamp compare b.timestamp
+      } else {
+        if (a.countQty == b.countQty) {
+          a.defactID compare a.defactID
+        } else {
+          b.countQty compare b.countQty
+        }
+      }
+    }
+  }
 
   def getSumQty(dataList: List[DBObject]) = dataList.map(data => data("count_qty").toString.toInt).sum
   def getDate(entry: DBObject) = entry("timestamp").toString.split("-")(2).toInt
@@ -43,7 +41,6 @@ trait JsonReport {
     val Array(year, month, date) = entry("timestamp").toString.split("-")
     DateUtils.getWeek(year.toInt, month.toInt, date.toInt)
   }
-
 }
 
 
