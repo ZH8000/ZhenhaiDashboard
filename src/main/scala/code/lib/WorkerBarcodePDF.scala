@@ -46,15 +46,13 @@ object WorkerBarcodePDF {
     val workers = Worker.findAll("isDeleted", false)
 
     document.open()
+    document.newPage()
 
+    pdfWriter.setPageEmpty(false)
     workers.foreach ( worker => table.addCell(createBarcodeLabel(worker, pdfWriter)) )
     table.completeRow()
 
-    workers.isEmpty match {
-      case true  => insertBlankPage(document, pdfWriter)
-      case false => document.add(table)
-    }
-
+    document.add(table)
     document.close()
   }
 
