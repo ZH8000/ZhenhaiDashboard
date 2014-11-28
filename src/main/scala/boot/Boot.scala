@@ -2,22 +2,23 @@ package bootstrap.liftweb
 
 import code.model._
 
+import com.mongodb.MongoClient
+
+import net.liftweb.common.{Full, Empty}
+import net.liftweb.http._
 import net.liftweb.http.LiftRules
 import net.liftweb.http.Req
 import net.liftweb.http.S
 import net.liftweb.http.Templates
+import net.liftweb.mongodb.MongoDB
 import net.liftweb.sitemap._
-import net.liftweb.sitemap.Loc.If
 import net.liftweb.sitemap.Loc.EarlyResponse
+import net.liftweb.sitemap.Loc.If
 import net.liftweb.sitemap.Loc.Template
-
 import net.liftweb.util.BasicTypesHelpers._
+import net.liftweb.util.DefaultConnectionIdentifier
 
 import scala.xml.NodeSeq
-
-import net.liftweb.common.{Full, Empty}
-import net.liftweb.http._
-
 
 class Boot 
 {
@@ -59,10 +60,10 @@ class Boot
     Menu("Machine1") / "machine" / * / * >> getTemplate("machine/overview") >> needLogin,
     Menu("Machine1") / "machine" / * / * / * >> getTemplate("machine/detail") >> needLogin,
     Menu("Management1") / "management" / "index" >> needLogin,
-    Menu("Management1") / "management" / "workers" / "add",
-    Menu("Management1") / "management" / "workers" / "index",
+    Menu("Management1") / "management" / "workers" / "add" >> needLogin,
+    Menu("Management1") / "management" / "workers" / "index" >> needLogin,
     Menu("Management1") / "management" / "workers" / "barcode" >> Worker.barcodePDF >> needLogin,
-    editWorkerMenu / "management" / "workers" / "edit" / * >> getTemplate("management/workers/edit")
+    editWorkerMenu / "management" / "workers" / "edit" / * >> getTemplate("management/workers/edit") >> needLogin
   )
 
   val ensureLogin: PartialFunction[Req, Unit] = {
@@ -71,10 +72,6 @@ class Boot
 
   def boot 
   {
-    import com.mongodb.MongoClient
-    import net.liftweb.mongodb.MongoDB
-    import net.liftweb.util.DefaultConnectionIdentifier
-
     MongoDB.defineDb(DefaultConnectionIdentifier, new MongoClient, "zhenhai")
 
     // Force the request to be UTF-8
