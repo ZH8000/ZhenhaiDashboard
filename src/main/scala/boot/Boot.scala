@@ -61,9 +61,8 @@ class Boot
     Menu("Management1") / "management" / "index" >> needLogin,
     Menu("Management1") / "management" / "workers" / "add",
     Menu("Management1") / "management" / "workers" / "index",
+    Menu("Management1") / "management" / "workers" / "barcode" >> Worker.barcodePDF >> needLogin,
     editWorkerMenu / "management" / "workers" / "edit" / * >> getTemplate("management/workers/edit")
-
-
   )
 
   val ensureLogin: PartialFunction[Req, Unit] = {

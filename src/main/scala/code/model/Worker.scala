@@ -2,10 +2,15 @@ package code.model
 
 import com.mongodb.casbah.Imports._
 
+import code.lib._
+
 import net.liftweb.mongodb.record.MongoRecord
 import net.liftweb.mongodb.record.MongoMetaRecord
 import net.liftweb.mongodb.record.field._
 import net.liftweb.record.field._
+import net.liftweb.sitemap.Loc._
+import net.liftweb.http.OutputStreamResponse
+import net.liftweb.common._
 
 object Worker extends Worker with MongoMetaRecord[Worker] {
   override def collectionName = "worker"
@@ -22,6 +27,10 @@ object Worker extends Worker with MongoMetaRecord[Worker] {
 
   def findByWorkerID(workerID: String) = Worker.find(MongoDBObject("workerID" -> workerID, "isDeleted" -> false))
   def findByWorkerName(name: String) = Worker.find(MongoDBObject("name" -> name, "isDeleted" -> false))
+
+  def barcodePDF = new EarlyResponse(() => 
+    Full(OutputStreamResponse(WorkerBarcodePDF.createPDF _, -1, List("Content-Type" -> "application/pdf")))
+  )
 }
 
 class Worker extends MongoRecord[Worker] with ObjectIdPk[Worker] {
