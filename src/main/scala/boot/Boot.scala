@@ -41,7 +41,7 @@ class Boot
     Menu("Logout") / "user" / "logout" >> logout,
     Menu("Dashboard") / "dashboard" >> needLogin,
     Menu("Dashboard") / "alert" >> needLogin,
-    Menu("Comet") / "comet",
+    Menu("Alive") / "alive",
     Menu("Total1") / "total" >> getTemplate("total/overview") >> needLogin,
     Menu("Total2") / "total" / * >> getTemplate("total/overview") >> needLogin,
     Menu("Total3") / "total" / * / * / * >> getTemplate("total/overview") >> needLogin,

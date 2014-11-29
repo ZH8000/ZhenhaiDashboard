@@ -5,10 +5,12 @@ import java.util.Date
 import net.liftweb.actor._
 import net.liftweb.http._
 import net.liftweb.util._
+import net.liftweb.http.js.JsCmds._
+import net.liftweb.http.js.JE.JsRaw
 import code.lib._
 
 case object PushResult
-case class Display(deadMachines: List[IPAddress])
+case class Display(deadMachines: List[(IPAddress, Boolean)])
 case class DeadMachine(ipAddress: IPAddress)
 case class LiveMachine(ipAddress: IPAddress)
 case class IPAddress(net: String, host: Int) {
@@ -18,14 +20,14 @@ case class IPAddress(net: String, host: Int) {
 
 object PingServer extends LiftActor with ListenerManager {
 
-  private var deadMachines: Set[IPAddress] = Set.empty
+  private var machineStatus: Map[IPAddress, Boolean] = Map.empty
 
-  def createUpdate = Display(deadMachines.toList.sortWith(_.sortString < _.sortString))
+  def createUpdate = Display(machineStatus.toList.sortWith(_._1.sortString < _._1.sortString))
 
   def ping(ip: IPAddress): Unit = new Thread {
 
     override def run() {
-      val inet = InetAddress.getByName(ip.net + "." + ip.host)
+      val inet = InetAddress.getByName(ip.toString)
       var counter = 0
       var isConnected = inet.isReachable(500)
 
@@ -42,8 +44,8 @@ object PingServer extends LiftActor with ListenerManager {
   }.start()
 
   override def lowPriority : PartialFunction[Any,Unit] = {
-    case DeadMachine(ip) => deadMachines += ip
-    case LiveMachine(ip) => deadMachines -= ip
+    case DeadMachine(ip) => machineStatus = machineStatus.updated(ip, false)
+    case LiveMachine(ip) => machineStatus = machineStatus.updated(ip, true)
     case PushResult => 
       updateListeners()
       Schedule(() => this ! PushResult, 5000)
@@ -57,37 +59,36 @@ object PingServer extends LiftActor with ListenerManager {
 
 class PingComet extends CometActor with CometListener {
   
-  private var deadMachines: List[IPAddress] = Nil
+  case class FillColor(ip: IPAddress, color: String)
+
+  private var deadMachines: List[(IPAddress, Boolean)] = Nil
 
   def registerWith = PingServer
 
   def render = {
-    ".row" #> deadMachines.map { ip =>
+    ".row" #> deadMachines.map { case(ip, status) =>
       ".ip *" #> ip.toString &
       ".date *" #> (new Date).toString
     }
   }
 
-  def updatePicture(newDeadMachines: List[IPAddress]) {
+  def fillColor(ip: IPAddress, color: String) = {
+    val machineID = MachineInfo.machineID(ip.toString)
+    partialUpdate(JsRaw(s"""jQuery("#$machineID").css("fill", "$color")"""))
+    partialUpdate(JsRaw("""$('.exception').css("fill", "#cccccc");"""))
+  }
 
-    val shouldAddColor = newDeadMachines diff deadMachines
-    val shouldRemoveColor = deadMachines diff newDeadMachines
-
-    shouldAddColor.foreach { case ip =>
-      println("ID:" + MachineInfo.machineID(ip.toString))
+  def updateTable(newDeadMachines: List[(IPAddress, Boolean)]) {
+    deadMachines = newDeadMachines
+    deadMachines.foreach { case(ip, isConnected) =>
+      val color = if (isConnected) "#00FF00" else "#FF0000"
+      this ! FillColor(ip, color)
     }
-    shouldRemoveColor.foreach { case ip =>
-      println("ID:" + MachineInfo.machineID(ip.toString))
-    }
-
+    reRender(false)
   }
 
   override def lowPriority : PartialFunction[Any,Unit] = {
-    case Display(newDeadMachines) =>
-      //updatePicture(newDeadMachines)
-      deadMachines = newDeadMachines
-      reRender(false)
+    case Display(newDeadMachines) => updateTable(newDeadMachines)
+    case FillColor(ip, color) => fillColor(ip, color)
   }
 }
-
-
