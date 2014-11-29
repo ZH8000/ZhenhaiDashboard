@@ -26,11 +26,11 @@ class WorkerEdit(worker: Worker) extends StatefulSnippet {
   def checkWorkerName(name: String) = Worker.hasNoDuplicateName(name, Some(worker))
 
   def process() {
-    workerNameBox = S.param("name")
-    workerTypeBox = S.param("workerType")
-    workerIDBox = S.param("workerID")
-    departmentBox = S.param("department")
-    teamBox = S.param("team")
+    workerNameBox = S.param("name").filterNot(_.trim.isEmpty)
+    workerTypeBox = S.param("workerType").filterNot(_.trim.isEmpty)
+    workerIDBox = S.param("workerID").filterNot(_.trim.isEmpty)
+    departmentBox = S.param("department").filterNot(_.trim.isEmpty)
+    teamBox = S.param("team").filterNot(_.trim.isEmpty)
 
     val result = for {
       workerName      <- workerNameBox ?~ "姓名為必填欄位"
@@ -45,7 +45,11 @@ class WorkerEdit(worker: Worker) extends StatefulSnippet {
     } yield worker
 
     result match {
-      case Full(worker) => S.redirectTo("/management/workers/", () => S.notice(s"已成功新增員工 ${worker.name.get}"))
+      case Full(worker) => 
+        S.redirectTo(
+          "/management/workers/", 
+          () => S.notice(s"已成功新增員工 ${worker.name.get}")
+        )
       case Failure(x, _, _) => S.error(x)
       case _ =>
     }

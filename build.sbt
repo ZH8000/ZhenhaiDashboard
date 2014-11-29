@@ -14,9 +14,9 @@ libraryDependencies ++= Seq(
 )
 
 libraryDependencies ++= Seq(
-  "net.liftweb" %% "lift-webkit" % "2.6-RC1" % "compile->default",
-  "net.liftweb" %% "lift-mongodb" % "2.6-RC1",
-  "net.liftweb" %% "lift-mongodb-record" % "2.6-RC1",
+  "net.liftweb" %% "lift-webkit" % "2.6-RC2" % "compile->default",
+  "net.liftweb" %% "lift-mongodb" % "2.6-RC2",
+  "net.liftweb" %% "lift-mongodb-record" % "2.6-RC2",
   "org.mongodb" %% "casbah" % "2.7.3",
   "com.itextpdf" % "itextpdf" % "5.5.3"
 )
