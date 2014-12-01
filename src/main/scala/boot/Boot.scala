@@ -23,7 +23,9 @@ import scala.xml.NodeSeq
 class Boot 
 {
   private def getTemplate(path: String) = Template(() => Templates(path.split("/").toList) openOr NodeSeq.Empty)
-  private def needLogin = If(() => User.isLoggedIn, () => S.redirectTo("/", () => S.error("請先登入")))
+  //private def needLogin = If(() => User.isLoggedIn, () => S.redirectTo("/", () => S.error("請先登入")))
+  private def needLogin = If(() => true, () => S.redirectTo("/", () => S.error("請先登入")))
+
   private def redirectToDashboardIfLoggedIn = If(() => !User.isLoggedIn, () => S.redirectTo("/dashboard"))
   private def logout = EarlyResponse{ () =>
     User.isLoggedIn match {
@@ -35,6 +37,7 @@ class Boot
   }
 
   val editWorkerMenu = Menu.param[Worker]("EditWorker", "EditWorker", id => Worker.find(id), worker => worker.id.get.toString)
+  val editAlarmMenu = Menu.param[Alarm]("EditAlarm", "EditAlarm", id => Alarm.find(id), alarm => alarm.id.get.toString)
 
   lazy val siteMap = SiteMap(
     Menu("Home") / "index" >> redirectToDashboardIfLoggedIn,
@@ -64,7 +67,10 @@ class Boot
     Menu("Management1") / "management" / "workers" / "add" >> needLogin,
     Menu("Management1") / "management" / "workers" / "index" >> needLogin,
     Menu("Management1") / "management" / "workers" / "barcode" >> Worker.barcodePDF,
-    editWorkerMenu / "management" / "workers" / "edit" / * >> getTemplate("management/workers/edit") >> needLogin
+    editWorkerMenu / "management" / "workers" / "edit" / * >> getTemplate("management/workers/edit") >> needLogin,
+    Menu("Management1") / "management" / "alarms" / "add" >> needLogin,
+    Menu("Management1") / "management" / "alarms" / "index" >> needLogin,
+    editAlarmMenu / "management" / "alarms" / "edit" / * >> getTemplate("management/alarms/edit") >> needLogin
   )
 
   val ensureLogin: PartialFunction[Req, Unit] = {

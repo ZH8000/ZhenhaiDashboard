@@ -11,12 +11,14 @@
   <link rel="stylesheet" type="text/css" href="/assets/sementicUI/css/semantic.css">
   <link rel="stylesheet" type="text/css" href="/assets/custom/css/custom.css">
   <link rel="stylesheet" type="text/css" href="/assets/jQueryUI/jquery-ui.min.css">
+  <link rel="stylesheet" type="text/css" href="/assets/select2-3.5.1/select2.css">
 
   <script src="/assets/lib/javascript/jquery-2.1.1.js"></script>
   <script src="/assets/sementicUI/javascript/semantic.js"></script>
   <script src="/assets/jQueryUI/jquery-ui.min.js"></script>
-  <script src="/assets/lib/javascript/jquery.mtz.monthpicker.js"></script>
-
+  <script src="/assets/jQueryUI/datepicker-zh-TW.js"></script>
+  <script src="/assets/select2-3.5.1/select2.min.js"></script>
+  <script src="/assets/select2-3.5.1/select2_locale_zh-TW.js"></script>
 </head>
 <body>
   <div class="ui fixed transparent inverted main menu">
@@ -44,63 +46,58 @@
         <lift:notice_msg class="ui green sys message"></lift:notice_msg>
       </div>
 
-      <form class="ui form segment" id="addWorkerForm" data-lift="WorkerAdd?form=post">
-        <div class="field">
-          <label>姓名</label>
-          <div class="ui input">
-            <input type="text" name="name">
-          </div>
-        </div>
-        <div class="field">
-          <label>工號</label>
-          <div class="ui input">
-            <input type="text" name="workerID">
-          </div>
-        </div>
-        <div class="field">
-          <label>部門</label>
-          <div class="ui input">
-            <input type="text" name="department">
-          </div>
-        </div>
-        <div class="field">
-          <label>組別</label>
-          <div class="ui input">
-            <input type="text" name="team">
-          </div>
-        </div>
-        <div class="inline fields">
+      <form class="ui form segment" data-lift="AlarmEdit?form=ajax&class=ui form segment">
+        <div class="two fields">
           <div class="field">
-            <label for="workerType">員工類別：</label>
-          </div>
-          <div class="field">
-            <div class="ui radio checkbox">
-              <input name="workerType" type="radio" value="normal" id="workerTypeNormal">
-              <label>生產人員</label>
+            <label>工號</label>
+            <div class="ui input">
+              <input type="text" name="workerID" />
             </div>
           </div>
-          <div class="field" style="margin-left: 20px">
-            <div class="ui radio checkbox">
-              <input name="workerType" type="radio" value="maintain" id="workerTypeMaintain">
-              <label>維修人員</label>
+          <div class="field">
+            <label>姓名</label>
+            <div class="ui input">
+              <input type="text" name="name" disabled id="name"/ >
             </div>
           </div>
         </div>
-        
-        <input class="ui right floated blue submit button" type="submit" value="新增員工資料"/>
+        <div class="two fields">
+          <div class="field">
+            <label>起算日期</label>
+            <div class="ui input">
+              <input type="text" name="startDate" id="startDate"/>
+            </div>
+          </div>
+          <div class="field">
+            <label>倒數天數</label>
+            <div class="ui input">
+              <input type="text" name="countdownDays" />
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label>機台</label>
+          <div class="ui input">
+            <select name="machineID" style="width: 100%" id="machineID">
+              <option class="machineItem item" value="MachineID">MachineID</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label>描述</label>
+          <div class="ui input">
+            <textarea type="text" name="description" cols="20"></textarea>
+          </div>
+        </div>
+     
+        <input type="hidden" name="defaultMachineID" id="defaultMachineID" value=""/>
+        <input class="ui right floated blue submit button" type="submit" value="更新維修行事曆"/>
       </form> 
     </div>
   </div>
   <script>
     $(function() {
       var validations = {
-        "name": {
-          "identifier": "name",
-          "rules": [{
-            "type": "empty",
-            "prompt": "請輸入員工名稱"
-          }]
-        },
         "workerID": {
           "identifier": "workerID",
           "rules": [{
@@ -108,34 +105,39 @@
             "prompt": "請輸入員工工號"
           }]
         },
-        "department": {
-          "identifier": "department",
+        "startDate": {
+          "identifier": "startDate",
           "rules": [{
             "type": "empty",
-            "prompt": "請輸入員工部門"
+            "prompt": "請選擇起算日期"
           }]
         },
-        "team": {
-          "identifier": "team",
+        "countdownDays": {
+          "identifier": "countdownDays",
           "rules": [{
             "type": "empty",
-            "prompt": "請輸入組別"
+            "prompt": "請輸入倒數日期"
           }]
         },
-        "workerType": {
-          "identifier": "workerType",
+        "description": {
+          "identifier": "description",
           "rules": [{
-            "type": "checked",
-            "prompt": "請選擇員工類型"
+            "type": "empty",
+            "prompt": "請輸入倒數日期"
           }]
         }
       }
 
+      $("#machineID").select2();
+      $("#machineID").select2("val", $('#defaultMachineID').val());
+
+      $('#startDate').datepicker({dateFormat: "yy-mm-dd"});
       $('.ui.radio.checkbox').checkbox();
-      $("#addWorkerForm").form(validations, {on: "blur", inline: true, onSuccess : function(){
+      $(".form").form(validations, {on: "blur", inline: true, onSuccess : function(){
         $("type=submit").click();
         return false;
       }})
+
 
     })
   </script>
