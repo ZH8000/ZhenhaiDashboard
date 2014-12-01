@@ -88,7 +88,7 @@
           </div>
         </div>
         
-        <input class="ui right floated blue submit button" type="submit" value="修改員工資料"/>
+        <input class="ui right floated blue submit button" type="submit" value="修改員工資料" id="submitButton"/>
       </form> 
     </div>
   </div>
@@ -134,8 +134,8 @@
 
       $('.ui.radio.checkbox').checkbox();
       $("#addWorkerForm").form(validations, {on: "blur", inline: true, onSuccess : function(){
-        $("type=submit").click();
-        return false;
+        $("#submitButton").click();
+        return true;
       }})
 
     })

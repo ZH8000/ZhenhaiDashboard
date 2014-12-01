@@ -26,7 +26,7 @@ class AlarmEdit(alarm: Alarm) {
   private var workerBox: Box[Worker] = Worker.find(alarm.workerMongoID.toString)
   private var startDateBox: Box[String] = Full(new SimpleDateFormat("yyyy-MM-dd").format(alarm.startDate.get))
   private var machineIDBox: Box[String] = Full(alarm.machineID.toString)
-  private var countdownDaysBox: Box[String] = Full(alarm.countdownDays.toString)
+  private var countdownDaysBox: Box[String] = Full(alarm.countdownDays.toString).filter(_ != "0")
   private var descriptionBox: Box[String] = Full(alarm.description.toString)
   private def currentDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date)
 
@@ -40,7 +40,7 @@ class AlarmEdit(alarm: Alarm) {
     }
   }
 
-  private def process() {
+  private def process(): JsCmd = {
     def toDate(date: String) = try {
       Full(new SimpleDateFormat("yyyy-MM-dd").parse(date))
     } catch {
@@ -61,20 +61,31 @@ class AlarmEdit(alarm: Alarm) {
       countdownDays    <- asInt(countdownDaysStr)
       description      <- descriptionBox.filterNot(_.trim.isEmpty) ?~ "請輸入描述"
       _                <- descriptionBox.filterMsg("描述字數不能多於 60 字")(_.length <= 60)
-      alarmRecord <- alarm.name(worker.name.get)
-                          .workerMongoID(worker.id.toString)
-                          .startDate(startDate)
-                          .machineID(machineID)
-                          .workerID(worker.workerID.get)
-                          .countdownDays(countdownDays)
-                          .description(description)
-                          .saveTheRecord()
-    } yield alarmRecord
+    } yield {
+      alarm.name(worker.name.get)
+           .workerMongoID(worker.id.toString)
+           .startDate(startDate)
+           .machineID(machineID)
+           .workerID(worker.workerID.get)
+           .countdownDays(countdownDays)
+           .description(description)
+    }
 
     alarmRecord match {
-      case Full(alarm) => S.redirectTo("/management/alarms/", () => S.notice("成功新增維修行事曆"))
+      case Full(alarm) =>
+        val startDate = startDateBox.getOrElse("")
+        val machineID = alarm.machineID
+        JsRaw(s"""showModalDialog('$machineID', '$startDate', ${alarm.countdownDays}, '${alarm.description}');""")
       case Failure(msg, _, _) => S.error(msg)
-      case _ => S.error("無法寫入資料庫")
+      case Empty => S.error("無法寫入資料庫")
+    }
+  }
+
+  def onConfirm(value: String): JsCmd = {
+    alarm.saveTheRecord() match {
+      case Full(alarm) => S.redirectTo("/management/alarms/", () => S.notice("成功新增或修改維修行事曆"))
+      case Failure(msg, _, _) => S.error(msg)
+      case Empty => S.error("無法寫入資料庫")
     }
   }
 
@@ -92,7 +103,8 @@ class AlarmEdit(alarm: Alarm) {
       ".machineItem [value]"  #> machineID &
       ".machineItem *"        #> machineID
     } &
-    "type=submit" #> SHtml.ajaxOnSubmit(process)
+    "type=submit" #> SHtml.ajaxOnSubmit(process) &
+    "#modalOKButton [onclick]" #> SHtml.onEvent(onConfirm)
   }
 }
 

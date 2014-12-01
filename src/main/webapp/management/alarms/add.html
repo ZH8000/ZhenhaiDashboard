@@ -91,8 +91,30 @@
         </div>
      
        
-        <input class="ui right floated blue submit button" type="submit" value="新增維修行事曆"/>
+        <input class="ui right floated blue submit button" type="submit" value="新增維修行事曆" id="submitButton"/>
+
+        <div class="ui modal">
+          <i class="close icon"></i>
+          <div class="header">儲存維修行事曆？</div>
+          <div class="content">
+            <div class="description inverse segment">
+              <div class="ui header">機台：<span id="dialogMachineID"></span></div>
+              <div class="ui header">起算日期：<span id="dialogStartDate"></span></div>
+              <div class="ui header">維修倒數：<span id="dialogCountdownDays"></span> 天</div>
+              <div class="ui header">說明：</div>
+              <p id="dialogDescription"></p>
+            </div>
+          </div>
+          <div class="actions">
+            <div class="ui black button">取消</div>
+            <div class="ui positive right labeled icon button" id="modalOKButton">確定
+              <i class="checkmark icon"></i>
+            </div>
+          </div>
+        </div>
+
       </form> 
+
     </div>
   </div>
   <script>
@@ -132,11 +154,19 @@
       $('#startDate').datepicker({dateFormat: "yy-mm-dd"});
       $('.ui.radio.checkbox').checkbox();
       $(".form").form(validations, {on: "blur", inline: true, onSuccess : function(){
-        $("type=submit").click();
+        $("#submitButton").click();
         return false;
       }})
 
     })
+
+    function showModalDialog(machineID, startDate, countdownDays, description) {
+      $('#dialogMachineID').text(machineID)
+      $('#dialogStartDate').text(startDate)
+      $('#dialogCountdownDays').text(countdownDays)
+      $('#dialogDescription').text(description)
+      $('.ui.modal').modal('show');
+    }
   </script>
 
 </body>
