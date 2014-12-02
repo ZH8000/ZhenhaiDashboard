@@ -47,7 +47,7 @@ object PingServer extends LiftActor with ListenerManager {
           PingServer ! message
         }
 
-        Schedule(() => ping(ip), 5000)
+        Schedule(() => ping(ip), 1000 * 60)
       }
     }
 
