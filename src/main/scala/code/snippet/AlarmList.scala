@@ -53,15 +53,15 @@ class AlarmList {
       ".alarmRow [id]" #> s"row-${alarm.id}" &
       ".dueDate *" #> dateFormatter.format(alarm.dueDate) &
       ".machineID *" #> alarm.machineID &
-      ".description *" #> alarm.description &
+      ".desc *" #> alarm.description &
       ".dueDate [id]"      #> s"dueDate-${alarm.id}" &
       ".machineID [id]"    #> s"machineID-${alarm.id}" &
-      ".description [id]"  #> s"description-${alarm.id}" &
+      ".desc [id]"  #> s"description-${alarm.id}" &
       ".popup [data-title]" #> s"${alarm.name} / 2014-11-22" &
       ".popup [data-content]" #> alarm.description &
       ".dueDate [class+]"      #> (if (alarm.isDone.get) "disabled" else "") &
       ".machineID [class+]"    #> (if (alarm.isDone.get) "disabled" else "") &
-      ".description [class+]"  #> (if (alarm.isDone.get) "disabled" else "") &
+      ".desc [class+]"  #> (if (alarm.isDone.get) "disabled" else "") &
       "@doneLabel *"           #> (if (alarm.isDone.get) "已完成" else "末完成") &
       "@doneCheckbox [checked+]" #> (if (alarm.isDone.get) Some("checked") else None) &
       "@doneCheckbox" #> SHtml.ajaxCheckbox(alarm.isDone.get, markAsDone(alarm))

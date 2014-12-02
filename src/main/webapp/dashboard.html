@@ -8,12 +8,12 @@
 
   <title>Zhenhai Dashboard</title>
 
-  <link rel="stylesheet" type="text/css" href="/assets/sementicUI/css/semantic.css">
+  <link rel="stylesheet" type="text/css" href="/assets/sementicUI/semantic.css">
   <link rel="stylesheet" type="text/css" href="/assets/custom/css/custom.css">
   <link rel="stylesheet" type="text/css" href="/assets/jQueryUI/jquery-ui.min.css">
 
   <script src="/assets/lib/javascript/jquery-2.1.1.js"></script>
-  <script src="/assets/sementicUI/javascript/semantic.js"></script>
+  <script src="/assets/sementicUI/semantic.js"></script>
   <script src="/assets/jQueryUI/jquery-ui.min.js"></script>
   <script src="/assets/lib/javascript/jquery.mtz.monthpicker.js"></script>
   <script src="/assets/custom/javascript/monthPicker.js"></script>
@@ -22,7 +22,7 @@
 <body>
   <div class="ui fixed transparent inverted main menu">
     <div class="container">
-      <a href="/" class="item"><div class="ui header">Zhenhai Dashboard</div></a>
+      <a href="/" class="title header item">Zhenhai Dashboard</a>
       <div class="right menu">
         <div class="item">Information Center</div>
         <div class="ui simple dropdown item">
@@ -38,28 +38,24 @@
   <div class="ui page grid" style="padding-top:60px; padding-bottom:20px">
     <div class="column" data-lift="AlarmList.postIt">
       <div class="ui divided list red segment" >
-        <div class="urgentAlarmRow popup item" style="padding: 10px">
-          <div class="ui right floated">    
-            <input name="doneCheckbox" type="checkbox">
-          </div>
-          <div class="content" width="100%">
+        <div class="urgentAlarmRow popup item" style="padding-top: 10px; padding-bottom: 10px">
+          <div class="content">
+            <input name="doneCheckbox" type="checkbox" style="float: right">
             <span><i class="importantMark ui red warning icon" ></i></span>
             <span class="dueDate ui red horizontal label">2014-12-10</span>
             <span class="machineID ui black horizontal label">MachineID</span>
-            <span class="description ui white horizontal label">Description....</span>
+            <span class="desc ui white horizontal label">Description....</span>
           </div>
         </div>
       </div>
-      <div class="ui divided list segment">
-        <div class="alarmRow popup item" style="padding: 10px">
-          <div class="ui right floated">    
-            <input name="doneCheckbox" type="checkbox">
-          </div>
-          <div class="content" width="100%">
-            <span><i class="importantMark ui icon" ></i></span>
+      <div class="ui divided list segment" >
+        <div class="alarmRow popup item" style="padding-top: 10px; padding-bottom: 10px">
+          <div class="content">
+            <input name="doneCheckbox" type="checkbox" style="float: right">
+            <span><i class="importantMark ui red icon" ></i></span>
             <span class="dueDate ui horizontal label">2014-12-10</span>
             <span class="machineID ui black horizontal label">MachineID</span>
-            <span class="description ui white horizontal label">Description....</span>
+            <span class="desc ui white horizontal label">Description....</span>
           </div>
         </div>
       </div>
@@ -68,17 +64,17 @@
   </div>
   <div class="ui page grid" style="padding-top:60px; padding-bottom:20px" data-lift="Dashboard.reportLink">
     <div class="column">
-      <div class="center aligned three column ui page stackable grid">
+      <div class="center aligned three column ui stackable grid">
         <div class="column">
-          <a href="/total" class="ui massive icon button" style="padding: 30px;">
-          <i class="huge dashboard icon"></i>
-          <div style="margin-top: 0.5em">總覽</div>
-        </a>
-      </div>
-      <div class="column">
-        <a href="#" class="ui massive icon button" style="padding: 30px;" id="monthlyReportButton">
+          <a href="/total" class="ui icon huge primary button">
+            <i class="huge dashboard icon"></i>
+            <div style="margin-top: 1em">總覽</div>
+          </a>
+        </div>
+        <div class="column">
+          <a href="/total" class="ui icon huge primary button">
             <i class="huge calendar icon"></i>
-            <div style="margin-top: 0.5em">月報表</div>
+            <div style="margin-top: 1em">月報表</div>
           </a>
           <div style="margin-top: 1em">
             請選擇年份：
@@ -88,37 +84,36 @@
           </div>
         </div>
         <div class="column">
-          <a href="#" class="ui massive icon button" style="padding: 30px;" id="dailyReportButton">
+          <a href="#" class="ui icon huge primary button" id="dailyReportButton">
             <i class="huge tasks icon"></i>
             <div style="margin-top: 0.5em">日報表</div>
           </a>
           <div style="margin-top: 1em">
             請選擇月份：<input type="text" id="monthPicker" size="10"/>
           </div>
-
         </div>
-      </div> 
+      </div>
     </div>
   </div>
   <div class="ui page grid">
     <div class="column">
-      <div class="center aligned three column ui page stackable grid">
+      <div class="center aligned three column ui stackable grid">
         <div class="column" data-lift="Dashboard.alertLink">
-          <a href="javascript: void(0)" class="ui massive icon button" style="padding: 30px;">
+          <a href="javascript: void(0)" class="ui icon huge primary button">
             <i class="huge warning icon"></i>
-            <div style="margin-top: 0.5em">機台異常</div>
+            <div style="margin-top: 1em">機台異常</div>
           </a>
         </div>
         <div class="column">
-          <a href="/machine" class="ui massive icon button" style="padding: 30px;">
+          <a href="/machine" class="ui icon huge primary button">
             <i class="huge bug icon"></i>
-            <div style="margin-top: 0.5em">事件分析</div>
+            <div style="margin-top: 1em">事件分析</div>
           </a>
         </div>
         <div class="column">
-          <a href="/management/" class="ui massive icon button" style="padding: 30px;">
+          <a href="/management/" class="ui icon huge primary button">
             <i class="huge settings icon"></i>
-            <div style="margin-top: 0.5em">網站管理</div>
+            <div style="margin-top: 1em">網站管理</div>
           </a>
         </div>
       </div> 
