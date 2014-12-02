@@ -35,6 +35,37 @@
       </div>
     </div>
   </div>
+  <div class="ui page grid" style="padding-top:60px; padding-bottom:20px">
+    <div class="column" data-lift="AlarmList.postIt">
+      <div class="ui divided list red segment" >
+        <div class="urgentAlarmRow popup item" style="padding: 10px">
+          <div class="ui right floated">    
+            <input name="doneCheckbox" type="checkbox">
+          </div>
+          <div class="content" width="100%">
+            <span><i class="importantMark ui red warning icon" ></i></span>
+            <span class="dueDate ui red horizontal label">2014-12-10</span>
+            <span class="machineID ui black horizontal label">MachineID</span>
+            <span class="description ui white horizontal label">Description....</span>
+          </div>
+        </div>
+      </div>
+      <div class="ui divided list segment">
+        <div class="alarmRow popup item" style="padding: 10px">
+          <div class="ui right floated">    
+            <input name="doneCheckbox" type="checkbox">
+          </div>
+          <div class="content" width="100%">
+            <span><i class="importantMark ui icon" ></i></span>
+            <span class="dueDate ui horizontal label">2014-12-10</span>
+            <span class="machineID ui black horizontal label">MachineID</span>
+            <span class="description ui white horizontal label">Description....</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
   <div class="ui page grid" style="padding-top:60px; padding-bottom:20px" data-lift="Dashboard.reportLink">
     <div class="column">
       <div class="center aligned three column ui page stackable grid">
@@ -101,8 +132,25 @@
 
     <script>
       setupMonthChooser($("#maxYear").val(), $("#maxMonth").val(), $("#minYear").val(), $("#minMonth").val());
+
     </script>
   </div>
+  <script>
+    $('.popup').popup({position: 'bottom center'});
+
+    function updateUI(alarmID, isDone) {
+      if (isDone) {
+        $('#dueDate-' + alarmID).addClass("disabled")
+        $('#machineID-' + alarmID).addClass("disabled")
+        $('#description-' + alarmID).addClass("disabled")
+      } else {
+        $('#dueDate-' + alarmID).removeClass("disabled")
+        $('#machineID-' + alarmID).removeClass("disabled")
+        $('#description-' + alarmID).removeClass("disabled")
+      }
+
+    }
+  </script>
 </body>
 
 </html>

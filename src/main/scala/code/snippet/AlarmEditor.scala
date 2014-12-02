@@ -75,7 +75,7 @@ class AlarmEdit(alarm: Alarm) {
       case Full(alarm) =>
         val startDate = startDateBox.getOrElse("")
         val machineID = alarm.machineID
-        JsRaw(s"""showModalDialog('$machineID', '$startDate', ${alarm.countdownDays}, '${alarm.description}');""")
+        JsRaw(s"""showModalDialog('$machineID', '$startDate', ${alarm.countdownDays});""")
       case Failure(msg, _, _) => S.error(msg)
       case Empty => S.error("無法寫入資料庫")
     }

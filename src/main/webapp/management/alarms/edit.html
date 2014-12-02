@@ -86,7 +86,7 @@
         <div class="field">
           <label>描述</label>
           <div class="ui input">
-            <textarea type="text" name="description" cols="20"></textarea>
+            <textarea type="text" name="description" cols="20" id="description"></textarea>
           </div>
         </div>
      
@@ -102,7 +102,7 @@
               <div class="ui header">起算日期：<span id="dialogStartDate"></span></div>
               <div class="ui header">維修倒數：<span id="dialogCountdownDays"></span> 天</div>
               <div class="ui header">說明：</div>
-              <p id="dialogDescription"></p>
+              <pre id="dialogDescription"></pre>
             </div>
           </div>
           <div class="actions">
@@ -161,6 +161,7 @@
     })
 
     function showModalDialog(machineID, startDate, countdownDays, description) {
+      var description = $('#description').val();
       $('#dialogMachineID').text(machineID)
       $('#dialogStartDate').text(startDate)
       $('#dialogCountdownDays').text(countdownDays)
