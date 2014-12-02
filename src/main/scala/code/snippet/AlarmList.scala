@@ -61,7 +61,7 @@ class AlarmList {
       ".popup [data-content]" #> alarm.description &
       ".dueDate [class+]"      #> (if (alarm.isDone.get) "disabled" else "") &
       ".machineID [class+]"    #> (if (alarm.isDone.get) "disabled" else "") &
-      ".desc [class+]"  #> (if (alarm.isDone.get) "disabled" else "") &
+      ".desc [class+]"  #> (if (alarm.isDone.get) "del" else "") &
       "@doneLabel *"           #> (if (alarm.isDone.get) "已完成" else "末完成") &
       "@doneCheckbox [checked+]" #> (if (alarm.isDone.get) Some("checked") else None) &
       "@doneCheckbox" #> SHtml.ajaxCheckbox(alarm.isDone.get, markAsDone(alarm))

@@ -15,3 +15,7 @@ html, body {
   list-style-position: outside;
   margin-left: -1em;
 }
+
+.del {
+  text-decoration:line-through;
+}
