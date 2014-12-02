@@ -173,8 +173,9 @@ function pieChart(options) {
     arcs.append("path")
       .attr("fill", function(d, i) { return color(i); } )
       .attr("d", arc)
+      .attr("class", "popup")
       .attr("id", function(d, i) { return "pieBlock" + i; } )
-      .attr("data-content", function(d, i) { 
+      .attr("title", function(d, i) { 
         var percentage = getPercentage(d.value)
         var title = options.extractName(d.data);
         return "[" + title + "] " + percentage; 
@@ -198,13 +199,6 @@ function pieChart(options) {
             return "";
           }
         });
-
-
-    for (var i = 0; i < data.length; i++) {
-      var slice = '#pieBlock' + i;
-      var target = '#pieText' + i;
-      $(slice).popup({target: target});
-    }
 
   }
 

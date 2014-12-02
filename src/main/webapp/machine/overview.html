@@ -8,13 +8,13 @@
 
   <title>Zhenhai Dashboard</title>
 
-  <link rel="stylesheet" type="text/css" href="/assets/sementicUI/css/semantic.css">
+  <link rel="stylesheet" type="text/css" href="/assets/sementicUI/semantic.css">
   <link rel="stylesheet" type="text/css" href="/assets/custom/css/custom.css">
 
   <script src="/assets/lib/javascript/jquery-2.1.1.js"></script>
   <script src="/assets/lib/javascript/d3.v3.min.js"></script>
 
-  <script src="/assets/sementicUI/javascript/semantic.js"></script>
+  <script src="/assets/sementicUI/semantic.js"></script>
 
   <script src="/assets/custom/javascript/chart.js"></script>
   <script src="/assets/custom/javascript/steps.js"></script>
@@ -32,7 +32,7 @@
 <body>
   <div class="ui fixed transparent inverted main menu">
     <div class="container">
-      <a href="/" class="item"><div class="ui header">Zhenhai Dashboard</div></a>
+      <a href="/" class="title header item">Zhenhai Dashboard</a>
       <div class="right menu">
         <div class="item">依錯誤原因</div>
         <div class="ui simple dropdown item">
@@ -53,7 +53,7 @@
       </div>
     </div>
     <div class="column">
-      <a id="csvLink" href="javascript: void(0)" class="ui right floated button">Export CSV File</a>
+      <a id="csvLink" href="javascript: void(0)" class="ui right floated primary button">Export CSV File</a>
     </div>
     <div class="column">
 
@@ -70,8 +70,7 @@
       </div>
 
       <div id="loadingIndicator">
-        <div><i class="huge circular loading icon"></i></div>
-        <div style="margin-top: 1em">讀取中……</div>
+        <div class="ui active large text loader" style="margin-top: 5em">讀取中……</div>
       </div>
 
       <svg class="pieChart"></svg>

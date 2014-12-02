@@ -8,7 +8,7 @@
 
   <title>Zhenhai Dashboard</title>
 
-  <link rel="stylesheet" type="text/css" href="/assets/sementicUI/css/semantic.css">
+  <link rel="stylesheet" type="text/css" href="/assets/sementicUI/semantic.css">
   <link rel="stylesheet" type="text/css" href="/assets/custom/css/custom.css">
   <link rel="stylesheet" type="text/css" href="/assets/jQueryUI/jquery-ui.min.css">
   <link rel="stylesheet" type="text/css" href="/assets/select2-3.5.1/select2.css">
@@ -20,7 +20,7 @@
   <script src="/assets/select2-3.5.1/select2.min.js"></script>
   <script src="/assets/select2-3.5.1/select2_locale_zh-TW.js"></script>
 
-  <script src="/assets/sementicUI/javascript/semantic.js"></script>
+  <script src="/assets/sementicUI/semantic.js"></script>
 
   <script src="/assets/custom/javascript/chart.js"></script>
   <script src="/assets/custom/javascript/steps.js"></script>
@@ -51,7 +51,7 @@
 <body data-lift="MonthlyReport.machine">
   <div class="ui fixed transparent inverted main menu">
     <div class="container">
-      <a href="/" class="item"><div class="ui header">Zhenhai Dashboard</div></a>
+      <a href="/" class="title header item">Zhenhai Dashboard</a>
       <div class="right menu">
         <div class="item">每月報表</div>
         <div class="ui simple dropdown item">
@@ -72,7 +72,7 @@
       </div>
     </div>
     <div class="column">
-      <a id="csvURL" href="javascript: void(0)" class="ui right floated button">Export CSV File</a>
+      <a id="csvURL" href="javascript: void(0)" class="ui right floated primary button">Export CSV File</a>
     </div>
   </div>
 
@@ -93,8 +93,7 @@
     <div class="twelve wide column data">
       <div class="ui center aligned one column grid" id="loadingIndicator">
        <div class="column">
-          <div><i class="huge circular loading icon"></i></div>
-          <div>Loading....</div>
+          <div class="ui active large text loader" style="margin-top: 5em">讀取中……</div>
         </div>
       </div>
       <div class="ui one column page grid" style="display: none;" id="notFoundBlock">
@@ -110,13 +109,12 @@
       </div>
 
       <div class="ui center aligned one column grid" id="loadingIndicator">
-        <div><i class="huge circular loading icon"></i></div>
-        <div style="margin-top: 1em">讀取中……</div>
+        <div class="ui active large text loader" style="margin-top: 5em">讀取中……</div>
       </div>
       <div class="ui center aligned two column grid data" style="display: none">
 
         <div class="column">
-          <div class="container" style="overflow:auto; width: 100%; padding-left: 15px; padding-right: 15px">
+          <div class="container detailBarChart">
             <svg class="barChart"></svg>
           </div>
         </div>

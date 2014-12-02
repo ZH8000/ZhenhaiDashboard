@@ -23,8 +23,8 @@ import scala.xml.NodeSeq
 class Boot 
 {
   private def getTemplate(path: String) = Template(() => Templates(path.split("/").toList) openOr NodeSeq.Empty)
-  //private def needLogin = If(() => User.isLoggedIn, () => S.redirectTo("/", () => S.error("請先登入")))
-  private def needLogin = If(() => true, () => S.redirectTo("/", () => S.error("請先登入")))
+  private def needLogin = If(() => User.isLoggedIn, () => S.redirectTo("/", () => S.error("請先登入")))
+  //private def needLogin = If(() => true, () => S.redirectTo("/", () => S.error("請先登入")))
 
   private def redirectToDashboardIfLoggedIn = If(() => !User.isLoggedIn, () => S.redirectTo("/dashboard"))
   private def logout = EarlyResponse{ () =>

@@ -105,12 +105,14 @@ $.fn.popup = function(parameters) {
         },
 
         refresh: function() {
-          $popup = (settings.popup)
-            ? $(settings.popup)
-            : (settings.inline)
-              ? $target.next(settings.selector.popup)
-              : false
-          ;
+          if(settings.popup) {
+            $popup = $(settings.popup);
+          }
+          else {
+            if(settings.inline) {
+              $popup = $target.next(settings.selector.popup);
+            }
+          }
           if(settings.popup) {
             $popup.addClass(className.loading);
             $offsetParent = $popup.offsetParent();
@@ -628,7 +630,7 @@ $.fn.popup = function(parameters) {
                 ;
               }
               else {
-                module.error(error.recursion, element);
+                module.debug('Popup could not find a position onstage', $popup);
                 searchDepth = 0;
                 module.reset();
                 $popup.removeClass(className.loading);
@@ -660,10 +662,12 @@ $.fn.popup = function(parameters) {
         bind: {
           popup: function() {
             module.verbose('Allowing hover events on popup to prevent closing');
-            $popup
-              .on('mouseenter' + eventNamespace, module.event.start)
-              .on('mouseleave' + eventNamespace, module.event.end)
-            ;
+            if($popup && $popup.size() > 0) {
+              $popup
+                .on('mouseenter' + eventNamespace, module.event.start)
+                .on('mouseleave' + eventNamespace, module.event.end)
+              ;
+            }
           },
           close:function() {
             if(settings.hideOnScroll === true || settings.hideOnScroll == 'auto' && settings.on != 'click') {
@@ -965,8 +969,7 @@ $.fn.popup.settings = {
 
   error: {
     invalidPosition : 'The position you specified is not a valid position',
-    method          : 'The method you called is not defined.',
-    recursion       : 'Popup attempted to reposition element to fit, but could not find an adequate position.'
+    method          : 'The method you called is not defined.'
   },
 
   metadata: {

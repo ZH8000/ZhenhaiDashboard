@@ -1,7 +1,7 @@
  /*
  * # Semantic UI
  * https://github.com/Semantic-Org/Semantic-UI
- * http://beta.semantic-ui.com/
+ * http://www.semantic-ui.com/
  *
  * Copyright 2014 Contributors
  * Released under the MIT license
@@ -386,26 +386,6 @@
   background-color: transparent !important;
 }
 
-/*--------------------
-       Loading
----------------------*/
-
-
-/* On Form */
-.ui.menu.loading {
-  position: relative;
-}
-.ui.menu.loading:after {
-  position: absolute;
-  top: 0%;
-  left: 0%;
-  content: '';
-  width: 100%;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.8) url("../themes/default/assets/images/loader-large.gif") no-repeat 50% 50%;
-  visibility: visible;
-}
-
 
 /*******************************
              Types
@@ -697,7 +677,7 @@
   height: auto !important;
   background: none;
   margin: 0em 0.25em;
-  padding: 0.5em 1em;
+  padding: 0.5em 0.8em;
   border-radius: 0.2857rem;
 }
 .ui.secondary.menu > .menu > .item:before,

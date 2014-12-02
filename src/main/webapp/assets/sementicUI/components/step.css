@@ -1,7 +1,7 @@
  /*
  * # Semantic UI
  * https://github.com/Semantic-Org/Semantic-UI
- * http://beta.semantic-ui.com/
+ * http://www.semantic-ui.com/
  *
  * Copyright 2014 Contributors
  * Released under the MIT license
@@ -325,7 +325,7 @@
 
 .ui.small.step,
 .ui.small.steps .step {
-  font-size: 0.9285rem;
+  font-size: 0.92857143rem;
 }
 .ui.step,
 .ui.steps .step {
@@ -333,7 +333,7 @@
 }
 .ui.large.step,
 .ui.large.steps .step {
-  font-size: 1.1428rem;
+  font-size: 1.14285714rem;
 }
 
 
