@@ -38,6 +38,9 @@ class Boot
 
   val editWorkerMenu = Menu.param[Worker]("EditWorker", "EditWorker", id => Worker.find(id), worker => worker.id.get.toString)
   val editAlarmMenu = Menu.param[Alarm]("EditAlarm", "EditAlarm", id => Alarm.find(id), alarm => alarm.id.get.toString)
+  val workerStatMenu = Menu.param[Worker]("WorkerStat", "WorkerStat", id => Worker.find(id), worker => worker.id.get.toString)
+
+  def workerMenu(menuID: String) = Menu.param[Worker](menuID, menuID, id => Worker.find(id), worker => worker.id.get.toString)
 
   lazy val siteMap = SiteMap(
     Menu("Home") / "index" >> redirectToDashboardIfLoggedIn,
@@ -70,7 +73,12 @@ class Boot
     editWorkerMenu / "management" / "workers" / "edit" / * >> getTemplate("management/workers/edit") >> needLogin,
     Menu("Management1") / "management" / "alarms" / "add" >> needLogin,
     Menu("Management1") / "management" / "alarms" / "index" >> needLogin,
-    editAlarmMenu / "management" / "alarms" / "edit" / * >> getTemplate("management/alarms/edit") >> needLogin
+    editAlarmMenu / "management" / "alarms" / "edit" / * >> getTemplate("management/alarms/edit") >> needLogin,
+    Menu("Workers") / "workers" / "index",
+    workerStatMenu / "workers" / * / "index" >> getTemplate("workers/worker"),
+    workerMenu("workerWeekly") / "workers" / * / * >> getTemplate("workers/workerWeekly"),
+    workerMenu("workerDaily") / "workers" / * / * / * >> getTemplate("workers/workerDaily"),
+    workerMenu("workerDetail") / "workers" / * / * / * / * >> getTemplate("workers/workerDetail")
   )
 
   val ensureLogin: PartialFunction[Req, Unit] = {

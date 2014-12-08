@@ -47,6 +47,18 @@ class Worker extends MongoRecord[Worker] with ObjectIdPk[Worker] {
     case "maintain" => "維修人員"
     case "normal" => "生產人員"
   }
+}
 
+object WorkerDaily extends WorkerDaily with MongoMetaRecord[WorkerDaily] {
+  override def collectionName = "workerDaily"
+}
+
+class WorkerDaily extends MongoRecord[WorkerDaily] with ObjectIdPk[WorkerDaily] {
+  def meta = WorkerDaily
+
+  val workerMongoID = new StringField(this, 24)
+  val countQty = new LongField(this, 24)
+  val timestamp = new StringField(this, 10)
+  val machineID = new StringField(this, 10)
 }
 
