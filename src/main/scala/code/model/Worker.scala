@@ -73,4 +73,10 @@ class MachineLevel extends MongoRecord[MachineLevel] with ObjectIdPk[MachineLeve
   val levelA = new LongField(this)
   val levelB = new LongField(this)
   val levelC = new LongField(this)
+
+  def level(count: Long) = {
+    if (count > levelB.get) { "A" }
+    else if (count > levelC.get) { "B" }
+    else { "C" }
+  }
 }

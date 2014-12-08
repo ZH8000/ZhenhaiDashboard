@@ -38,11 +38,14 @@ class Boot
 
   val editWorkerMenu = Menu.param[Worker]("EditWorker", "EditWorker", id => Worker.find(id), worker => worker.id.get.toString)
   val editAlarmMenu = Menu.param[Alarm]("EditAlarm", "EditAlarm", id => Alarm.find(id), alarm => alarm.id.get.toString)
-  val workerStatMenu = Menu.param[Worker]("WorkerStat", "WorkerStat", id => Worker.find(id), worker => worker.id.get.toString)
+  def workerMenu(menuID: String) = Menu.param[Worker](menuID, menuID, id => { val t = Worker.find(id); println(t); t}, worker => worker.id.get.toString)
 
-  def workerMenu(menuID: String) = Menu.param[Worker](menuID, menuID, id => Worker.find(id), worker => worker.id.get.toString)
+  val t1 = workerMenu("t1")
+  val t2 = workerMenu("t2")
+  val t3 = workerMenu("t3")
+  val t4 = workerMenu("t4")
 
-  lazy val siteMap = SiteMap(
+  val siteMap = SiteMap(
     Menu("Home") / "index" >> redirectToDashboardIfLoggedIn,
     Menu("Logout") / "user" / "logout" >> logout,
     Menu("Dashboard") / "dashboard" >> needLogin,
@@ -75,12 +78,11 @@ class Boot
     Menu("Management1") / "management" / "alarms" / "index" >> needLogin,
     editAlarmMenu / "management" / "alarms" / "edit" / * >> getTemplate("management/alarms/edit") >> needLogin,
     Menu("Workers") / "workers" / "index",
-    workerStatMenu / "workers" / * / "index" >> getTemplate("workers/worker"),
-    workerMenu("workerWeekly") / "workers" / * / * >> getTemplate("workers/workerWeekly"),
-    workerMenu("workerDaily") / "workers" / * / * / * >> getTemplate("workers/workerDaily"),
-    workerMenu("workerDetail") / "workers" / * / * / * / * >> getTemplate("workers/workerDetail"),
+    Menu("Workers1") / "workers" / * >> getTemplate("workers/worker"),
+    Menu("Workers2") / "workers" / * / * >> getTemplate("workers/workerWeekly"),
+    Menu("Workers3") / "workers" / * / * / * >> getTemplate("workers/workerDaily"),
+    Menu("Workers4") / "workers" / * / * / * / * >> getTemplate("workers/workerDetail"),
     Menu("machineLevel") / "management" / "machineLevel"
-
   )
 
   val ensureLogin: PartialFunction[Req, Unit] = {

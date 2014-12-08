@@ -14,16 +14,18 @@ import net.liftweb.http.js.jquery.JqJsCmds._
 import java.util.Calendar
 import java.text.SimpleDateFormat
 
-class WorkerOverview(worker: Worker) {
+class WorkerOverview {
 
   def getMonthlyTimestamp(record: WorkerDaily) = record.timestamp.get.substring(0, 7)
 
   def steps = {
-    ".workerName *" #> worker.name
+    val Array(_, _, workerID) = S.uri.split("/")
+    val name = Worker.find(workerID).map(_.name.get).getOrElse("查無此人")
+    ".workerName *" #> name
   }
 
   def weeklySteps = {
-    val Array(_, _,workerID,yearAndMonth) = S.uri.split("/")
+    val Array(_, _, workerID,yearAndMonth) = S.uri.split("/")
     val name = Worker.find(workerID).map(_.name.get).getOrElse("查無此人")
 
     ".workerName *" #> name &
@@ -40,7 +42,7 @@ class WorkerOverview(worker: Worker) {
   }
 
   def detailSteps = {
-    val Array(_, _,workerID,yearAndMonth, week, date) = S.uri.split("/")
+    val Array(_, _,workerID, yearAndMonth, week, date) = S.uri.split("/")
     val name = Worker.find(workerID).map(_.name.get).getOrElse("查無此人")
 
     ".workerName *" #> name &
@@ -50,7 +52,8 @@ class WorkerOverview(worker: Worker) {
   }
 
   def render = {
-    val recordByMonth = WorkerDaily.findAll("workerMongoID", worker.id.get.toString).groupBy(getMonthlyTimestamp)
+    val Array(_, _, workerID) = S.uri.split("/")
+    val recordByMonth = WorkerDaily.findAll("workerMongoID", workerID).groupBy(getMonthlyTimestamp)
     val sumByMonth = recordByMonth.mapValues(x => x.map(_.countQty.get).sum)
     val sortedRows = sumByMonth.toList.sortWith(_._1 > _._1)
     val ratio = sortedRows match {
@@ -65,7 +68,7 @@ class WorkerOverview(worker: Worker) {
       ".barText *" #> countQty &
       ".barRect [width]" #> width &
       ".barText [x]" #> (width + 10) &
-      ".barRect [onclick]" #> s"window.location='/workers/${worker.id.get}/$timestamp'"
+      ".barRect [onclick]" #> s"window.location='/workers/$workerID/$timestamp'"
     }
   }
 
@@ -78,8 +81,8 @@ class WorkerOverview(worker: Worker) {
       calendar.get(Calendar.WEEK_OF_MONTH)
     }
 
-    val Array(_, _,workerID,yearAndMonth) = S.uri.split("/")
-    val recordInMonth = WorkerDaily.findAll("workerMongoID", worker.id.get.toString).filter(_.timestamp.get.startsWith(yearAndMonth))
+    val Array(_, _, workerID,yearAndMonth) = S.uri.split("/")
+    val recordInMonth = WorkerDaily.findAll("workerMongoID", workerID).filter(_.timestamp.get.startsWith(yearAndMonth))
     val recordByWeeks = recordInMonth.groupBy(record => getWeek(record.timestamp.get))
     val sumByWeeks = recordByWeeks.mapValues(x => x.map(_.countQty.get).sum)
 
@@ -112,7 +115,7 @@ class WorkerOverview(worker: Worker) {
 
     val Array(_, _,workerID,yearAndMonth, week) = S.uri.split("/")
     val recordInMonth = WorkerDaily
-                          .findAll("workerMongoID", worker.id.get.toString)
+                          .findAll("workerMongoID", workerID)
                           .filter(x => x.timestamp.get.startsWith(yearAndMonth) && getWeek(x.timestamp.get) == week.toInt)
 
     val recordByDate = recordInMonth.groupBy(_.timestamp.get)
@@ -140,7 +143,7 @@ class WorkerOverview(worker: Worker) {
   def detail = {
     val Array(_, _,workerID,yearAndMonth, week, date) = S.uri.split("/")
     val recordInDate = WorkerDaily
-                          .findAll("workerMongoID", worker.id.get.toString)
+                          .findAll("workerMongoID", workerID)
                           .filter(x => x.timestamp.get == s"$yearAndMonth-$date")
 
     val sortedRows = recordInDate.sortWith(_.machineID.get < _.machineID.get)
@@ -151,11 +154,21 @@ class WorkerOverview(worker: Worker) {
 
     ".row" #> sortedRows.map { record =>
       val width = (record.countQty.get * ratio).toInt
+      val machineLevel = MachineLevel.find("machineID", record.machineID.toString)
+      val currentLevel = machineLevel.map(x => x.level(record.countQty.get)).openOr("無均線資料")
+      val labelColor = currentLevel match {
+        case "A" => "green"
+        case "B" => "yellow"
+        case "C" => "red"
+        case _ => ""
+      }
 
       ".machineID *" #> record.machineID &
       ".barText *" #> record.countQty &
       ".barRect [width]" #> width &
-      ".barText [x]" #> (width + 10)
+      ".barText [x]" #> (width + 10) &
+      ".level *" #> currentLevel &
+      ".level [class+]" #> labelColor
     }
 
   }
@@ -165,7 +178,7 @@ class WorkerOverview(worker: Worker) {
 class WorkerStatistics {
 
   def getWorker(workerMongoID: String) = Worker.find(workerMongoID)
-  def isDeleted(workerMongoID: String) = getWorker(workerMongoID).map(_.isDeleted.get).getOrElse(false)
+  def isDeleted(workerMongoID: String) = getWorker(workerMongoID).map(_.isDeleted.get).getOrElse(true)
 
   def totalTable = {
 
@@ -186,7 +199,7 @@ class WorkerStatistics {
       ".barText *" #> countQty &
       ".barRect [width]" #> width &
       ".barText [x]" #> (width + 10) &
-      ".barRect [onclick]" #> s"window.location='/workers/$workerMongoID/'"
+      ".barRect [onclick]" #> s"window.location='/workers/$workerMongoID'"
 
     }
   }

@@ -11,6 +11,7 @@ object Test {
     val boot = new Boot
     boot.boot
 
+    /*
     val workerID = Worker.findAll.toList.map(_.id.toString)
     val workerDaily = MongoDB.zhenhaiDB("workerDaily")
     println(workerID.size)
@@ -35,6 +36,12 @@ object Test {
         $inc("countQty" -> countQty),
         upsert = true
       )
+    }
+  */
+
+    MachineInfo.machineList.foreach { machineID =>
+      println("Insert machineID... " + machineID)
+      MachineLevel.createRecord.machineID(machineID).levelC(100).levelB(500).levelA(1000).saveTheRecord()
     }
 
 
