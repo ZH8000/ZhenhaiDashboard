@@ -57,8 +57,20 @@ class WorkerDaily extends MongoRecord[WorkerDaily] with ObjectIdPk[WorkerDaily] 
   def meta = WorkerDaily
 
   val workerMongoID = new StringField(this, 24)
-  val countQty = new LongField(this, 24)
+  val countQty = new LongField(this)
   val timestamp = new StringField(this, 10)
   val machineID = new StringField(this, 10)
 }
 
+object MachineLevel extends MachineLevel with MongoMetaRecord[MachineLevel] {
+  override def collectionName = "machineLevel"
+}
+
+class MachineLevel extends MongoRecord[MachineLevel] with ObjectIdPk[MachineLevel] {
+  def meta = MachineLevel
+
+  val machineID = new StringField(this, 10)
+  val levelA = new LongField(this)
+  val levelB = new LongField(this)
+  val levelC = new LongField(this)
+}

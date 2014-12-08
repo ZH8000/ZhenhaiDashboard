@@ -78,7 +78,9 @@ class Boot
     workerStatMenu / "workers" / * / "index" >> getTemplate("workers/worker"),
     workerMenu("workerWeekly") / "workers" / * / * >> getTemplate("workers/workerWeekly"),
     workerMenu("workerDaily") / "workers" / * / * / * >> getTemplate("workers/workerDaily"),
-    workerMenu("workerDetail") / "workers" / * / * / * / * >> getTemplate("workers/workerDetail")
+    workerMenu("workerDetail") / "workers" / * / * / * / * >> getTemplate("workers/workerDetail"),
+    Menu("machineLevel") / "management" / "machineLevel"
+
   )
 
   val ensureLogin: PartialFunction[Req, Unit] = {
