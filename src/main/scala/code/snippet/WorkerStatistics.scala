@@ -13,7 +13,9 @@ class WorkerStatistics {
   def workerSteps = {
     val workerID = S.request.map(_.path(1)).openOr("")
     val name = Worker.find(workerID).map(_.name.get).getOrElse("查無此人")
-    ".workerName *" #> name
+
+    ".workerName *" #> name &
+    ".workerName [href]" #> s"/workers/$workerID"
   }
 
   def weeklySteps = {
@@ -22,7 +24,10 @@ class WorkerStatistics {
     val name = Worker.find(workerID).map(_.name.get).getOrElse("查無此人")
 
     ".workerName *" #> name &
-    ".yearAndMonth *" #> yearAndMonth
+    ".workerName [href]" #> s"/workers/$workerID" &
+    ".yearAndMonth *" #> yearAndMonth &
+    ".yearAndMonth [href]" #> s"/workers/$workerID/$yearAndMonth"
+
   }
 
   def dailySteps = {
@@ -32,8 +37,11 @@ class WorkerStatistics {
     val name = Worker.find(workerID).map(_.name.get).getOrElse("查無此人")
 
     ".workerName *" #> name &
+    ".workerName [href]" #> s"/workers/$workerID" &
     ".yearAndMonth *" #> yearAndMonth &
-    ".week *" #> s"第 $week 週"
+    ".yearAndMonth [href]" #> s"/workers/$workerID/$yearAndMonth" &
+    ".week *" #> s"第 $week 週" &
+    ".week [href]" #> s"/workers/$workerID/$yearAndMonth/$week"
   }
 
   def detailSteps = {
@@ -43,10 +51,15 @@ class WorkerStatistics {
     val date = S.request.map(_.path(4)).openOr("")
     val name = Worker.find(workerID).map(_.name.get).getOrElse("查無此人")
 
+
     ".workerName *" #> name &
+    ".workerName [href]" #> s"/workers/$workerID" &
     ".yearAndMonth *" #> yearAndMonth &
+    ".yearAndMonth [href]" #> s"/workers/$workerID/$yearAndMonth" &
     ".week *" #> s"第 $week 週" &
-    ".date *" #> s"$date 日"
+    ".week [href]" #> s"/workers/$workerID/$yearAndMonth/$week" &
+    ".date *" #> s"$date 日" &
+    ".date [href]" #> s"/workers/$workerID/$yearAndMonth/$week/$date"
   }
 
 
