@@ -77,12 +77,12 @@ class Boot
     Menu("Management1") / "management" / "alarms" / "add" >> needLogin,
     Menu("Management1") / "management" / "alarms" / "index" >> needLogin,
     editAlarmMenu / "management" / "alarms" / "edit" / * >> getTemplate("management/alarms/edit") >> needLogin,
-    Menu("Workers") / "workers" / "index",
-    Menu("Workers1") / "workers" / * >> getTemplate("workers/worker"),
-    Menu("Workers2") / "workers" / * / * >> getTemplate("workers/weekly"),
-    Menu("Workers3") / "workers" / * / * / * >> getTemplate("workers/daily"),
-    Menu("Workers4") / "workers" / * / * / * / * >> getTemplate("workers/detail"),
-    Menu("machineLevel") / "management" / "machineLevel"
+    Menu("Workers") / "workers" / "index" >> needLogin,
+    Menu("Workers1") / "workers" / * >> getTemplate("workers/worker") >> needLogin,
+    Menu("Workers2") / "workers" / * / * >> getTemplate("workers/weekly") >> needLogin,
+    Menu("Workers3") / "workers" / * / * / * >> getTemplate("workers/daily") >> needLogin,
+    Menu("Workers4") / "workers" / * / * / * / * >> getTemplate("workers/detail") >> needLogin,
+    Menu("machineLevel") / "management" / "machineLevel" >> needLogin
   )
 
   val ensureLogin: PartialFunction[Req, Unit] = {
