@@ -6,7 +6,7 @@ scalaVersion := "2.11.2"
 
 seq(webSettings :_*)
 
-scalacOptions := List("-deprecation")
+scalacOptions := List("-deprecation", "-feature")
 
 libraryDependencies ++= Seq(
   "javax.servlet" % "servlet-api" % "2.5" % "provided",

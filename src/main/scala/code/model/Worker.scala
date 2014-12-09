@@ -47,6 +47,6 @@ class Worker extends MongoRecord[Worker] with ObjectIdPk[Worker] {
     case "maintain" => "維修人員"
     case "normal" => "生產人員"
   }
-
 }
+
 

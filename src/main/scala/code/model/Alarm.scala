@@ -36,12 +36,14 @@ class Alarm extends MongoRecord[Alarm] with ObjectIdPk[Alarm] {
   val doneWorkerID = new StringField(this, 20)
   val doneWorkerMongoID = new StringField(this, 32)
 
-  def dueDate: Date = {
+  def dueDateCalendar = {
     val calendar = Calendar.getInstance
     calendar.setTime(startDate.get)
     calendar.add(Calendar.DAY_OF_MONTH, countdownDays.get)
-    calendar.getTime
+    calendar
   }
+
+  def dueDate: Date = dueDateCalendar.getTime
 
   def dueDateString = new SimpleDateFormat("yyyy-MM-dd").format(dueDate)
   def isUrgentEvent = {

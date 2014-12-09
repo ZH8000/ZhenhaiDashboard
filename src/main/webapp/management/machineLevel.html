@@ -36,27 +36,25 @@
   </div>
   <div class="ui page grid" style="padding-top:60px; padding-bottom:20px">
     <div class="column">
-      <div class="center aligned three column ui stackable grid">
-        <div class="column">
-          <a href="/management/workers/" class="ui icon huge teal button">
-            <i class="huge users icon"></i>
-            <div style="margin-top: 1em">員工列表</div>
-          </a>
-        </div>
-        <div class="column">
-          <a href="/management/alarms/" class="ui icon huge teal button">
-            <i class="huge browser icon"></i>
-            <div style="margin-top: 1em">維修行事曆</div>
-          </a>
-        </div>
-        <div class="column">
-          <a href="/management/machineLevel" class="ui icon huge teal button">
-            <i class="huge tasks icon"></i>
-            <div style="margin-top: 1em">機台生產均線</div>
-          </a>
-        </div>
-
+      <div data-lift="lift:msgs?showAll=true">
+        <lift:error_msg class="ui red sys message"></lift:error_msg>
+        <lift:warning_msg class="ui yellow sys message"></lift:warning_msg>
+        <lift:notice_msg class="ui green sys message"></lift:notice_msg>
       </div>
+
+      <table class="ui celled table">
+        <thead>
+          <tr><th>機台</th><th>C</th><th>B</th><th>A</th></tr>
+        </thead>
+        <tbody data-lift="MachineLevelEditor">
+           <tr class="machineLevelRow">
+             <td class="machineID">A001</td>
+             <td class="levelC"><input type="text" name="levelC" /></td>
+             <td class="levelB"><input type="text" name="levelB" /></td>
+             <td class="levelA"><input type="text" name="levelA" /></td>
+           </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </body>

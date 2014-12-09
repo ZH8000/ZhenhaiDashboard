@@ -40,4 +40,13 @@ object CsvRestAPI extends RestHelper {
     case machineType :: machineModel :: machineID :: Nil Get req => toCSVResponse(MachineCSV(machineType, machineModel, machineID))
   })
 
+  serve("api" / "csv" / "workers" prefix {
+    case Nil Get req => toCSVResponse(WorkerStatisticsCSV.overview)
+    case workerMongoID :: Nil Get req => toCSVResponse(WorkerStatisticsCSV(workerMongoID))
+    case workerMongoID :: yearAndMonth :: Nil Get req => toCSVResponse(WorkerStatisticsCSV(workerMongoID, yearAndMonth))
+    case workerMongoID :: yearAndMonth :: week :: Nil Get req => toCSVResponse(WorkerStatisticsCSV(workerMongoID, yearAndMonth, week))
+    case workerMongoID :: yearAndMonth :: week :: date :: Nil Get req => toCSVResponse(WorkerStatisticsCSV(workerMongoID, yearAndMonth, week, date))
+
+  })
+
 }

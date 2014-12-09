@@ -14,6 +14,7 @@ import net.liftweb.http.js.jquery.JqJsCmds.Hide
 
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Calendar
 
 class AlarmList {
 
@@ -67,8 +68,11 @@ class AlarmList {
       "@doneCheckbox" #> SHtml.ajaxCheckbox(alarm.isDone.get, markAsDone(alarm))
     }
 
-    ".urgentAlarmRow" #> urgentAlarms.map { alarm => rowItem(alarm) } &
-    ".alarmRow" #> normalAlarms.map { alarm => rowItem(alarm) }
+    val notDoneUrgent = urgentAlarms.filter(x => x.dueDateCalendar.compareTo(today) >= 0 || !x.isDone.get)
+    val notDoneNormal = normalAlarms.filter(x => x.dueDateCalendar.compareTo(today) >= 0 || !x.isDone.get)
+
+    ".urgentAlarmRow" #> notDoneUrgent.map { alarm => rowItem(alarm) } &
+    ".alarmRow" #> notDoneNormal.map { alarm => rowItem(alarm) }
   }
 
   def render = {
