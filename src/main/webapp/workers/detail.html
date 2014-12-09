@@ -57,7 +57,7 @@
   </div>
   <div class="center aligned one column ui grid" style="padding-top:60px; padding-bottom:20px">
     <div class="column">
-      <div class="ui five steps" data-lift="WorkerOverview.detailSteps">
+      <div class="ui five steps" data-lift="WorkerStatistics.detailSteps">
         <a href="#" class="ui active step" style="cursor: pointer">總覽</a>
         <a href="#" class="workerName ui active step" style="cursor: pointer">員工</a>
         <a href="#" class="yearAndMonth ui active step" style="cursor: pointer">月份</a>
@@ -75,9 +75,9 @@
             <th class="ui center aligned">距下個等級</th>
           </tr>
         </thead>
-        <tbody data-lift="WorkerOverview.detail">
+        <tbody data-lift="WorkerStatistics.detailTable">
           <tr class="row">
-            <td class="machineID ui center aligned">機台</td>
+            <td class="collapsing machineID ui center aligned">機台</td>
             <td class="collapsing">
               <svg class="chart" width="900" height="30">
                 <g>
@@ -87,9 +87,19 @@
               </svg>
             </td>
             <td class="collapsing"><span class="level ui label">A</span></td>
-            <td>123</td>
+            <td>
+              <div class="nextLevel percent ui tiny progress" data-percent="0">
+                <div class="bar">
+                  <div class="progress"></div>
+                </div>
+                <div class="label">尚餘 <span class="count"></span> 個</div>
+              </div>
+            </td>
 
           </tr>
+          <script>
+            $('.progress').progress({showActivity: false});
+          </script>
 
         </tbody>
       </table>

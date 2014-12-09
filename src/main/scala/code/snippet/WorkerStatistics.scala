@@ -1,31 +1,23 @@
 package code.snippet
 
 import code.model._
+import code.lib._
+import code.json._
 
-import net.liftweb.common.Full
 import net.liftweb.http.S
-import net.liftweb.http.SHtml
-
 import net.liftweb.util.Helpers._
-import net.liftweb.util._
 
-import net.liftweb.http.js.JsCmds._
-import net.liftweb.http.js.jquery.JqJsCmds._
-import java.util.Calendar
-import java.text.SimpleDateFormat
+class WorkerStatistics {
 
-class WorkerOverview {
-
-  def getMonthlyTimestamp(record: WorkerDaily) = record.timestamp.get.substring(0, 7)
-
-  def steps = {
-    val Array(_, _, workerID) = S.uri.split("/")
+  def workerSteps = {
+    val workerID = S.request.map(_.path(1)).openOr("")
     val name = Worker.find(workerID).map(_.name.get).getOrElse("查無此人")
     ".workerName *" #> name
   }
 
   def weeklySteps = {
-    val Array(_, _, workerID,yearAndMonth) = S.uri.split("/")
+    val workerID = S.request.map(_.path(1)).openOr("")
+    val yearAndMonth = S.request.map(_.path(2)).openOr("")
     val name = Worker.find(workerID).map(_.name.get).getOrElse("查無此人")
 
     ".workerName *" #> name &
@@ -33,7 +25,9 @@ class WorkerOverview {
   }
 
   def dailySteps = {
-    val Array(_, _,workerID,yearAndMonth, week) = S.uri.split("/")
+    val workerID = S.request.map(_.path(1)).openOr("")
+    val yearAndMonth = S.request.map(_.path(2)).openOr("")
+    val week = S.request.map(_.path(3)).openOr("")
     val name = Worker.find(workerID).map(_.name.get).getOrElse("查無此人")
 
     ".workerName *" #> name &
@@ -42,7 +36,10 @@ class WorkerOverview {
   }
 
   def detailSteps = {
-    val Array(_, _,workerID, yearAndMonth, week, date) = S.uri.split("/")
+    val workerID = S.request.map(_.path(1)).openOr("")
+    val yearAndMonth = S.request.map(_.path(2)).openOr("")
+    val week = S.request.map(_.path(3)).openOr("")
+    val date = S.request.map(_.path(4)).openOr("")
     val name = Worker.find(workerID).map(_.name.get).getOrElse("查無此人")
 
     ".workerName *" #> name &
@@ -51,88 +48,79 @@ class WorkerOverview {
     ".date *" #> s"$date 日"
   }
 
-  def render = {
-    val Array(_, _, workerID) = S.uri.split("/")
-    val recordByMonth = WorkerDaily.findAll("workerMongoID", workerID).groupBy(getMonthlyTimestamp)
-    val sumByMonth = recordByMonth.mapValues(x => x.map(_.countQty.get).sum)
-    val sortedRows = sumByMonth.toList.sortWith(_._1 > _._1)
-    val ratio = sortedRows match {
-      case Nil => 0
-      case record :: _ => 800 / sortedRows.map(_._2).max.toDouble
-    }
 
-    ".row" #> sortedRows.map { case (timestamp, countQty) =>
-      val width = (countQty * ratio).toInt
+  def overviewTable = {
 
-      ".timestamp *" #> timestamp &
-      ".barText *" #> countQty &
+    val records = WorkerStatisticsJSON()
+    val maxValue = if (records.isEmpty) 0 else records.map(_.countQty).max
+    val scale = Scale(0, maxValue, 10, 800)
+
+    ".row" #> records.map { record =>
+
+      val width = scale(record.countQty)
+      ".workerID *" #> record.workerID &
+      ".workerName *" #> record.name &
+      ".barText *" #> record.countQty &
       ".barRect [width]" #> width &
       ".barText [x]" #> (width + 10) &
-      ".barRect [onclick]" #> s"window.location='/workers/$workerID/$timestamp'"
+      ".barRect [onclick]" #> s"window.location='/workers/${record.workerMongoID}'"
+
     }
   }
 
-  def weekly = {
-    def getWeek(dateString: String) = {
-      val dateFormatter = new SimpleDateFormat("yyyy-MM-dd")
-      val date = dateFormatter.parse(dateString)
-      val calendar = Calendar.getInstance
-      calendar.setTime(date)
-      calendar.get(Calendar.WEEK_OF_MONTH)
-    }
+  def workerTable = {
 
-    val Array(_, _, workerID,yearAndMonth) = S.uri.split("/")
-    val recordInMonth = WorkerDaily.findAll("workerMongoID", workerID).filter(_.timestamp.get.startsWith(yearAndMonth))
-    val recordByWeeks = recordInMonth.groupBy(record => getWeek(record.timestamp.get))
-    val sumByWeeks = recordByWeeks.mapValues(x => x.map(_.countQty.get).sum)
+    val workerID = S.request.map(_.path(1)).openOr("")
+    val records = WorkerStatisticsJSON(workerID)
+    val maxValue = if (records.isEmpty) 0 else records.map(_.countQty).max
+    val scale = Scale(0, maxValue, 10, 800)
 
-    val sortedRows = sumByWeeks.toList.sortWith(_._1 > _._1)
-    val ratio = sortedRows match {
-      case Nil => 0
-      case record :: _ => 800 / sortedRows.map(_._2).max.toDouble
-    }
+    ".row" #> records.map { record =>
+      val width = scale(record.countQty)
 
-    ".row" #> sortedRows.map { case (week, countQty) =>
-      val width = (countQty * ratio).toInt
-
-      ".timestamp *" #> s"第 $week 週" &
-      ".barText *" #> countQty &
+      ".timestamp *" #> record.title &
+      ".barText *" #> record.countQty &
       ".barRect [width]" #> width &
       ".barText [x]" #> (width + 10) &
-      ".barRect [onclick]" #> s"window.location='/workers/$workerID/$yearAndMonth/$week'"
+      ".barRect [onclick]" #> s"window.location='/workers/$workerID/${record.title}'"
     }
 
   }
 
-  def daily = {
-    def getWeek(dateString: String) = {
-      val dateFormatter = new SimpleDateFormat("yyyy-MM-dd")
-      val date = dateFormatter.parse(dateString)
-      val calendar = Calendar.getInstance
-      calendar.setTime(date)
-      calendar.get(Calendar.WEEK_OF_MONTH)
+  def weeklyTable = {
+
+    val workerID = S.request.map(_.path(1)).openOr("")
+    val yearAndMonth = S.request.map(_.path(2)).openOr("")
+    val records = WorkerStatisticsJSON(workerID, yearAndMonth)
+    val maxValue = if (records.isEmpty) 0 else records.map(_.countQty).max
+    val scale = Scale(0, maxValue, 10, 800)
+
+    ".row" #> records.map { record =>
+      val width = scale(record.countQty)
+
+      ".timestamp *" #> s"第 ${record.title} 週" &
+      ".barText *" #> record.countQty &
+      ".barRect [width]" #> width &
+      ".barText [x]" #> (width + 10) &
+      ".barRect [onclick]" #> s"window.location='/workers/$workerID/$yearAndMonth/${record.title}'"
     }
 
-    val Array(_, _,workerID,yearAndMonth, week) = S.uri.split("/")
-    val recordInMonth = WorkerDaily
-                          .findAll("workerMongoID", workerID)
-                          .filter(x => x.timestamp.get.startsWith(yearAndMonth) && getWeek(x.timestamp.get) == week.toInt)
+  }
 
-    val recordByDate = recordInMonth.groupBy(_.timestamp.get)
-    val sumByDate = recordByDate.mapValues(x => x.map(_.countQty.get).sum)
+  def dailyTable = {
+    val workerID = S.request.map(_.path(1)).openOr("")
+    val yearAndMonth = S.request.map(_.path(2)).openOr("")
+    val week = S.request.map(_.path(3)).openOr("")
+    val records = WorkerStatisticsJSON(workerID, yearAndMonth, week)
+    val maxValue = if (records.isEmpty) 0 else records.map(_.countQty).max
+    val scale = Scale(0, maxValue, 10, 800)
 
-    val sortedRows = sumByDate.toList.sortWith(_._1 > _._1)
-    val ratio = sortedRows match {
-      case Nil => 0
-      case record :: _ => 800 / sortedRows.map(_._2).max.toDouble
-    }
-
-    ".row" #> sortedRows.map { case (timestamp, countQty) =>
-      val width = (countQty * ratio).toInt
-      val Array(year, month, date) = timestamp.split("-")
+    ".row" #> records.map { record =>
+      val width = scale(record.countQty)
+      val Array(year, month, date) = record.title.split("-")
 
       ".timestamp *" #> s"$year 年 $month 月 $date 日" &
-      ".barText *" #> countQty &
+      ".barText *" #> record.countQty &
       ".barRect [width]" #> width &
       ".barText [x]" #> (width + 10) &
       ".barRect [onclick]" #> s"window.location='/workers/$workerID/$yearAndMonth/$week/$date'"
@@ -140,68 +128,50 @@ class WorkerOverview {
 
   }
 
-  def detail = {
-    val Array(_, _,workerID,yearAndMonth, week, date) = S.uri.split("/")
-    val recordInDate = WorkerDaily
-                          .findAll("workerMongoID", workerID)
-                          .filter(x => x.timestamp.get == s"$yearAndMonth-$date")
+  def detailTable = {
+    val workerID = S.request.map(_.path(1)).openOr("")
+    val yearAndMonth = S.request.map(_.path(2)).openOr("")
+    val week = S.request.map(_.path(3)).openOr("")
+    val date = S.request.map(_.path(4)).openOr("")
 
-    val sortedRows = recordInDate.sortWith(_.machineID.get < _.machineID.get)
-    val ratio = sortedRows match {
-      case Nil => 0
-      case record :: _ => 800 / sortedRows.map(_.countQty.get).max.toDouble
-    }
+    val records = WorkerStatisticsJSON(workerID, yearAndMonth, week, date)
+    val maxValue = if (records.isEmpty) 0 else records.map(_.countQty).max
+    val scale = Scale(0, maxValue, 10, 800)
 
-    ".row" #> sortedRows.map { record =>
-      val width = (record.countQty.get * ratio).toInt
-      val machineLevel = MachineLevel.find("machineID", record.machineID.toString)
-      val currentLevel = machineLevel.map(x => x.level(record.countQty.get)).openOr("無均線資料")
+    ".row" #> records.map { record =>
+      val machineID = record.title
+      val width = scale(record.countQty)
+      val machineLevelBox = MachineLevel.find("machineID", machineID)
+      val currentLevel = machineLevelBox.map(x => x.level(record.countQty)).openOr("無均線資料")
       val labelColor = currentLevel match {
         case "A" => "green"
         case "B" => "yellow"
         case "C" => "red"
+        case "D" => "black"
         case _ => ""
       }
 
-      ".machineID *" #> record.machineID &
+      val nextLevelBar = for {
+        machineLevel <- machineLevelBox
+        (nextLevelCount, percent) <- machineLevel.nextLevel(record.countQty)
+      } yield {
+        ".percent [data-percent]" #> percent &
+        ".count *" #> nextLevelCount
+      }
+
+      ".machineID *" #> machineID &
       ".barText *" #> record.countQty &
       ".barRect [width]" #> width &
       ".barText [x]" #> (width + 10) &
       ".level *" #> currentLevel &
-      ".level [class+]" #> labelColor
+      ".level [class+]" #> labelColor &
+      ".nextLevel" #> nextLevelBar
+
     }
+
 
   }
 
 }
 
-class WorkerStatistics {
-
-  def getWorker(workerMongoID: String) = Worker.find(workerMongoID)
-  def isDeleted(workerMongoID: String) = getWorker(workerMongoID).map(_.isDeleted.get).getOrElse(true)
-
-  def totalTable = {
-
-    val recordByWorkers = WorkerDaily.findAll.groupBy(_.workerMongoID.get).filterNot(x => isDeleted(x._1))
-    val sumByWorkers = recordByWorkers.mapValues(x => x.map(_.countQty.get).sum)
-    val sortedRows = sumByWorkers.toList.sortWith(_._2 > _._2)
-    val ratio = sortedRows match {
-      case Nil => 0
-      case (id, value) :: _ => 800 / value.toDouble
-    }
-
-    ".row" #> sortedRows.map { case (workerMongoID, countQty) =>
-      val worker = getWorker(workerMongoID)
-      val width = (countQty * ratio).toInt
-
-      ".workerID *" #> worker.map(_.workerID.get).getOrElse("查無此人") &
-      ".workerName *" #> worker.map(_.name.get).getOrElse("查無此人") &
-      ".barText *" #> countQty &
-      ".barRect [width]" #> width &
-      ".barText [x]" #> (width + 10) &
-      ".barRect [onclick]" #> s"window.location='/workers/$workerMongoID'"
-
-    }
-  }
-}
 

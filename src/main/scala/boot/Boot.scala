@@ -79,9 +79,9 @@ class Boot
     editAlarmMenu / "management" / "alarms" / "edit" / * >> getTemplate("management/alarms/edit") >> needLogin,
     Menu("Workers") / "workers" / "index",
     Menu("Workers1") / "workers" / * >> getTemplate("workers/worker"),
-    Menu("Workers2") / "workers" / * / * >> getTemplate("workers/workerWeekly"),
-    Menu("Workers3") / "workers" / * / * / * >> getTemplate("workers/workerDaily"),
-    Menu("Workers4") / "workers" / * / * / * / * >> getTemplate("workers/workerDetail"),
+    Menu("Workers2") / "workers" / * / * >> getTemplate("workers/weekly"),
+    Menu("Workers3") / "workers" / * / * / * >> getTemplate("workers/daily"),
+    Menu("Workers4") / "workers" / * / * / * / * >> getTemplate("workers/detail"),
     Menu("machineLevel") / "management" / "machineLevel"
   )
 
