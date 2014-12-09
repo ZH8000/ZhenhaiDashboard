@@ -66,27 +66,37 @@
       </div>
     </div>
     <div class="column" >
-      <table class="ui celled table" data-lift="LazyLoad?template=loading">
-        <thead>
-          <tr class="ui celled">
-            <th class="ui center aligned">月份</th>
-            <th class="ui center aligned">總量</th>
-          </tr>
-        </thead>
-        <tbody data-lift="WorkerStatistics.dailyTable">
-          <tr class="row">
-            <td class="timestamp ui center aligned">月份</td>
-            <td class="collapsing">
-              <svg class="chart" width="900" height="30">
-                <g>
-                  <rect width="800" height="30" class="barRect"/>
-                  <text x="810" y="35" dy="-15px" dx="30px" class="barText">5680347</text>
-                </g>
-              </svg>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+
+      <div data-lift="LazyLoad?template=loading">
+        <div data-lift="WorkerStatistics.dailyTable">
+          <div data-lift="lift:msgs?showAll=true">
+            <lift:error_msg class="ui red sys message"></lift:error_msg>
+            <lift:warning_msg class="ui yellow sys message"></lift:warning_msg>
+            <lift:notice_msg class="ui green sys message"></lift:notice_msg>
+          </div>
+          <table class="ui celled table">
+            <thead>
+              <tr class="ui celled">
+                <th class="ui center aligned">月份</th>
+                <th class="ui center aligned">總量</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="row">
+                <td class="timestamp ui center aligned">月份</td>
+                <td class="collapsing">
+                  <svg class="chart" width="900" height="30">
+                    <g>
+                      <rect width="800" height="30" class="barRect"/>
+                      <text x="810" y="35" dy="-15px" dx="30px" class="barText">5680347</text>
+                    </g>
+                  </svg>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 </body>

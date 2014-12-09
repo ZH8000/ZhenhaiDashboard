@@ -58,7 +58,7 @@ object WorkerStatisticsJSON {
 
     val recordInMonth = WorkerDaily
                           .findAll("workerMongoID", workerMongoID)
-                          .filter(x => x.timestamp.get.startsWith(yearAndMonth) && getWeek(x.timestamp.get) == week.toInt)
+                          .filter(x => x.timestamp.get.startsWith(yearAndMonth) && getWeek(x.timestamp.get).toString == week)
 
     val recordByDate = recordInMonth.groupBy(_.timestamp.get)
     val records = for {
