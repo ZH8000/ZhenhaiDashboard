@@ -102,6 +102,8 @@ class WorkerStatistics {
     records.isEmpty match {
       case true  => showErrorBox("查無資料")
       case false =>
+
+        "#csvURL [href]" #> s"/api/csv/workers/$workerID" &
         ".row" #> records.map { record =>
           val width = scale(record.countQty)
 
@@ -125,9 +127,10 @@ class WorkerStatistics {
     records.isEmpty match {
       case true  => showErrorBox("查無資料")
       case false =>
+
+        "#csvURL [href]" #> s"/api/csv/workers/$workerID/$yearAndMonth" &
         ".row" #> records.map { record =>
           val width = scale(record.countQty)
-
           ".timestamp *" #> s"第 ${record.title} 週" &
           ".barText *" #> record.countQty &
           ".barRect [width]" #> width &
@@ -151,6 +154,8 @@ class WorkerStatistics {
     records.isEmpty match {
       case true  => showErrorBox("查無資料")
       case false =>
+
+        "#csvURL [href]" #> s"/api/csv/workers/$workerID/$yearAndMonth/$week" &
         ".row" #> records.map { record =>
           val width = scale(record.countQty)
           val Array(year, month, date) = record.title.split("-")
@@ -178,6 +183,8 @@ class WorkerStatistics {
     records.isEmpty match {
       case true  => showErrorBox("查無資料")
       case false =>
+
+        "#csvURL [href]" #> s"/api/csv/workers/$workerID/$yearAndMonth/$week/$date" &
         ".row" #> records.map { record =>
           val machineID = record.title
           val width = scale(record.countQty)
