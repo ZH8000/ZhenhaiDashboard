@@ -15,6 +15,7 @@ import net.liftweb.http.js.jquery.JqJsCmds.Hide
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Calendar
+import scala.xml.NodeSeq
 
 class AlarmList {
 
@@ -71,8 +72,17 @@ class AlarmList {
     val notDoneUrgent = urgentAlarms.filter(x => x.dueDateCalendar.compareTo(today) >= 0 || !x.isDone.get)
     val notDoneNormal = normalAlarms.filter(x => x.dueDateCalendar.compareTo(today) >= 0 || !x.isDone.get)
 
-    ".urgentAlarmRow" #> notDoneUrgent.map { alarm => rowItem(alarm) } &
-    ".alarmRow" #> notDoneNormal.map { alarm => rowItem(alarm) }
+    val urgentListBinding = notDoneUrgent.isEmpty match {
+      case true  => ".urgentAlarmBlock" #> NodeSeq.Empty
+      case flase => ".urgentAlarmRow"   #> notDoneUrgent.map { alarm => rowItem(alarm) }
+    }
+    val alarmListBinding = notDoneNormal.isEmpty match {
+      case true  => ".alarmBlock" #> NodeSeq.Empty
+      case false => ".alarmRow" #> notDoneNormal.map { alarm => rowItem(alarm) }
+    }
+
+    urgentListBinding &
+    alarmListBinding
   }
 
   def render = {

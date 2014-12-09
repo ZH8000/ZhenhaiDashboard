@@ -65,7 +65,8 @@ class WorkerStatistics {
 
   def showErrorBox(message: String) = {
     S.error(message)
-    "table" #> NodeSeq.Empty
+    "table" #> NodeSeq.Empty &
+    "#csvURL" #> NodeSeq.Empty
   }
 
   def overviewTable = {
