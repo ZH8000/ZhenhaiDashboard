@@ -46,6 +46,7 @@ class Boot
   val t4 = workerMenu("t4")
 
   val siteMap = SiteMap(
+    Menu("assets") / "test" / **,
     Menu("Home") / "index" >> redirectToDashboardIfLoggedIn,
     Menu("Logout") / "user" / "logout" >> logout,
     Menu("Dashboard") / "dashboard" >> needLogin,
