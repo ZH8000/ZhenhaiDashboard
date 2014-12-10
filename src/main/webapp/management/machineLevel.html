@@ -41,14 +41,18 @@
         <lift:warning_msg class="ui yellow sys message"></lift:warning_msg>
         <lift:notice_msg class="ui green sys message"></lift:notice_msg>
       </div>
-
       <table class="ui celled table">
         <thead>
-          <tr><th>機台</th><th>C</th><th>B</th><th>A</th></tr>
+          <tr>
+            <th class="ui center aligned">機台</th>
+            <th class="ui center aligned">C</th>
+            <th class="ui center aligned">B</th>
+            <th class="ui center aligned">A</th>
+          </tr>
         </thead>
         <tbody data-lift="MachineLevelEditor">
            <tr class="machineLevelRow">
-             <td class="machineID">A001</td>
+             <td class="machineID ui center aligned">A001</td>
              <td class="levelC"><input type="text" name="levelC" /></td>
              <td class="levelB"><input type="text" name="levelB" /></td>
              <td class="levelA"><input type="text" name="levelA" /></td>

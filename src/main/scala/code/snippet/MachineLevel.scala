@@ -43,7 +43,11 @@ class MachineLevelEditor {
 
   def render = {
 
-    ".machineLevelRow" #> MachineInfo.machineList.map { machineID =>
+    val sortedMachineList = MachineInfo.machineList.sortWith(_ < _)
+
+    
+
+    ".machineLevelRow" #> sortedMachineList.map { machineID =>
 
       val machineLevel = MachineLevel.find("machineID", machineID).openOr(MachineLevel.createRecord.machineID(machineID))
 
