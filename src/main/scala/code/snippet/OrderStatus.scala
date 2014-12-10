@@ -26,11 +26,11 @@ class OrderStatus {
 
           val requireCount = (record.inputCount.get - (record.inputCount.get * 0.04)).toInt
 
-          val step1Percent = ((record.step1.get.toDouble / record.inputCount.get.toDouble) * 100).toInt
-          val step2Percent = ((record.step2.get.toDouble / requireCount) * 100).toInt
-          val step3Percent = ((record.step3.get.toDouble / requireCount) * 100).toInt
-          val step4Percent = ((record.step4.get.toDouble / requireCount) * 100).toInt
-          val step5Percent = ((record.step5.get.toDouble / requireCount) * 100).toInt
+          val step1Percent = scala.math.min((((record.step1.get.toDouble / record.inputCount.get.toDouble) * 100)).toInt, 100)
+          val step2Percent = scala.math.min(((record.step2.get.toDouble / requireCount) * 100).toInt, 100)
+          val step3Percent = scala.math.min(((record.step3.get.toDouble / requireCount) * 100).toInt, 100)
+          val step4Percent = scala.math.min(((record.step4.get.toDouble / requireCount) * 100).toInt, 100)
+          val step5Percent = scala.math.min(((record.step5.get.toDouble / requireCount) * 100).toInt, 100)
 
           ".customer *" #> record.customer &
           ".order *" #> record.order &
