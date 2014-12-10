@@ -33,8 +33,8 @@ trait JsonReport {
     }
   }
 
-  def getSumQty(dataList: List[DBObject]) = dataList.map(data => data("count_qty").toString.toInt).sum
-  def getDate(entry: DBObject) = entry("timestamp").toString.split("-")(2).toInt
+  def getSumQty(dataList: List[DBObject]) = dataList.map(data => data("count_qty").toString.toLong).sum
+  def getDate(entry: DBObject) = entry("timestamp").toString.split("-")(2).toLong
   def getMachineID(entry: DBObject) = entry("mach_id").toString
   def getYearMonth(entry: DBObject) = entry("timestamp").toString.substring(0, 7)
   def getWeek(entry: DBObject) = {

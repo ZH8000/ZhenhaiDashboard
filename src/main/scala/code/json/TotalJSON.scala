@@ -18,7 +18,7 @@ object TotalJSON extends JsonReport {
     val sortedProducts = MongoDB.zhenhaiDB("product").toList.sortBy(_("product").toString)
     val dataSet = sortedProducts.map { case item => 
       val productName = item("product").toString
-      val countQty = item("count_qty").toString.toInt
+      val countQty = item("count_qty").toString.toLong
       ("name" -> productName) ~ ("value" -> countQty) ~ ("link" -> s"/total/$productName")
     }
 

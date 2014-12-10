@@ -24,19 +24,19 @@ class OrderStatus {
       case false =>
         ".row" #> orderStatus.map { record =>
 
-          val requireCount = (record.inputCount.get - (record.inputCount.get * 0.04)).toInt
+          val requireCount = (record.inputCount.get - (record.inputCount.get * 0.04)).toLong
 
-          val step1Percent = scala.math.min((((record.step1.get.toDouble / record.inputCount.get.toDouble) * 100)).toInt, 100)
-          val step2Percent = scala.math.min(((record.step2.get.toDouble / requireCount) * 100).toInt, 100)
-          val step3Percent = scala.math.min(((record.step3.get.toDouble / requireCount) * 100).toInt, 100)
-          val step4Percent = scala.math.min(((record.step4.get.toDouble / requireCount) * 100).toInt, 100)
-          val step5Percent = scala.math.min(((record.step5.get.toDouble / requireCount) * 100).toInt, 100)
+          val step1Percent = scala.math.min((((record.step1.get.toDouble / record.inputCount.get.toDouble) * 100)).toLong, 100)
+          val step2Percent = scala.math.min(((record.step2.get.toDouble / requireCount) * 100).toLong, 100)
+          val step3Percent = scala.math.min(((record.step3.get.toDouble / requireCount) * 100).toLong, 100)
+          val step4Percent = scala.math.min(((record.step4.get.toDouble / requireCount) * 100).toLong, 100)
+          val step5Percent = scala.math.min(((record.step5.get.toDouble / requireCount) * 100).toLong, 100)
 
           ".customer *" #> record.customer &
           ".order *" #> record.order &
           ".product *" #> record.product &
           ".inputCount *" #> record.inputCount &
-          ".requireCount *" #> requireCount.toInt &
+          ".requireCount *" #> requireCount.toLong &
           ".step1" #> (
             ".inputCount *" #> record.inputCount &
             ".currentCount *" #> record.step1 &
