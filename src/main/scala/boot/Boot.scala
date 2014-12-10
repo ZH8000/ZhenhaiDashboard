@@ -17,6 +17,7 @@ import net.liftweb.sitemap.Loc.If
 import net.liftweb.sitemap.Loc.Template
 import net.liftweb.util.BasicTypesHelpers._
 import net.liftweb.util.DefaultConnectionIdentifier
+import net.liftweb.util.Props.RunModes
 
 import scala.xml.NodeSeq
 
@@ -86,11 +87,15 @@ class Boot
     Menu("machineLevel") / "management" / "machineLevel" >> needLogin,
     Menu("TodayOrder") / "todayOrder" >> needLogin,
     Menu("OrderStatus") / "orderStatus" >> needLogin
-
   )
 
   val ensureLogin: PartialFunction[Req, Unit] = {
     case req if User.isLoggedIn =>
+  }
+
+  def errorPageResponse(req: Req, code: Int) = {
+    val content = S.render(<lift:embed what={code.toString} />, req.request)
+    XmlResponse(content.head, code, "text/html", req.cookies)
   }
 
   def boot 
@@ -103,5 +108,18 @@ class Boot
     LiftRules.setSiteMap(siteMap)
     LiftRules.dispatch.append(ensureLogin guard JsonRestAPI)
     LiftRules.dispatch.append(ensureLogin guard CsvRestAPI)
+    LiftRules.uriNotFound.prepend({
+      case (req,failure) => NotFoundAsResponse(errorPageResponse(req, 404))
+    })
+
+    LiftRules.exceptionHandler.prepend {
+      case (runMode, req, exception) if runMode == RunModes.Production =>
+        println(runMode)
+        println(s"========== ${req.uri} =============")
+        println(s"DateTime: ${new java.util.Date}")
+        exception.printStackTrace()
+        println(s"===================================")
+        errorPageResponse(req, 500)
+    }
   }
 }
