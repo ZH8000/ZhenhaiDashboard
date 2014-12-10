@@ -84,7 +84,9 @@ class Boot
     Menu("Workers3") / "workers" / * / * / * >> getTemplate("workers/daily") >> needLogin,
     Menu("Workers4") / "workers" / * / * / * / * >> getTemplate("workers/detail") >> needLogin,
     Menu("machineLevel") / "management" / "machineLevel" >> needLogin,
-    Menu("TodayOrder") / "todayOrder"
+    Menu("TodayOrder") / "todayOrder" >> needLogin,
+    Menu("OrderStatus") / "orderStatus" >> needLogin
+
   )
 
   val ensureLogin: PartialFunction[Req, Unit] = {
