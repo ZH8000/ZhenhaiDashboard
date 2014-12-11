@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Standard Meta -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Zhenhai Dashboard</title>
+
+  <link rel="stylesheet" type="text/css" href="/static/sementicUI/semantic.min.css">
+  <link rel="stylesheet" type="text/css" href="/static/custom/css/custom.css">
+
+
+  <script src="/static/lib/javascript/jquery-2.1.1.js"></script>
+  <script src="/static/lib/javascript/d3.v3.min.js"></script>
+  <script src="/static/lib/javascript/stupidtable.min.js"></script>
+
+  <script src="/static/sementicUI/semantic.min.js"></script>
+
+  <script src="/static/custom/javascript/chart.js"></script>
+  <script src="/static/custom/javascript/steps.js"></script>
+  <script src="/static/custom/javascript/table.js"></script>
+
+  <style>
+.chart rect {
+  fill: steelblue;
+}
+
+.chart text {
+  fill: black;
+  font: 16px sans-serif;
+  text-anchor: middle;
+}
+
+.chart rect:hover {
+  fill: brown;
+     cursor: pointer;
+}
+
+.slice path:hover {
+  fill: brown;
+}
+
+  </style>
+
+</head>
+<body>
+  <div class="ui fixed transparent inverted main menu">
+    <div class="container">
+      <a href="/" class="title header item">Zhenhai Dashboard</a>
+      <div class="right menu">
+        <div class="item">依機器</div>
+        <div class="ui simple dropdown item">
+          <div><i class="ui large list icon"></i></div>
+          <div class="menu">
+            <!-- <a class="item" href="/user">個人頁</a> -->
+            <a class="item" href="/user/logout"><i class="ui sign out icon"></i> 登出</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="center aligned one column ui grid" style="padding-top:60px; padding-bottom:20px">
+    <div class="column">
+      <div class="one column ui grid" data-lift="LazyLoad?template=loading">
+        <div class="column" data-lift="MachineMaintainLog">
+
+          <div data-lift="lift:msgs?showAll=true">
+            <lift:error_msg class="ui red sys message"></lift:error_msg>
+            <lift:warning_msg class="ui yellow sys message"></lift:warning_msg>
+            <lift:notice_msg class="ui green sys message"></lift:notice_msg>
+          </div>
+
+          <div>
+            <a id="csvURL" href="/api/csv/machineMaintainLog" class="ui right floated primary button">Export CSV File</a>
+            <div style="clear: both" />
+          </div>
+
+          <table class="ui celled table segment">
+            <thead>
+              <tr>
+                <th class="ui center aligned">工號</th>
+                <th class="ui center aligned">姓名</th>
+                <th class="ui center aligned">機台</th>
+                <th class="ui center aligned">維修項目</th>
+                <th class="ui center aligned">開始時間</th>
+                <th class="ui center aligned">結束時間</th>
+              </tr>
+            </thead>
+            <tbody id="table">
+              <tr class="row">
+                <td class="workerID ui center aligned">1234</td>
+                <td class="workerName ui center aligned">陳曉明</td>
+                <td class="machineID ui center aligned">E13</td>
+                <td class="item ui center aligned">馬達損壞</td>
+                <td class="startTime ui center aligned">2014-11-14 10:05</td>
+                <td class="endTime ui center aligned">2014-11-14 12:02</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+
+</html>
