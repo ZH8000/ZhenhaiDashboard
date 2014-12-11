@@ -7,6 +7,7 @@ import net.liftweb.http.S
 import net.liftweb.http.SHtml
 
 import net.liftweb.util.Helpers._
+import net.liftweb.util._
 import net.liftweb.http.js.JsCmds._
 import net.liftweb.http.js.JE._
 import net.liftweb.http.js.JsCmd
@@ -81,8 +82,15 @@ class AlarmList {
       case false => ".alarmRow" #> notDoneNormal.map { alarm => rowItem(alarm) }
     }
 
-    urgentListBinding &
-    alarmListBinding
+    if (notDoneUrgent.isEmpty && notDoneNormal.isEmpty) {
+      ".urgentAlarmBlock" #> NodeSeq.Empty &
+      ".alarmBlock" #> NodeSeq.Empty
+    } else {
+      urgentListBinding &
+      alarmListBinding &
+      ".nonAlarm" #> NodeSeq.Empty
+    }
+
   }
 
   def render = {

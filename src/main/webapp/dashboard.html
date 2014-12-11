@@ -40,34 +40,9 @@
     <div class="column">
     </div>
   </div>
-  <div class="ui page grid" style="padding-top:60px; padding-bottom:20px" data-lift="Dashboard.reportLink">
-    <div class="column">
-      <div class="ui right dividing rail" data-lift="AlarmList.postIt">
-        <div class="urgentAlarmBlock ui divided list red segment" >
-          <div class="urgentAlarmRow popup item" style="padding-top: 10px;">
-            <div class="content">
-              <div>
-                <input name="doneCheckbox" type="checkbox" style="float: right">
-                <span><i class="importantMark ui red warning icon" ></i></span>
-                <span class="dueDate ui red horizontal label">2014-12-10</span>
-                <span class="machineID ui green horizontal label">MachineID</span>
-              </div>
-              <pre class="desc" style="margin-left: 2em; margin-top: 10px">Description....</pre>
-            </div>
-          </div>
-        </div>
-        <div class="alarmBlock ui divided list segment" >
-          <div class="alarmRow popup item" style="padding-top: 10px; padding-bottom: 10px">
-            <div class="content">
-              <input name="doneCheckbox" type="checkbox" style="float: right">
-              <span><i class="importantMark ui red icon" ></i></span>
-              <span class="dueDate ui horizontal label">2014-12-10</span>
-              <span class="machineID ui black horizontal label">MachineID</span>
-            </div>
-            <pre class="desc" style="margin-left: 2em; margin-top: 10px">Description....</pre>
-          </div>
-        </div>
-      </div>
+
+  <div class="ui grid" style="padding-top:60px; padding-bottom:20px; padding-left: 150px; padding-right: 150px" data-lift="Dashboard.reportLink">
+    <div class="twelve wide column">
       <div class="center aligned three column ui stackable grid">
         <div class="column">
           <a href="/total" class="ui icon huge teal button">
@@ -96,17 +71,10 @@
             請選擇月份：<input type="text" id="monthPicker" size="10"/>
           </div>
         </div>
-      </div>
-
-    </div>
-  </div>
-  <div class="ui page grid" style="margin-bottom: 20px">
-    <div class="column">
-      <div class="center aligned three column ui stackable grid">
         <div class="column">
           <a href="#" class="ui icon huge teal disabled button">
             <i class="huge male icon"></i>
-            <div style="margin-top: 1em">依人員統計</div>
+            <div style="margin-top: 1em">依人員</div>
           </a>
         </div>
 
@@ -122,13 +90,6 @@
             <div style="margin-top: 1em">訂單狀態</div>
           </a>
         </div>
-      </div> 
-    </div>
-  </div>
-
-  <div class="ui page grid">
-    <div class="column">
-      <div class="center aligned three column ui stackable grid">
         <div class="column">
           <a href="/machineMaintainLog" class="ui icon huge teal disabled button">
             <i class="huge ticket icon"></i>
@@ -157,9 +118,63 @@
         <div class="column"></div>
         <div class="column"></div>
 
+
+      </div>
+
+    </div>
+    <div class="four wide column" data-lift="AlarmList.postIt">
+      <div class="ui header ribbon orange label">零件定期更換通知</div>
+      <div class="nonAlarm ui segment">目前沒有排定的更換計劃</div>
+      <div class="urgentAlarmBlock ui divided list red segment" >
+        <div class="urgentAlarmRow popup item" style="padding-top: 10px;">
+          <div class="content">
+            <div>
+              <input name="doneCheckbox" type="checkbox" style="float: right">
+              <span><i class="importantMark ui red warning icon" ></i></span>
+              <span class="dueDate ui red horizontal label">2014-12-10</span>
+              <span class="machineID ui green horizontal label">MachineID</span>
+            </div>
+            <pre class="desc" style="margin-left: 2em; margin-top: 10px">Description....</pre>
+          </div>
+        </div>
+      </div>
+      <div class="alarmBlock ui divided list segment" >
+        <div class="alarmRow popup item" style="padding-top: 10px; padding-bottom: 10px">
+          <div class="content">
+            <input name="doneCheckbox" type="checkbox" style="float: right">
+            <span><i class="importantMark ui red icon" ></i></span>
+            <span class="dueDate ui horizontal label">2014-12-10</span>
+            <span class="machineID ui black horizontal label">MachineID</span>
+          </div>
+          <pre class="desc" style="margin-left: 2em; margin-top: 10px">Description....</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--
+
+  <div class="ui page grid" style="padding-top:60px; padding-bottom:20px" data-lift="Dashboard.reportLink">
+    <div class="column">
+      <div class="ui right dividing rail" data-lift="AlarmList.postIt">
+      </div>
+
+    </div>
+  </div>
+  <div class="ui page grid" style="margin-bottom: 20px">
+    <div class="column">
+      <div class="center aligned three column ui stackable grid">
       </div> 
     </div>
   </div>
+
+  <div class="ui page grid">
+    <div class="column">
+      <div class="center aligned three column ui stackable grid">
+      </div> 
+    </div>
+  </div>
+  -->
   <div data-lift="Dashboard.monthPicker">
     <input type="hidden" id="maxYear" value=""/>
     <input type="hidden" id="maxMonth" value=""/>
