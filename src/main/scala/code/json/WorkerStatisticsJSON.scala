@@ -78,7 +78,7 @@ object WorkerStatisticsJSON {
 
     val records = recordInDate.map(x => TitleRecord(x.machineID.get, x.countQty.get))
 
-    records.toList.sortWith(_.title > _.title)
+    records.toList.sortWith(_.title < _.title)
   }
 
 }
