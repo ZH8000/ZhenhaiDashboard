@@ -15,7 +15,7 @@ class TodayOrder {
 
   def showEmptyBox() = {
     S.error("目前無今日工單資料")
-    "table" #> NodeSeq.Empty
+    ".dataBlock" #> NodeSeq.Empty
   }
 
   def render = {

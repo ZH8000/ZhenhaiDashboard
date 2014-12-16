@@ -72,31 +72,33 @@
             <lift:notice_msg class="ui green sys message"></lift:notice_msg>
           </div>
 
-          <div>
-            <a id="csvURL" href="/api/csv/todayOrder" class="ui right floated primary button">Export CSV File</a>
-            <div style="clear: both" />
-          </div>
+	  <div class="dataBlock">
+            <div>
+              <a id="csvURL" href="/api/csv/todayOrder" class="ui right floated primary button">Export CSV File</a>
+              <div style="clear: both" />
+            </div>
 
-          <table class="ui celled table segment">
-            <thead>
-              <tr>
-                <th>製令編號</th>
-                <th>對應訂單</th>
-                <th>客戶名稱</th>
-                <th>產品規格</th>
-                <th>生產狀態</th>
-              </tr>
-            </thead>
-            <tbody id="table">
-              <tr class="row">
-                <td class="lotNo">GX123456</td>
-                <td class="order">Order-D-101</td>
-                <td class="customer">Delta</td>
-                <td class="product">6x8</td>
-                <td class="status">生產中</td>
-              </tr>
-            </tbody>
-          </table>
+            <table class="ui celled table segment">
+              <thead>
+                <tr>
+                  <th>製令編號</th>
+                  <th>對應訂單</th>
+                  <th>客戶名稱</th>
+                  <th>產品規格</th>
+                  <th>生產狀態</th>
+                </tr>
+              </thead>
+              <tbody id="table">
+                <tr class="row">
+                  <td class="lotNo">GX123456</td>
+                  <td class="order">Order-D-101</td>
+                  <td class="customer">Delta</td>
+                  <td class="product">6x8</td>
+                  <td class="status">生產中</td>
+                </tr>
+              </tbody>
+            </table>
+	  </div>
         </div>
       </div>
     </div>
