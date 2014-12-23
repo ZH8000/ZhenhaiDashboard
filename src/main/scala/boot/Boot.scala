@@ -47,7 +47,8 @@ class Boot
     Menu("Home") / "index" >> redirectToDashboardIfLoggedIn,
     Menu("Logout") / "user" / "logout" >> logout,
     Menu("Dashboard") / "dashboard" >> needLogin,
-    Menu("Dashboard") / "alert" >> needLogin,
+    Menu("ViewDetail") / "viewDetail" >> needLogin,
+    Menu("Alert") / "alert" >> needLogin,
     Menu("Alive") / "alive",
     Menu("Total1") / "total" >> getTemplate("total/overview") >> needLogin,
     Menu("Total2") / "total" / * >> getTemplate("total/overview") >> needLogin,
@@ -68,9 +69,9 @@ class Boot
     Menu("Daily3") / "daily" / * / * / * / * >> getTemplate("daily/overview") >> needLogin,
     Menu("Daily4") / "daily" / * / * / * / * / * >> getTemplate("daily/machine") >> needLogin,
     Menu("Machine1") / "machine" >> getTemplate("machine/overview") >> needLogin,
-    Menu("Machine1") / "machine" / * >> getTemplate("machine/overview") >> needLogin,
-    Menu("Machine1") / "machine" / * / * >> getTemplate("machine/overview") >> needLogin,
-    Menu("Machine1") / "machine" / * / * / * >> getTemplate("machine/detail") >> needLogin,
+    Menu("Machine2") / "machine" / * >> getTemplate("machine/overview") >> needLogin,
+    Menu("Machine3") / "machine" / * / * >> getTemplate("machine/overview") >> needLogin,
+    Menu("Machine4") / "machine" / * / * / * >> getTemplate("machine/detail") >> needLogin,
     Menu("Managemen1") / "management" / "index" >> needLogin,
     Menu("Managemen2") / "management" / "workers" / "add" >> needLogin,
     Menu("Managemen3") / "management" / "workers" / "index" >> needLogin,
@@ -88,7 +89,6 @@ class Boot
     Menu("TodayOrder") / "todayOrder" >> needLogin,
     Menu("OrderStatus") / "orderStatus" >> needLogin,
     Menu("MachineMaintainLog") / "machineMaintainLog"
-
   )
 
   val ensureLogin: PartialFunction[Req, Unit] = {

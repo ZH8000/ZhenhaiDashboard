@@ -45,64 +45,32 @@
     <div class="twelve wide column">
       <div class="center aligned three column ui stackable grid">
         <div class="column">
-          <a href="/viewDetail" class="ui icon huge teal button">
-            <i class="huge dashboard icon"></i>
-            <div style="margin-top: 1em">總覽</div>
-          </a>
-        </div>
-        <div class="column">
-          <a href="/viewDetail" class="ui icon huge teal button">
-            <i class="huge lightning icon"></i>
-            <div style="margin-top: 1em">依容量</div>
-          </a>
-        </div>
-        <div class="column">
-          <a href="#" class="ui icon huge teal disabled button">
-            <i class="huge male icon"></i>
-            <div style="margin-top: 1em">依人員</div>
-          </a>
-        </div>
-        <div class="column">
-          <a href="#" class="ui icon huge teal disabled button">
-            <i class="huge ticket icon"></i>
-            <div style="margin-top: 1em">今日工單</div>
-          </a>
-        </div>
-        <div class="column">
-          <a href="#" class="ui icon huge teal disabled button">
+          <a href="/total" class="ui icon huge teal button">
             <i class="huge cubes icon"></i>
-            <div style="margin-top: 1em">訂單狀態</div>
+            <div style="margin-top: 1em">依 Φ 別</div>
           </a>
         </div>
         <div class="column">
-          <a href="/machineMaintainLog" class="ui icon huge teal disabled button">
-            <i class="huge ticket icon"></i>
-            <div style="margin-top: 1em">維修記錄</div>
+          <a href="#" class="ui icon huge teal button" id="monthlyReportButton">
+            <i class="huge calendar icon"></i>
+            <div style="margin-top: 1em">月報表</div>
           </a>
-        </div>
-        <div class="column" data-lift="Dashboard.alertLink">
-          <a href="javascript: void(0)" class="ui icon huge teal button">
-            <i class="huge warning icon"></i>
-            <div style="margin-top: 1em">機台異常</div>
-          </a>
-        </div>
-
-        <div class="column">
-          <a href="/machine" class="ui icon huge teal button">
-            <i class="huge bug icon"></i>
-            <div style="margin-top: 1em">事件分析</div>
-          </a>
+          <div style="margin-top: 1em">
+            請選擇年份：
+            <select data-lift="Dashboard.yearSelector">
+              <option type="text" value="1" onclick="">1</option>
+            </select>
+          </div>
         </div>
         <div class="column">
-          <a href="/management/" class="ui icon huge teal button">
-            <i class="huge settings icon"></i>
-            <div style="margin-top: 1em">網站管理</div>
+          <a href="#" class="ui icon huge teal button" id="dailyReportButton">
+            <i class="huge tasks icon"></i>
+            <div style="margin-top: 0.5em">日報表</div>
           </a>
+          <div style="margin-top: 1em">
+            請選擇月份：<input type="text" id="monthPicker" size="10"/>
+          </div>
         </div>
-        <div class="column"></div>
-        <div class="column"></div>
-
-
       </div>
 
     </div>
@@ -136,29 +104,6 @@
     </div>
   </div>
 
-  <!--
-
-  <div class="ui page grid" style="padding-top:60px; padding-bottom:20px" data-lift="Dashboard.reportLink">
-    <div class="column">
-      <div class="ui right dividing rail" data-lift="AlarmList.postIt">
-      </div>
-
-    </div>
-  </div>
-  <div class="ui page grid" style="margin-bottom: 20px">
-    <div class="column">
-      <div class="center aligned three column ui stackable grid">
-      </div> 
-    </div>
-  </div>
-
-  <div class="ui page grid">
-    <div class="column">
-      <div class="center aligned three column ui stackable grid">
-      </div> 
-    </div>
-  </div>
-  -->
   <div data-lift="Dashboard.monthPicker">
     <input type="hidden" id="maxYear" value=""/>
     <input type="hidden" id="maxMonth" value=""/>
