@@ -67,7 +67,7 @@
   </div>
   <div class="center aligned one column ui grid" style="padding-top:60px; padding-bottom:20px">
     <div class="column">
-      <div class="ui five steps">
+      <div class="ui six steps">
         <a href="javascript: void(0)" class="ui step" style="cursor: pointer">Step Title</a>
       </div>
     </div>
@@ -137,17 +137,19 @@
     </div>
   </div>
   <div>
-    <input type="hidden" id="productMachine" value="<%= productMachine %>" />
-    <input type="hidden" id="fullYear" value="<%= fullYear %>" />
-    <input type="hidden" id="month" value="<%= month %>" />
-    <input type="hidden" id="week" value="<%= week %>" />
-    <input type="hidden" id="date" value="<%= date %>" />
-    <input type="hidden" id="dataURL" value="<%= dataURL %>" />
+    <input type="hidden" id="productMachine"/>
+    <input type="hidden" id="step"/>
+    <input type="hidden" id="fullYear"/>
+    <input type="hidden" id="month"/>
+    <input type="hidden" id="week"/>
+    <input type="hidden" id="date"/>
+    <input type="hidden" id="dataURL"/>
   </div>
   <script>
     
-    var dataURL = $('#dataURL').val()
-    var productMachine = $('#productMachine').val()
+    var dataURL = $('#dataURL').val();
+    var productMachine = $('#productMachine').val();
+    var step = $('#step').val();
     var fullYear = +($('#fullYear').val())
     var month = +($('#month').val())
     var week = +($('#week').val())
@@ -170,7 +172,7 @@
 
         var isoDate = strToDate(dateText);
 
-        var url = "/monthly/" + isoDate.getFullYear() + "/" + (+isoDate.getMonth()+1) + 
+        var url = "/monthly/" + isoDate.getFullYear() + "/" + step + "/" + (+isoDate.getMonth()+1) + 
                   "/" + getWeek(isoDate) + "/" + isoDate.getDate() + "/" + productMachine;
 
         window.location = url;
@@ -179,7 +181,7 @@
 
     $("#datepicker").datepicker("setDate", new Date(fullYear, (+month - 1), date));
 
-    setupMachineList('#machineList', productMachine, "/monthly/" + fullYear + "/" + month + "/" + week + "/" + date)
+    setupMachineList('#machineList', productMachine, "/monthly/" + fullYear + "/" + step + "/" + month + "/" + week + "/" + date)
 
   </script>
   <script>

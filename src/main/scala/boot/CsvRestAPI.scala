@@ -22,10 +22,11 @@ object CsvRestAPI extends RestHelper {
 
   serve("api" / "csv" / "monthly" prefix {
     case AsInt(year) :: Nil Get req => toCSVResponse(MonthlyCSV(year))
-    case AsInt(year) :: AsInt(month) :: Nil Get req => toCSVResponse(MonthlyCSV(year, month))
-    case AsInt(year) :: AsInt(month) :: AsInt(week) :: Nil Get req => toCSVResponse(MonthlyCSV(year, month, week))
-    case AsInt(year) :: AsInt(month) :: AsInt(week) :: AsInt(date) :: Nil Get req => toCSVResponse(MonthlyCSV(year, month, week, date))
-    case AsInt(year) :: AsInt(month) :: AsInt(week) :: AsInt(date) :: machineID :: Nil Get req => toCSVResponse(MonthlyCSV(year, month, week, date, machineID))
+    case AsInt(year) :: step :: Nil Get req => toCSVResponse(MonthlyCSV(year, step))
+    case AsInt(year) :: step :: AsInt(month) :: Nil Get req => toCSVResponse(MonthlyCSV(year, step, month))
+    case AsInt(year) :: step :: AsInt(month) :: AsInt(week) :: Nil Get req => toCSVResponse(MonthlyCSV(year, step, month, week))
+    case AsInt(year) :: step :: AsInt(month) :: AsInt(week) :: AsInt(date) :: Nil Get req => toCSVResponse(MonthlyCSV(year, step, month, week, date))
+    case AsInt(year) :: step :: AsInt(month) :: AsInt(week) :: AsInt(date) :: machineID :: Nil Get req => toCSVResponse(MonthlyCSV(year, month, week, date, machineID))
   })
 
   serve("api" / "csv" / "daily" prefix {

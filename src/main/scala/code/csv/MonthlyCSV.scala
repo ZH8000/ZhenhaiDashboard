@@ -10,21 +10,26 @@ object MonthlyCSV {
 
   def apply(year: Int) = {
     val JArray(jsonData) = MonthlyJSON(year) \\ "dataSet"
-    CSVConverter(List("年份", "數量"), List("name", "value"), jsonData)
+    CSVConverter(List("工序", "數量"), List("name", "value"), jsonData)
   }
 
-  def apply(year: Int, month: Int) = {
-    val JArray(jsonData) = MonthlyJSON(year, month) \\ "dataSet"
+  def apply(year: Int, step: String) = {
+    val JArray(jsonData) = MonthlyJSON(year, step) \\ "dataSet"
+    CSVConverter(List("月份", "數量"), List("name", "value"), jsonData)
+  }
+
+  def apply(year: Int, step: String, month: Int) = {
+    val JArray(jsonData) = MonthlyJSON(year, step, month) \\ "dataSet"
     CSVConverter(List("週別", "數量"), List("name", "value"), jsonData)
   }
 
-  def apply(year: Int, month: Int, week: Int) = {
-    val JArray(jsonData) = MonthlyJSON(year, month, week) \\ "dataSet"
+  def apply(year: Int, step: String, month: Int, week: Int) = {
+    val JArray(jsonData) = MonthlyJSON(year, step, month, week) \\ "dataSet"
     CSVConverter(List("日期", "數量"), List("name", "value"), jsonData)
   }
 
-  def apply(year: Int, month: Int, week: Int, date: Int) = {
-    val JArray(jsonData) = MonthlyJSON(year, month, week, date) \\ "dataSet"
+  def apply(year: Int, step: String, month: Int, week: Int, date: Int) = {
+    val JArray(jsonData) = MonthlyJSON(year, step, month, week, date) \\ "dataSet"
     CSVConverter(List("機台", "數量"), List("name", "value"), jsonData)
   }
 

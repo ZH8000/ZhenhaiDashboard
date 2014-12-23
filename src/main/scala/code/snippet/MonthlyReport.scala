@@ -12,46 +12,62 @@ class MonthlyReport {
     case "monthly" :: year :: Nil =>
       List(
         Step(s"$year 年", true, Some(s"/monthly/$year")),
+        Step("工序"),
         Step("月份"),
         Step("週"),
         Step("日期"),
         Step("機器")
       )
 
-    case "monthly" :: year :: month :: Nil =>
+    case "monthly" :: year :: step :: Nil =>
       List(
         Step(s"$year 年", true, Some(s"/monthly/$year")),
-        Step(s"$month 月", true, Some(s"/monthly/$year/$month")),
+        Step(urlDecode(step), true, Some(s"/monthly/$year/$step")),
+        Step("月份"),
         Step("週"),
         Step("日期"),
         Step("機器")
       )
 
-    case "monthly" :: year :: month :: week :: Nil =>
+
+    case "monthly" :: year :: step :: month :: Nil =>
       List(
         Step(s"$year 年", true, Some(s"/monthly/$year")),
-        Step(s"$month 月", true, Some(s"/monthly/$year/$month")),
-        Step(s"第 $week 週", true, Some(s"/monthly/$year/$month/$week")),
+        Step(urlDecode(step), true, Some(s"/monthly/$year/$step")),
+        Step(s"$month 月", true, Some(s"/monthly/$year/$step/$month")),
+        Step("週"),
         Step("日期"),
         Step("機器")
       )
 
-    case "monthly" :: year :: month :: week :: date :: Nil =>
+    case "monthly" :: year :: step :: month :: week :: Nil =>
       List(
         Step(s"$year 年", true, Some(s"/monthly/$year")),
-        Step(s"$month 月", true, Some(s"/monthly/$year/$month")),
-        Step(s"第 $week 週", true, Some(s"/monthly/$year/$month/$week")),
-        Step(s"$date 日", true, Some(s"/monthly/$year/$month/$week/$date")),
+        Step(urlDecode(step), true, Some(s"/monthly/$year/$step")),
+        Step(s"$month 月", true, Some(s"/monthly/$year/$step/$month")),
+        Step(s"第 $week 週", true, Some(s"/monthly/$year/$step/$month/$week")),
+        Step("日期"),
         Step("機器")
       )
 
-    case "monthly" :: year :: month :: week :: date :: machineID :: Nil =>
+    case "monthly" :: year :: step :: month :: week :: date :: Nil =>
       List(
         Step(s"$year 年", true, Some(s"/monthly/$year")),
-        Step(s"$month 月", true, Some(s"/monthly/$year/$month")),
-        Step(s"第 $week 週", true, Some(s"/monthly/$year/$month/$week")),
-        Step(s"$date 日", true, Some(s"/monthly/$year/$month/$week/$date")),
-        Step(machineID, true, Some(s"/monthly/$year/$month/$week/$date/$machineID"))
+        Step(urlDecode(step), true, Some(s"/monthly/$year/$step")),
+        Step(s"$month 月", true, Some(s"/monthly/$year/$step/$month")),
+        Step(s"第 $week 週", true, Some(s"/monthly/$year/$step/$month/$week")),
+        Step(s"$date 日", true, Some(s"/monthly/$year/$step/$month/$week/$date")),
+        Step("機器")
+      )
+
+    case "monthly" :: year :: step :: month :: week :: date :: machineID :: Nil =>
+      List(
+        Step(s"$year 年", true, Some(s"/monthly/$year")),
+        Step(urlDecode(step), true, Some(s"/monthly/$year/$step")),
+        Step(s"$month 月", true, Some(s"/monthly/$year/$step/$month")),
+        Step(s"第 $week 週", true, Some(s"/monthly/$year/$step/$month/$week")),
+        Step(s"$date 日", true, Some(s"/monthly/$year/$step/$month/$week/$date")),
+        Step(machineID, true, Some(s"/monthly/$year/$step/$month/$week/$date/$machineID"))
       )
 
     case _ => Nil
@@ -71,8 +87,9 @@ class MonthlyReport {
   
   def machine = {
 
-    val Array(_, year, month, week, date, machineID) = S.uri.drop(1).split("/")
+    val Array(_, year, step, month, week, date, machineID) = S.uri.drop(1).split("/")
 
+    "#step [value]" #> step &
     "#productMachine [value]" #> machineID &
     "#fullYear [value]" #> year &
     "#month [value]" #> month &

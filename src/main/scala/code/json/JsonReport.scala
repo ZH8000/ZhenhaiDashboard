@@ -35,6 +35,7 @@ trait JsonReport {
 
   def getSumQty(dataList: Iterable[DBObject]) = dataList.map(data => data("count_qty").toString.toLong).sum
   def getDate(entry: DBObject) = entry("timestamp").toString.split("-")(2).toLong
+  def getMachineTypeTitle(entry: DBObject) = entry("machineTypeTitle").toString
   def getMachineID(entry: DBObject) = entry("mach_id").toString
   def getYearMonth(entry: DBObject) = entry("timestamp").toString.substring(0, 7)
   def getWeek(entry: DBObject) = {

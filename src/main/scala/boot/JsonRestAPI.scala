@@ -27,13 +27,15 @@ object JsonRestAPI extends RestHelper {
   serve("api" / "json" / "monthly" prefix {
     case AsInt(year) :: Nil Get req => 
       JsonResponse(MonthlyJSON(year))
-    case AsInt(year) :: AsInt(month) :: Nil Get req => 
-      JsonResponse(MonthlyJSON(year, month))
-    case AsInt(year) :: AsInt(month) :: AsInt(week) :: Nil Get req => 
-      JsonResponse(MonthlyJSON(year, month, week))
-    case AsInt(year) :: AsInt(month) :: AsInt(week) :: AsInt(date) :: Nil Get req => 
-      JsonResponse(MonthlyJSON(year, month, week, date))
-    case AsInt(year) :: AsInt(month) :: AsInt(week) :: AsInt(date) :: machineID :: Nil Get req => 
+    case AsInt(year) :: step :: Nil Get req => 
+      JsonResponse(MonthlyJSON(year, step))
+    case AsInt(year) :: step :: AsInt(month) :: Nil Get req => 
+      JsonResponse(MonthlyJSON(year, step, month))
+    case AsInt(year) :: step :: AsInt(month) :: AsInt(week) :: Nil Get req => 
+      JsonResponse(MonthlyJSON(year, step, month, week))
+    case AsInt(year) :: step :: AsInt(month) :: AsInt(week) :: AsInt(date) :: Nil Get req => 
+      JsonResponse(MonthlyJSON(year, step, month, week, date))
+    case AsInt(year) :: step :: AsInt(month) :: AsInt(week) :: AsInt(date) :: machineID :: Nil Get req => 
       JsonResponse(MonthlyJSON(year, month, week, date, machineID))
   })
 
