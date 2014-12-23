@@ -10,16 +10,21 @@ object DailyCSV {
 
   def apply(year: Int, month: Int) = {
     val JArray(jsonData) = DailyJSON(year, month) \\ "dataSet"
-    CSVConverter(List("週別", "數量"), List("name", "value"), jsonData)
+    CSVConverter(List("工序", "數量"), List("name", "value"), jsonData)
   }
 
-  def apply(year: Int, month: Int, date: Int) = {
-    val JArray(jsonData) = DailyJSON(year, month, date) \\ "dataSet"
+  def apply(year: Int, month: Int, step: String) = {
+    val JArray(jsonData) = DailyJSON(year, month, step) \\ "dataSet"
+    CSVConverter(List("日期", "數量"), List("name", "value"), jsonData)
+  }
+
+  def apply(year: Int, month: Int, step: String, date: Int) = {
+    val JArray(jsonData) = DailyJSON(year, month, step, date) \\ "dataSet"
     CSVConverter(List("機台", "數量"), List("name", "value"), jsonData)
   }
 
-  def apply(year: Int, month: Int, date: Int, machineID: String) = {
-    val JArray(jsonData) = DailyJSON(year, month, date, machineID) \\ "dataSet"
+  def apply(year: Int, month: Int, step: String, date: Int, machineID: String) = {
+    val JArray(jsonData) = DailyJSON(year, month, step, date, machineID) \\ "dataSet"
 
     CSVConverter(
       List("日期", "生產數量", "錯誤數量", "錯誤種類"), 

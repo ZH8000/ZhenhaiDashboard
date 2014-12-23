@@ -68,7 +68,7 @@
   </div>
   <div class="center aligned one column ui grid" style="padding-top:60px; padding-bottom:20px">
     <div class="column">
-      <div class="ui three steps">
+      <div class="ui four steps">
         <a href="javascript: void(0)" class="ui step" style="cursor: pointer">Step Title</a>
       </div>
     </div>
@@ -138,6 +138,7 @@
     </div>
   </div>
   <div>
+    <input type="hidden" id="step" />
     <input type="hidden" id="productMachine" />
     <input type="hidden" id="fullYear" />
     <input type="hidden" id="month" />
@@ -169,7 +170,7 @@
 
         var isoDate = strToDate(dateText);
 
-        var url = "/daily/" + isoDate.getFullYear() + "/" + (+isoDate.getMonth()+1) + 
+        var url = "/daily/" + isoDate.getFullYear() + "/" + (+isoDate.getMonth()+1) + "/" + step + 
                   "/" + isoDate.getDate() + "/" + productMachine;
 
         window.location = url;
@@ -177,7 +178,7 @@
     });
 
     $("#datepicker").datepicker("setDate", new Date(fullYear, (+month - 1), date ));
-    setupMachineList('#machineList', productMachine, "/daily/" + fullYear + "/" + month + "/" + date);
+    setupMachineList('#machineList', productMachine, "/daily/" + fullYear + "/" + month + "/" + step + "/" + date);
 
   </script>
   <script>

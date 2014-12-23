@@ -42,10 +42,12 @@ object JsonRestAPI extends RestHelper {
   serve("api" / "json" / "daily" prefix {
     case AsInt(year) :: AsInt(month) :: Nil Get req => 
       JsonResponse(DailyJSON(year, month))
-    case AsInt(year) :: AsInt(month) :: AsInt(date) :: Nil Get req => 
-      JsonResponse(DailyJSON(year, month, date))
-    case AsInt(year) :: AsInt(month) :: AsInt(date) :: machineID :: Nil Get req => 
-      JsonResponse(DailyJSON(year, month, date, machineID))
+    case AsInt(year) :: AsInt(month) :: step :: Nil Get req => 
+      JsonResponse(DailyJSON(year, month, step))
+    case AsInt(year) :: AsInt(month) :: step :: AsInt(date) :: Nil Get req => 
+      JsonResponse(DailyJSON(year, month, step, date))
+    case AsInt(year) :: AsInt(month) :: step :: AsInt(date) :: machineID :: Nil Get req => 
+      JsonResponse(DailyJSON(year, month, step, date, machineID))
   })
 
   serve {

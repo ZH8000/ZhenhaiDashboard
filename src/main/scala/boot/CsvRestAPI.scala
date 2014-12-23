@@ -31,8 +31,9 @@ object CsvRestAPI extends RestHelper {
 
   serve("api" / "csv" / "daily" prefix {
     case AsInt(year) :: AsInt(month) :: Nil Get req => toCSVResponse(DailyCSV(year, month))
-    case AsInt(year) :: AsInt(month) :: AsInt(date) :: Nil Get req => toCSVResponse(DailyCSV(year, month, date))
-    case AsInt(year) :: AsInt(month) :: AsInt(date) :: machineID :: Nil Get req => toCSVResponse(DailyCSV(year, month, date, machineID))
+    case AsInt(year) :: AsInt(month) :: step :: Nil Get req => toCSVResponse(DailyCSV(year, month, step))
+    case AsInt(year) :: AsInt(month) :: step :: AsInt(date) :: Nil Get req => toCSVResponse(DailyCSV(year, month, step, date))
+    case AsInt(year) :: AsInt(month) :: step :: AsInt(date) :: machineID :: Nil Get req => toCSVResponse(DailyCSV(year, month, step, date, machineID))
   })
 
   serve("api" / "csv" / "machine" prefix {

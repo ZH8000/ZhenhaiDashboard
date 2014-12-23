@@ -13,22 +13,33 @@ class DailyReport {
     case "daily" :: year :: month :: Nil =>
       List(
         Step(s"$year 年 $month 月", true, Some(s"/daily/$year/$month")),
+        Step("工序"),
         Step("日期"),
         Step("機器")
       )
 
-    case "daily" :: year :: month :: date :: Nil =>
+    case "daily" :: year :: month :: step :: Nil =>
       List(
         Step(s"$year 年 $month 月", true, Some(s"/daily/$year/$month")),
-        Step(s"$date 日", true, Some(s"/daily/$year/$month/$date")),
+        Step(urlDecode(step), true, Some(s"/daily/$year/$month/$step")),
+        Step("日期"),
         Step("機器")
       )
 
-    case "daily" :: year :: month :: date :: machineID :: Nil =>
+    case "daily" :: year :: month :: step :: date :: Nil =>
       List(
         Step(s"$year 年 $month 月", true, Some(s"/daily/$year/$month")),
-        Step(s"$date 日", true, Some(s"/daily/$year/$month/$date")),
-        Step(s"$machineID", true, Some(s"/daily/$year/$month/$date/$machineID"))
+        Step(urlDecode(step), true, Some(s"/daily/$year/$month/$step")),
+        Step(s"$date 日", true, Some(s"/daily/$year/$month/$step/$date")),
+        Step("機器")
+      )
+
+    case "daily" :: year :: month :: step :: date :: machineID :: Nil =>
+      List(
+        Step(s"$year 年 $month 月", true, Some(s"/daily/$year/$month")),
+        Step(urlDecode(step), true, Some(s"/daily/$year/$month/$step")),
+        Step(s"$date 日", true, Some(s"/daily/$year/$month/$step/$date")),
+        Step(s"$machineID", true, Some(s"/daily/$year/$month/$step/$date/$machineID"))
       )
 
     case _ => Nil
@@ -48,8 +59,9 @@ class DailyReport {
   
   def machine = {
 
-    val Array(_, year, month, date, machineID) = S.uri.drop(1).split("/")
+    val Array(_, year, month, step, date, machineID) = S.uri.drop(1).split("/")
 
+    "#step [value]" #> step &
     "#productMachine [value]" #> machineID &
     "#fullYear [value]" #> year &
     "#month [value]" #> month &
