@@ -66,7 +66,7 @@
   </div>
   <div class="center aligned one column ui grid" style="padding-top:60px; padding-bottom:20px">
     <div class="column">
-      <div class="ui six steps">
+      <div class="ui seven steps">
         <a href="#" class="ui step" style="cursor: pointer">title</a>
       </div>
     </div>
@@ -138,6 +138,7 @@
   </div>
 
   <div>
+    <input type="hidden" id="step" />
     <input type="hidden" id="productName" />
     <input type="hidden" id="productMachine" />
     <input type="hidden" id="fullYear" />
@@ -148,6 +149,7 @@
   </div>
   <script>
     
+    var step = $('#step').val()
     var productName = $('#productName').val()
     var productMachine = $('#productMachine').val()
     var fullYear = +($('#fullYear').val())
@@ -172,7 +174,7 @@
 
         var isoDate = strToDate(dateText);
 
-        var url = "/total/" + productName + "/" + isoDate.getFullYear() + "/" + (+isoDate.getMonth()+1) + "/" +
+        var url = "/total/" + step + "/" + productName + "/" + isoDate.getFullYear() + "/" + (+isoDate.getMonth()+1) + "/" +
                   getWeek(isoDate) + "/" + isoDate.getDate() + "/" + productMachine;
 
         window.location = url;
@@ -183,7 +185,7 @@
 
     setupMachineList(
       '#machineList', productMachine, 
-      "/total/" + productName + "/" + fullYear + "/" + month + "/" + week + "/" + date
+      "/total/" + step + "/" + productName + "/" + fullYear + "/" + month + "/" + week + "/" + date
     );
   </script>
   <script>

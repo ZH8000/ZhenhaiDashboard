@@ -24,8 +24,8 @@ import scala.xml.NodeSeq
 class Boot 
 {
   private def getTemplate(path: String) = Template(() => Templates(path.split("/").toList) openOr NodeSeq.Empty)
-  private def needLogin = If(() => User.isLoggedIn, () => S.redirectTo("/", () => S.error("請先登入")))
-  //private def needLogin = If(() => true, () => S.redirectTo("/", () => S.error("請先登入")))
+  //private def needLogin = If(() => User.isLoggedIn, () => S.redirectTo("/", () => S.error("請先登入")))
+  private def needLogin = If(() => true, () => S.redirectTo("/", () => S.error("請先登入")))
 
   private def redirectToDashboardIfLoggedIn = If(() => !User.isLoggedIn, () => S.redirectTo("/dashboard"))
   private def logout = EarlyResponse{ () =>
@@ -41,10 +41,6 @@ class Boot
   val editAlarmMenu = Menu.param[Alarm]("EditAlarm", "EditAlarm", id => Alarm.find(id), alarm => alarm.id.get.toString)
   def workerMenu(menuID: String) = Menu.param[Worker](menuID, menuID, id => { val t = Worker.find(id); println(t); t}, worker => worker.id.get.toString)
 
-  val t1 = workerMenu("t1")
-  val t2 = workerMenu("t2")
-  val t3 = workerMenu("t3")
-  val t4 = workerMenu("t4")
 
   val siteMap = SiteMap(
     Menu("assets") / "test" / **,
@@ -55,10 +51,12 @@ class Boot
     Menu("Alive") / "alive",
     Menu("Total1") / "total" >> getTemplate("total/overview") >> needLogin,
     Menu("Total2") / "total" / * >> getTemplate("total/overview") >> needLogin,
+    Menu("Total3") / "total" / * / * >> getTemplate("total/overview") >> needLogin,
     Menu("Total3") / "total" / * / * / * >> getTemplate("total/overview") >> needLogin,
     Menu("Total4") / "total" / * / * / * / * >> getTemplate("total/overview") >> needLogin,
     Menu("Total5") / "total" / * / * / * / * / * >> getTemplate("total/overview") >> needLogin,
-    Menu("Total6") / "total" / * / * / * / * / * / * >> getTemplate("total/machine") >> needLogin,
+    Menu("Total6") / "total" / * / * / * / * / * / * >> getTemplate("total/overview") >> needLogin,
+    Menu("Total7") / "total" / * / * / * / * / * / * / * >> getTemplate("total/machine") >> needLogin,
     Menu("Monthly1") / "monthly" / * >> getTemplate("monthly/overview") >> needLogin,
     Menu("Monthly2") / "monthly" / * / * >> getTemplate("monthly/overview") >> needLogin,
     Menu("Monthly3") / "monthly" / * / * / * >> getTemplate("monthly/overview") >> needLogin,
@@ -71,13 +69,13 @@ class Boot
     Menu("Machine1") / "machine" / * >> getTemplate("machine/overview") >> needLogin,
     Menu("Machine1") / "machine" / * / * >> getTemplate("machine/overview") >> needLogin,
     Menu("Machine1") / "machine" / * / * / * >> getTemplate("machine/detail") >> needLogin,
-    Menu("Management1") / "management" / "index" >> needLogin,
-    Menu("Management1") / "management" / "workers" / "add" >> needLogin,
-    Menu("Management1") / "management" / "workers" / "index" >> needLogin,
-    Menu("Management1") / "management" / "workers" / "barcode" >> Worker.barcodePDF,
+    Menu("Managemen1") / "management" / "index" >> needLogin,
+    Menu("Managemen2") / "management" / "workers" / "add" >> needLogin,
+    Menu("Managemen3") / "management" / "workers" / "index" >> needLogin,
+    Menu("Managemen4") / "management" / "workers" / "barcode" >> Worker.barcodePDF,
     editWorkerMenu / "management" / "workers" / "edit" / * >> getTemplate("management/workers/edit") >> needLogin,
-    Menu("Management1") / "management" / "alarms" / "add" >> needLogin,
-    Menu("Management1") / "management" / "alarms" / "index" >> needLogin,
+    Menu("Managemen5") / "management" / "alarms" / "add" >> needLogin,
+    Menu("Managemen6") / "management" / "alarms" / "index" >> needLogin,
     editAlarmMenu / "management" / "alarms" / "edit" / * >> getTemplate("management/alarms/edit") >> needLogin,
     Menu("Workers") / "workers" / "index" >> needLogin,
     Menu("Workers1") / "workers" / * >> getTemplate("workers/worker") >> needLogin,
@@ -92,7 +90,8 @@ class Boot
   )
 
   val ensureLogin: PartialFunction[Req, Unit] = {
-    case req if User.isLoggedIn =>
+    case req =>
+    //case req if User.isLoggedIn =>
   }
 
   def errorPageResponse(req: Req, code: Int) = {

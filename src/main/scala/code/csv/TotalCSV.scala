@@ -10,26 +10,31 @@ object TotalCSV {
 
   def overview = {
     val JArray(jsonData) = TotalJSON.overview \\ "dataSet"
+    CSVConverter(List("工序", "數量"), List("name", "value"), jsonData)
+  }
+
+  def apply(step: String) = {
+    val JArray(jsonData) = TotalJSON(step) \\ "dataSet"
     CSVConverter(List("Φ 別", "數量"), List("name", "value"), jsonData)
   }
 
-  def apply(productName: String) = {
-    val JArray(jsonData) = TotalJSON(productName) \\ "dataSet"
+  def apply(step: String, productName: String) = {
+    val JArray(jsonData) = TotalJSON(step, productName) \\ "dataSet"
     CSVConverter(List("年月", "數量"), List("name", "value"), jsonData)
   }
 
-  def apply(productName: String, year: Int, month: Int) = {
-    val JArray(jsonData) = TotalJSON(productName, year, month) \\ "dataSet"
+  def apply(step: String, productName: String, year: Int, month: Int) = {
+    val JArray(jsonData) = TotalJSON(step, productName, year, month) \\ "dataSet"
     CSVConverter(List("週別", "數量"), List("name", "value"), jsonData)
   }
 
-  def apply(productName: String, year: Int, month: Int, week: Int) = {
-    val JArray(jsonData) = TotalJSON(productName, year, month, week) \\ "dataSet"
+  def apply(step: String, productName: String, year: Int, month: Int, week: Int) = {
+    val JArray(jsonData) = TotalJSON(step, productName, year, month, week) \\ "dataSet"
     CSVConverter(List("日期", "數量"), List("name", "value"), jsonData)
   }
 
-  def apply(productName: String, year: Int, month: Int, week: Int, date: Int) = {
-    val JArray(jsonData) = TotalJSON(productName, year, month, week, date) \\ "dataSet"
+  def apply(step: String, productName: String, year: Int, month: Int, week: Int, date: Int) = {
+    val JArray(jsonData) = TotalJSON(step, productName, year, month, week, date) \\ "dataSet"
     CSVConverter(List("機台", "數量"), List("name", "value"), jsonData)
   }
 

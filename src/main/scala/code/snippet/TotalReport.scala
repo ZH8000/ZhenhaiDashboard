@@ -12,6 +12,7 @@ class TotalReport {
     case "total" :: Nil => 
       List(
         Step("總覽", true, Some("/total")), 
+        Step("工序"),
         Step("Φ 別"),
         Step("月份"),
         Step("週"),
@@ -19,54 +20,70 @@ class TotalReport {
         Step("機器")
       )
 
-    case "total" :: product :: Nil =>
+    case "total" :: step :: Nil =>
       List(
         Step("總覽", true, Some("/total")), 
-        Step(product, true, Some(s"/total/$product")),
+        Step(urlDecode(step), true, Some(s"/total/$step")),
+        Step("Φ 別"),
         Step("月份"),
         Step("週"),
         Step("日期"),
         Step("機器")
       )
 
-    case "total" :: product :: year :: month :: Nil =>
+    case "total" :: step :: product :: Nil =>
       List(
         Step("總覽", true, Some("/total")), 
-        Step(product, true, Some(s"/total/$product")),
-        Step(s"$year-$month", true, Some(s"/total/$product/$year/$month")),
+        Step(urlDecode(step), true, Some(s"/total/$step")),
+        Step(product, true, Some(s"/total/$step/$product")),
+        Step("月份"),
         Step("週"),
         Step("日期"),
         Step("機器")
       )
 
-    case "total" :: product :: year :: month :: week :: Nil =>
+    case "total" :: step :: product :: year :: month :: Nil =>
       List(
         Step("總覽", true, Some("/total")), 
-        Step(product, true, Some(s"/total/$product")),
-        Step(s"$year-$month", true, Some(s"/total/$product/$year/$month")),
-        Step(s"第 $week 週", true, Some(s"/total/$product/$year/$month/$week")),
+        Step(urlDecode(step), true, Some(s"/total/$step")),
+        Step(product, true, Some(s"/total/$step/$product")),
+        Step(s"$year-$month", true, Some(s"/total/$step/$product/$year/$month")),
+        Step("週"),
         Step("日期"),
         Step("機器")
       )
 
-    case "total" :: product :: year :: month :: week :: date :: Nil =>
+    case "total" :: step :: product :: year :: month :: week :: Nil =>
       List(
         Step("總覽", true, Some("/total")), 
-        Step(product, true, Some(s"/total/$product")),
-        Step(s"$year-$month", true, Some(s"/total/$product/$year/$month")),
-        Step(s"第 $week 週", true, Some(s"/total/$product/$year/$month/$week")),
-        Step(s"$date 日", true, Some(s"/total/$product/$year/$month/$week/$date")),
+        Step(urlDecode(step), true, Some(s"/total/$step")),
+        Step(product, true, Some(s"/total/$step/$product")),
+        Step(s"$year-$month", true, Some(s"/total/$step/$product/$year/$month")),
+        Step(s"第 $week 週", true, Some(s"/total/$step/$product/$year/$month/$week")),
+        Step("日期"),
         Step("機器")
       )
 
-    case "total" :: product :: year :: month :: week :: date :: machineID :: Nil =>
+    case "total" :: step :: product :: year :: month :: week :: date :: Nil =>
       List(
         Step("總覽", true, Some("/total")), 
-        Step(product, true, Some(s"/total/$product")),
-        Step(s"$year-$month", true, Some(s"/total/$product/$year/$month")),
-        Step(s"第 $week 週", true, Some(s"/total/$product/$year/$month/$week")),
-        Step(s"$date 日", true, Some(s"/total/$product/$year/$month/$week/$date")),
-        Step(machineID, true, Some(s"/total/$product/$year/$month/$week/$date/$machineID"))
+        Step(urlDecode(step), true, Some(s"/total/$step")),
+        Step(product, true, Some(s"/total/$step/$product")),
+        Step(s"$year-$month", true, Some(s"/total/$step/$product/$year/$month")),
+        Step(s"第 $week 週", true, Some(s"/total/$step/$product/$year/$month/$week")),
+        Step(s"$date 日", true, Some(s"/total/$step/$product/$year/$month/$week/$date")),
+        Step("機器")
+      )
+
+    case "total" :: step :: product :: year :: month :: week :: date :: machineID :: Nil =>
+      List(
+        Step("總覽", true, Some("/total")), 
+        Step(urlDecode(step), true, Some(s"/total/$step")),
+        Step(product, true, Some(s"/total/$step/$product")),
+        Step(s"$year-$month", true, Some(s"/total/$step/$product/$year/$month")),
+        Step(s"第 $week 週", true, Some(s"/total/$step/$product/$year/$month/$week")),
+        Step(s"$date 日", true, Some(s"/total/$step/$product/$year/$month/$week/$date")),
+        Step(machineID, true, Some(s"/total/$step/$product/$year/$month/$week/$date/$machineID"))
       )
 
     case _ => Nil
@@ -86,8 +103,9 @@ class TotalReport {
   
   def machine = {
 
-    val Array(_, productName, year, month, week, date, machineID) = S.uri.drop(1).split("/")
+    val Array(_, step, productName, year, month, week, date, machineID) = S.uri.drop(1).split("/")
 
+    "#step [value]" #> step &
     "#productName [value]" #> productName &
     "#productMachine [value]" #> machineID &
     "#fullYear [value]" #> year &

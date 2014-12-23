@@ -10,15 +10,17 @@ object JsonRestAPI extends RestHelper {
   serve("api" / "json" / "total" prefix {
     case Nil Get req => 
       JsonResponse(TotalJSON.overview)
-    case productName :: Nil Get req => 
-      JsonResponse(TotalJSON(productName))
-    case productName :: AsInt(year) :: AsInt(month) :: Nil Get req => 
-      JsonResponse(TotalJSON(productName, year, month))
-    case productName :: AsInt(year) :: AsInt(month) :: AsInt(week) :: Nil Get req => 
-      JsonResponse(TotalJSON(productName, year, month, week))
-    case productName :: AsInt(year) :: AsInt(month) :: AsInt(week) :: AsInt(date) :: Nil Get req => 
-      JsonResponse(TotalJSON(productName, year, month, week, date))
-    case productName :: AsInt(year) :: AsInt(month) :: AsInt(week) :: AsInt(date) :: machineID :: Nil Get req => 
+    case step :: Nil Get req => 
+      JsonResponse(TotalJSON(step))
+    case step :: product :: Nil Get req => 
+      JsonResponse(TotalJSON(step, product))
+    case step :: productName :: AsInt(year) :: AsInt(month) :: Nil Get req => 
+      JsonResponse(TotalJSON(step, productName, year, month))
+    case step :: productName :: AsInt(year) :: AsInt(month) :: AsInt(week) :: Nil Get req => 
+      JsonResponse(TotalJSON(step, productName, year, month, week))
+    case step :: productName :: AsInt(year) :: AsInt(month) :: AsInt(week) :: AsInt(date) :: Nil Get req => 
+      JsonResponse(TotalJSON(step, productName, year, month, week, date))
+    case step :: productName :: AsInt(year) :: AsInt(month) :: AsInt(week) :: AsInt(date) :: machineID :: Nil Get req => 
       JsonResponse(TotalJSON(productName, year, month, week, date, machineID))
   })
 

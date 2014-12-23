@@ -12,11 +12,12 @@ object CsvRestAPI extends RestHelper {
 
   serve("api" / "csv" / "total" prefix {
     case Nil Get req => toCSVResponse(TotalCSV.overview)
-    case productName :: Nil Get req => toCSVResponse(TotalCSV(productName))
-    case productName :: AsInt(year) :: AsInt(month) :: Nil Get req => toCSVResponse(TotalCSV(productName, year, month))
-    case productName :: AsInt(year) :: AsInt(month) :: AsInt(week) :: Nil Get req => toCSVResponse(TotalCSV(productName, year, month, week))
-    case productName :: AsInt(year) :: AsInt(month) :: AsInt(week) :: AsInt(date) :: Nil Get req => toCSVResponse(TotalCSV(productName, year, month, week, date))
-    case productName :: AsInt(year) :: AsInt(month) :: AsInt(week) :: AsInt(date) :: machineID :: Nil Get req => toCSVResponse(TotalCSV(productName, year, month, week, date, machineID))
+    case step :: Nil Get req => toCSVResponse(TotalCSV(step))
+    case step :: productName :: Nil Get req => toCSVResponse(TotalCSV(step, productName))
+    case step :: productName :: AsInt(year) :: AsInt(month) :: Nil Get req => toCSVResponse(TotalCSV(step, productName, year, month))
+    case step :: productName :: AsInt(year) :: AsInt(month) :: AsInt(week) :: Nil Get req => toCSVResponse(TotalCSV(step, productName, year, month, week))
+    case step :: productName :: AsInt(year) :: AsInt(month) :: AsInt(week) :: AsInt(date) :: Nil Get req => toCSVResponse(TotalCSV(step, productName, year, month, week, date))
+    case step :: productName :: AsInt(year) :: AsInt(month) :: AsInt(week) :: AsInt(date) :: machineID :: Nil Get req => toCSVResponse(TotalCSV(productName, year, month, week, date, machineID))
   })
 
   serve("api" / "csv" / "monthly" prefix {

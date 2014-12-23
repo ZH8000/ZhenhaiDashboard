@@ -15,57 +15,70 @@ object TotalJSON extends JsonReport {
 
   def overview: JValue = {
 
-    val sortedProducts = MongoDB.zhenhaiDB("product").toList.sortBy(_("product").toString)
-    val dataSet = sortedProducts.map { case item => 
-      val productName = item("product").toString
-      val countQty = item("count_qty").toString.toLong
-      ("name" -> productName) ~ ("value" -> countQty) ~ ("link" -> s"/total/$productName")
+    val groupedData = MongoDB.zhenhaiDB("product").groupBy(x => x.get("machineTypeTitle")).mapValues(getSumQty)
+    val orderedKey = List("加締卷取", "組立", "老化", "加工", "切角", "包裝")
+
+    val dataSet = orderedKey.map { case key => 
+      val countQty = groupedData.getOrElse(key, 0).toString
+      ("name" -> key) ~ ("value" -> countQty) ~ ("link" -> s"/total/$key")
     }
 
     ("dataSet" -> dataSet)
   }
 
-  def apply(productName: String): JValue = {
+  def apply(step: String): JValue = {
 
-    val data = MongoDB.zhenhaiDB(s"product-$productName")
-    val dataByMonth = data.toList.groupBy(getYearMonth).mapValues(getSumQty)
-
-    val sortedData = dataByMonth.toList.sortBy(_._1)
-    val sortedJSON = sortedData.map{ case (yearMonth, value) =>
-      val Array(year, month) = yearMonth.split("-")
-      ("name" -> yearMonth) ~
+    val data = MongoDB.zhenhaiDB(s"product").find(MongoDBObject("machineTypeTitle" -> step)).toList
+    val dataByProduct = data.groupBy(record => record.get("product").toString).mapValues(getSumQty)
+    val sortedData = dataByProduct.toList.sortBy(_._1)
+    val sortedJSON = sortedData.map{ case (product, value) =>
+      ("name" -> product) ~
       ("value" -> value) ~
-      ("link" -> s"/total/$productName/$year/$month")
+      ("link" -> s"/total/$step/$product")
     }
 
-    ("steps" -> List(productName)) ~
     ("dataSet" -> sortedJSON)
   }
 
-  def apply(productName: String, year: Int, month: Int): JValue = {
+  def apply(step: String, product: String): JValue = {
+
+    val data = MongoDB.zhenhaiDB(s"product-$product").find(MongoDBObject("machineTypeTitle" -> step)).toList
+    val dataByProduct = data.groupBy(getYearMonth).mapValues(getSumQty)
+    val sortedData = dataByProduct.toList.sortBy(_._1)
+    val sortedJSON = sortedData.map{ case (yearAndMonth, value) =>
+      val Array(year, month) = yearAndMonth.split("-").map(_.toInt)
+      ("name" -> yearAndMonth) ~
+      ("value" -> value) ~
+      ("link" -> s"/total/$step/$product/$year/$month")
+    }
+
+    ("dataSet" -> sortedJSON)
+  }
+
+  def apply(step: String, productName: String, year: Int, month: Int): JValue = {
 
     val startDate = f"$year-$month%02d"
     val endDate = f"$year-${month+1}%02d"
 
-    val data = MongoDB.zhenhaiDB(s"product-$productName").find("timestamp" $gte startDate $lt endDate)
+    val data = MongoDB.zhenhaiDB(s"product-$productName").find("timestamp" $gte startDate $lt endDate).filter(_("machineTypeTitle") == step)
+
     val dataByWeek = data.toList.groupBy(getWeek).mapValues(getSumQty)
     val sortedData = dataByWeek.toList.sortBy(_._1)
     val sortedJSON = sortedData.map{ case (week, value) =>
       ("name" -> s"第 $week 週") ~
       ("value" -> value) ~
-      ("link" -> s"/total/$productName/$year/$month/$week")
+      ("link" -> s"/total/$step/$productName/$year/$month/$week")
     }
 
-    ("steps" -> List(productName, f"$year-$month%02d")) ~
     ("dataSet" -> sortedJSON)
   }
 
-  def apply(productName: String, year: Int, month: Int, week: Int): JValue = {
+  def apply(step: String, productName: String, year: Int, month: Int, week: Int): JValue = {
 
     val startDate = f"$year-$month%02d-01"
     val endDate = f"$year-${month+1}%02d-01"
 
-    val data = MongoDB.zhenhaiDB(s"product-$productName").find("timestamp" $gte startDate $lt endDate)
+    val data = MongoDB.zhenhaiDB(s"product-$productName").find("timestamp" $gte startDate $lt endDate).filter(_("machineTypeTitle") == step)
     val dataInWeek = data.filter { entry => 
       val Array(year, month, date) = entry("timestamp").toString.split("-").map(_.toInt)
       DateUtils.getWeek(year, month, date) == week
@@ -76,25 +89,25 @@ object TotalJSON extends JsonReport {
     val sortedJSON = sortedData.map{ case (date, value) =>
       ("name" -> s"$date 日") ~
       ("value" -> value) ~
-      ("link" -> s"/total/$productName/$year/$month/$week/$date")
+      ("link" -> s"/total/$step/$productName/$year/$month/$week/$date")
     }
 
     ("steps" -> List(productName, f"$year-$month%02d", f"第 $week 週")) ~
     ("dataSet" -> sortedJSON)
   }
 
-  def apply(productName: String, year: Int, month: Int, week: Int, date: Int): JValue = {
+  def apply(step: String, productName: String, year: Int, month: Int, week: Int, date: Int): JValue = {
 
     val startDate = f"$year-$month%02d-${date}%02d"
     val endDate = f"$year-$month%02d-${date+1}%02d"
 
-    val data = MongoDB.zhenhaiDB(s"product-$productName").find("timestamp" $gte startDate $lt endDate)
+    val data = MongoDB.zhenhaiDB(s"product-$productName").find("timestamp" $gte startDate $lt endDate).filter(_("machineTypeTitle") == step)
     val dataByMachine = data.toList.groupBy(getMachineID).mapValues(getSumQty)
     val sortedData = dataByMachine.toList.sortBy(_._1)
     val sortedJSON = sortedData.map{ case (machineID, value) =>
       ("name" -> s"$machineID") ~
       ("value" -> value) ~
-      ("link" -> s"/total/$productName/$year/$month/$week/$date/$machineID")
+      ("link" -> s"/total/$step/$productName/$year/$month/$week/$date/$machineID")
     }
 
     ("steps" -> List(productName, f"$year-$month%02d", f"第 $week 週", f"$date 日")) ~
@@ -103,7 +116,6 @@ object TotalJSON extends JsonReport {
 
   def apply(productName: String, year: Int, month: Int, week: Int, date: Int, machineID: String): JValue = {
 
-    val t = System.currentTimeMillis
     val cacheTableName = f"$year-$month%02d-$date%02d"
     val data = 
       MongoDB.zhenhaiDB(cacheTableName).
