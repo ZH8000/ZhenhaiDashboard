@@ -4,11 +4,15 @@ import code.model._
 import com.mongodb.casbah.Imports._
 import net.liftweb.util.Helpers._
 import net.liftweb.util._
+import java.util.Date
+import java.text.SimpleDateFormat
 
 class Dashboard {
 
+
   lazy val (minDate, maxDate) = {
 
+    val dateFormatter = new SimpleDateFormat("yyyy-MM-dd")
     val dateSet = {
 
       val allDates = for {
@@ -20,7 +24,10 @@ class Dashboard {
 
     }
 
-    (dateSet.min, dateSet.max)
+    dateSet.isEmpty match {
+      case true  => (dateFormatter.format(new Date), dateFormatter.format(new Date))
+      case false => (dateSet.min, dateSet.max)
+    }
   }
 
   def monthPicker = {

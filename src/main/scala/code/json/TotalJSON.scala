@@ -19,7 +19,7 @@ object TotalJSON extends JsonReport {
     val orderedKey = List("加締卷取", "組立", "老化", "選別", "加工切角")
 
     val dataSet = orderedKey.map { case key => 
-      val countQty = groupedData.getOrElse(key, 0).toString
+      val countQty = groupedData.getOrElse(key, 0L)
       ("name" -> key) ~ ("value" -> countQty) ~ ("link" -> s"/total/$key")
     }
 

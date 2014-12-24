@@ -33,7 +33,7 @@ class OrderStatus {
           val step5Percent = scala.math.min(((record.step5.get.toDouble / requireCount) * 100).toLong, 100)
 
           ".customer *" #> record.customer &
-          ".order *" #> record.order &
+          ".lotNo *" #> record.lotNo &
           ".product *" #> record.product &
           ".inputCount *" #> record.inputCount &
           ".requireCount *" #> requireCount.toLong &

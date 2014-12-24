@@ -23,7 +23,7 @@ object DailyJSON extends JsonReport {
     val orderedKey = List("加締卷取", "組立", "老化", "選別", "加工切角")
 
     val dataSet = orderedKey.map { case step => 
-      val countQty = dataByStep.getOrElse(step, 0).toString
+      val countQty = dataByStep.getOrElse(step, 0L)
       ("name"  -> step) ~ 
       ("value" -> countQty) ~ 
       ("link"  -> s"/daily/$year/$month/$step")
