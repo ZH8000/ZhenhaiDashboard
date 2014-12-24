@@ -18,7 +18,7 @@ object MonthlyJSON extends JsonReport {
 
     val data = MongoDB.zhenhaiDB("daily").find("timestamp" $gte startDate $lt endDate)
     val dataByStep = data.toList.groupBy(getMachineTypeTitle).mapValues(getSumQty)
-    val orderedKey = List("加締卷取", "組立", "老化", "加工", "切角", "包裝")
+    val orderedKey = List("加締卷取", "組立", "老化", "選別", "加工切角")
 
     val dataSet = orderedKey.map { case stepTitle => 
       ("name" -> stepTitle) ~

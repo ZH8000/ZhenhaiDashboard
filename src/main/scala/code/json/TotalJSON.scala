@@ -16,7 +16,7 @@ object TotalJSON extends JsonReport {
   def overview: JValue = {
 
     val groupedData = MongoDB.zhenhaiDB("product").groupBy(x => x.get("machineTypeTitle")).mapValues(getSumQty)
-    val orderedKey = List("加締卷取", "組立", "老化", "加工", "切角", "包裝")
+    val orderedKey = List("加締卷取", "組立", "老化", "選別", "加工切角")
 
     val dataSet = orderedKey.map { case key => 
       val countQty = groupedData.getOrElse(key, 0).toString
