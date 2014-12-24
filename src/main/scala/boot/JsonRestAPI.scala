@@ -50,6 +50,24 @@ object JsonRestAPI extends RestHelper {
       JsonResponse(DailyJSON(year, month, step, date, machineID))
   })
 
+  serve("api" / "json" / "capacity" prefix {
+    case Nil Get req => 
+      JsonResponse(CapacityJSON.overview)
+    case step :: Nil Get req => 
+      JsonResponse(CapacityJSON(step))
+    case step :: capacity :: Nil Get req => 
+      JsonResponse(CapacityJSON(step, capacity))
+    case step :: capacity :: AsInt(year) :: AsInt(month) :: Nil Get req => 
+      JsonResponse(CapacityJSON(step, capacity, year, month))
+    case step :: capacity :: AsInt(year) :: AsInt(month) :: AsInt(week) :: Nil Get req => 
+      JsonResponse(CapacityJSON(step, capacity, year, month, week))
+    case step :: capacity :: AsInt(year) :: AsInt(month) :: AsInt(week) :: AsInt(date) :: Nil Get req => 
+      JsonResponse(CapacityJSON(step, capacity, year, month, week, date))
+    case step :: capacity :: AsInt(year) :: AsInt(month) :: AsInt(week) :: AsInt(date) :: machineID :: Nil Get req => 
+      JsonResponse(CapacityJSON(step, capacity, year, month, week, date, machineID))
+  })
+
+
   serve {
     case "api" :: "json" :: "alert" :: Nil Get req => JsonResponse(AlertJSON.overview)
   }

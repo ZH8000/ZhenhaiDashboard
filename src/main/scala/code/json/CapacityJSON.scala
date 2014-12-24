@@ -11,7 +11,7 @@ import scala.collection.mutable.HashMap
 
 import com.mongodb.casbah.Imports._
 
-object TotalJSON extends JsonReport {
+object CapacityJSON extends JsonReport {
 
   def overview: JValue = {
 
@@ -20,7 +20,7 @@ object TotalJSON extends JsonReport {
 
     val dataSet = orderedKey.map { case key => 
       val countQty = groupedData.getOrElse(key, 0).toString
-      ("name" -> key) ~ ("value" -> countQty) ~ ("link" -> s"/total/$key")
+      ("name" -> key) ~ ("value" -> countQty) ~ ("link" -> s"/capacity/$key")
     }
 
     ("dataSet" -> dataSet)
@@ -29,56 +29,59 @@ object TotalJSON extends JsonReport {
   def apply(step: String): JValue = {
 
     val data = MongoDB.zhenhaiDB(s"product").find(MongoDBObject("machineTypeTitle" -> step)).toList
-    val dataByProduct = data.groupBy(record => record.get("product").toString).mapValues(getSumQty)
-    val sortedData = dataByProduct.toList.sortBy(_._1)
-    val sortedJSON = sortedData.map{ case (product, value) =>
-      ("name" -> product) ~
-      ("value" -> value) ~
-      ("link" -> s"/total/$step/$product")
+    val dataByCapacity = data.groupBy(record => record.get("capacityRange").toString).mapValues(getSumQty)
+    val sortedData = List("5 - 8", "10 - 12.5", "16 - 18", "Unknown")
+    val sortedJSON = sortedData.map{ capacity =>
+      ("name" -> s"$capacity Φ") ~
+      ("value" -> dataByCapacity.getOrElse(capacity, 0L)) ~
+      ("link" -> s"/capacity/$step/${urlEncode(capacity)}")
     }
 
     ("dataSet" -> sortedJSON)
   }
 
-  def apply(step: String, product: String): JValue = {
+  def apply(step: String, capacity: String): JValue = {
 
-    val data = MongoDB.zhenhaiDB(s"product-$product").find(MongoDBObject("machineTypeTitle" -> step)).toList
+    val data = MongoDB.zhenhaiDB(s"daily").find(MongoDBObject("machineTypeTitle" -> step, "capacityRange" -> capacity)).toList
     val dataByProduct = data.groupBy(getYearMonth).mapValues(getSumQty)
     val sortedData = dataByProduct.toList.sortBy(_._1)
     val sortedJSON = sortedData.map{ case (yearAndMonth, value) =>
       val Array(year, month) = yearAndMonth.split("-").map(_.toInt)
       ("name" -> yearAndMonth) ~
       ("value" -> value) ~
-      ("link" -> s"/total/$step/$product/$year/$month")
+      ("link" -> s"/capacity/$step/${urlEncode(capacity)}/$year/$month")
     }
 
     ("dataSet" -> sortedJSON)
   }
 
-  def apply(step: String, productName: String, year: Int, month: Int): JValue = {
+  def apply(step: String, capacity: String, year: Int, month: Int): JValue = {
 
     val startDate = f"$year-$month%02d"
     val endDate = f"$year-${month+1}%02d"
 
-    val data = MongoDB.zhenhaiDB(s"product-$productName").find("timestamp" $gte startDate $lt endDate).filter(_("machineTypeTitle") == step)
+    val data = MongoDB.zhenhaiDB(s"daily").find("timestamp" $gte startDate $lt endDate)
+                      .filter(record => record("machineTypeTitle") == step && record("capacityRange") == capacity)
 
     val dataByWeek = data.toList.groupBy(getWeek).mapValues(getSumQty)
     val sortedData = dataByWeek.toList.sortBy(_._1)
     val sortedJSON = sortedData.map{ case (week, value) =>
       ("name" -> s"第 $week 週") ~
       ("value" -> value) ~
-      ("link" -> s"/total/$step/$productName/$year/$month/$week")
+      ("link" -> s"/capacity/$step/$capacity/$year/$month/$week")
     }
 
     ("dataSet" -> sortedJSON)
   }
 
-  def apply(step: String, productName: String, year: Int, month: Int, week: Int): JValue = {
+  def apply(step: String, capacity: String, year: Int, month: Int, week: Int): JValue = {
 
     val startDate = f"$year-$month%02d-01"
     val endDate = f"$year-${month+1}%02d-01"
 
-    val data = MongoDB.zhenhaiDB(s"product-$productName").find("timestamp" $gte startDate $lt endDate).filter(_("machineTypeTitle") == step)
+    val data = MongoDB.zhenhaiDB(s"daily").find("timestamp" $gte startDate $lt endDate)
+                      .filter(record => record("machineTypeTitle") == step && record("capacityRange") == capacity)
+
     val dataInWeek = data.filter { entry => 
       val Array(year, month, date) = entry("timestamp").toString.split("-").map(_.toInt)
       DateUtils.getWeek(year, month, date) == week
@@ -89,35 +92,37 @@ object TotalJSON extends JsonReport {
     val sortedJSON = sortedData.map{ case (date, value) =>
       ("name" -> s"$date 日") ~
       ("value" -> value) ~
-      ("link" -> s"/total/$step/$productName/$year/$month/$week/$date")
+      ("link" -> s"/capacity/$step/$capacity/$year/$month/$week/$date")
     }
 
     ("dataSet" -> sortedJSON)
   }
 
-  def apply(step: String, productName: String, year: Int, month: Int, week: Int, date: Int): JValue = {
+  def apply(step: String, capacity: String, year: Int, month: Int, week: Int, date: Int): JValue = {
 
     val startDate = f"$year-$month%02d-${date}%02d"
     val endDate = f"$year-$month%02d-${date+1}%02d"
 
-    val data = MongoDB.zhenhaiDB(s"product-$productName").find("timestamp" $gte startDate $lt endDate).filter(_("machineTypeTitle") == step)
+    val data = MongoDB.zhenhaiDB(s"daily").find("timestamp" $gte startDate $lt endDate)
+                      .filter(record => record("machineTypeTitle") == step && record("capacityRange") == capacity)
+
     val dataByMachine = data.toList.groupBy(getMachineID).mapValues(getSumQty)
     val sortedData = dataByMachine.toList.sortBy(_._1)
     val sortedJSON = sortedData.map{ case (machineID, value) =>
       ("name" -> s"$machineID") ~
       ("value" -> value) ~
-      ("link" -> s"/total/$step/$productName/$year/$month/$week/$date/$machineID")
+      ("link" -> s"/capacity/$step/$capacity/$year/$month/$week/$date/$machineID")
     }
 
     ("dataSet" -> sortedJSON)
   }
 
-  def apply(productName: String, year: Int, month: Int, week: Int, date: Int, machineID: String): JValue = {
+  def apply(step: String, capacity: String, year: Int, month: Int, week: Int, date: Int, machineID: String): JValue = {
 
     val cacheTableName = f"$year-$month%02d-$date%02d"
     val data = 
       MongoDB.zhenhaiDB(cacheTableName).
-              find(MongoDBObject("product" -> productName, "mach_id" -> machineID)).
+              find(MongoDBObject("machineTypeTitle" -> step, "mach_id" -> machineID, "capacityRange" -> capacity)).
               sort(MongoDBObject("timestamp" -> 1))
 
     val jsonData = data.map { entry => 

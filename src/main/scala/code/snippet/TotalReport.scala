@@ -5,7 +5,6 @@ import code.lib._
 import net.liftweb.util.Helpers._
 import net.liftweb.http.S
 
-
 class TotalReport {
 
   def getSteps(uri: List[String]) = uri match {
