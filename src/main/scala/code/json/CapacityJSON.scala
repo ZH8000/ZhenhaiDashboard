@@ -30,7 +30,7 @@ object CapacityJSON extends JsonReport {
 
     val data = MongoDB.zhenhaiDB(s"product").find(MongoDBObject("machineTypeTitle" -> step)).toList
     val dataByCapacity = data.groupBy(record => record.get("capacityRange").toString).mapValues(getSumQty)
-    val sortedData = List("5 - 8", "10 - 12.5", "16 - 18", "Unknown")
+    val sortedData = List("5 - 8", "10 - 12.5", "16 - 18", "Unknown").filter(dataByCapacity contains _)
     val sortedJSON = sortedData.map{ capacity =>
       ("name" -> s"$capacity Φ") ~
       ("value" -> dataByCapacity.getOrElse(capacity, 0L)) ~
