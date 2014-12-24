@@ -24,8 +24,8 @@ import scala.xml.NodeSeq
 class Boot 
 {
   private def getTemplate(path: String) = Template(() => Templates(path.split("/").toList) openOr NodeSeq.Empty)
-  //private def needLogin = If(() => User.isLoggedIn, () => S.redirectTo("/", () => S.error("請先登入")))
-  private def needLogin = If(() => true, () => S.redirectTo("/", () => S.error("請先登入")))
+  private def needLogin = If(() => User.isLoggedIn, () => S.redirectTo("/", () => S.error("請先登入")))
+  //private def needLogin = If(() => true, () => S.redirectTo("/", () => S.error("請先登入")))
 
   private def redirectToDashboardIfLoggedIn = If(() => !User.isLoggedIn, () => S.redirectTo("/dashboard"))
   private def logout = EarlyResponse{ () =>
@@ -39,7 +39,7 @@ class Boot
 
   val editWorkerMenu = Menu.param[Worker]("EditWorker", "EditWorker", id => Worker.find(id), worker => worker.id.get.toString)
   val editAlarmMenu = Menu.param[Alarm]("EditAlarm", "EditAlarm", id => Alarm.find(id), alarm => alarm.id.get.toString)
-  def workerMenu(menuID: String) = Menu.param[Worker](menuID, menuID, id => { val t = Worker.find(id); println(t); t}, worker => worker.id.get.toString)
+  def workerMenu(menuID: String) = Menu.param[Worker](menuID, menuID, id => Worker.find(id), worker => worker.id.get.toString)
 
 
   val siteMap = SiteMap(
@@ -99,8 +99,7 @@ class Boot
   )
 
   val ensureLogin: PartialFunction[Req, Unit] = {
-    case req =>
-    //case req if User.isLoggedIn =>
+    case req if User.isLoggedIn =>
   }
 
   def errorPageResponse(req: Req, code: Int) = {
