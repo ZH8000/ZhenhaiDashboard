@@ -57,7 +57,7 @@ function barChart(options) {
     }
 
     function calculateTopLabelYPosition(data) {
-      return options.totalHeight - scalar(getDataValue(data)) - options.topMargin;
+      return options.totalHeight - scalar(getDataValue(data)) - 25;
     }
 
     var totalWidth = getXOffset(dataSet.length);
@@ -67,11 +67,11 @@ function barChart(options) {
 
     var scalar = d3.scale.linear().
                     domain([0, d3.max(dataSet, options.extractValue)]).
-                    range([minimalY, maximalY]);
+                    range([minimalY, maximalY - 80]);
 
     var chart = d3.select(selection).
                    attr("width", totalWidth + 20).
-                   attr("height", options.totalHeight);
+                   attr("height", options.totalHeight + 50)
 
     // Remove all existing content, so we could draw different
     // bar chart on same HTML element.
