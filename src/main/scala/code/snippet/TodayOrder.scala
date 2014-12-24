@@ -25,7 +25,6 @@ class TodayOrder {
       case false =>
         ".row" #> order.map { record =>
           ".lotNo *" #> record.lotNo &
-          ".order *" #> record.order &
           ".customer *" #> record.customer &
           ".product *" #> record.product &
           ".status *" #> record.status
