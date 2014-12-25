@@ -14,7 +14,7 @@ class MachineMaintainLog {
 
   def showEmptyBox() = {
     S.error("目前無機台維修記錄")
-    "table" #> NodeSeq.Empty
+    ".dataBlock" #> NodeSeq.Empty
   }
 
   def render = {

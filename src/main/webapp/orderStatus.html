@@ -72,77 +72,79 @@
             <lift:notice_msg class="ui green sys message"></lift:notice_msg>
           </div>
 
-          <div>
-            <a id="csvURL" href="/api/csv/orderStatus" class="ui right floated primary button">Export CSV File</a>
-            <div style="clear: both" />
-          </div>
+          <div class="dataBlock">
+            <div>
+              <a id="csvURL" href="/api/csv/orderStatus" class="ui right floated primary button">Export CSV File</a>
+              <div style="clear: both" />
+            </div>
 
-          <table class="ui celled table segment">
-            <thead>
-              <tr>
-                <th class="ui center aligned">客戶</th>
-                <th class="ui center aligned">製令編號</th>
-                <th class="ui center aligned">規格</th>
-                <th class="ui center aligned">投入數</th>
-                <th class="ui center aligned">加締捲曲</th>
-                <th class="ui center aligned">組立</th>
-                <th class="ui center aligned">老化</th>
-                <th class="ui center aligned">選別</th>
-                <th class="ui center aligned">加工切腳</th>
-              </tr>
-            </thead>
-            <tbody id="table">
-              <tr class="row">
-                <td class="ui center aligned customer">客戶</td>
-                <td class="ui center aligned lotNo">製令編號</td>
-                <td class="ui collapsing center aligned product">規格</td>
-                <td class="ui center aligned inputCount">投入數</td>
-                <td class="step1">
-                  <div class="percent ui tiny progress" data-percent="50">
-                    <div class="bar">
-                      <div class="progress"></div>
+            <table class="ui celled table segment">
+              <thead>
+                <tr>
+                  <th class="ui center aligned">客戶</th>
+                  <th class="ui center aligned">製令編號</th>
+                  <th class="ui center aligned">規格</th>
+                  <th class="ui center aligned">投入數</th>
+                  <th class="ui center aligned">加締捲曲</th>
+                  <th class="ui center aligned">組立</th>
+                  <th class="ui center aligned">老化</th>
+                  <th class="ui center aligned">選別</th>
+                  <th class="ui center aligned">加工切腳</th>
+                </tr>
+              </thead>
+              <tbody id="table">
+                <tr class="row">
+                  <td class="ui center aligned customer">客戶</td>
+                  <td class="ui center aligned lotNo">製令編號</td>
+                  <td class="ui collapsing center aligned product">規格</td>
+                  <td class="ui center aligned inputCount">投入數</td>
+                  <td class="step1">
+                    <div class="percent ui tiny progress" data-percent="50">
+                      <div class="bar">
+                        <div class="progress"></div>
+                      </div>
+                      <div class="label"> <span class="currentCount">100</span> / <span class="inputCount">222</span> </div>
                     </div>
-                    <div class="label"> <span class="currentCount">100</span> / <span class="inputCount">222</span> </div>
-                  </div>
-                </td>
-                <td class="step2">
-                  <div class="percent ui tiny progress" data-percent="50">
-                    <div class="bar">
-                      <div class="progress"></div>
+                  </td>
+                  <td class="step2">
+                    <div class="percent ui tiny progress" data-percent="50">
+                      <div class="bar">
+                        <div class="progress"></div>
+                      </div>
+                      <div class="label"> <span class="currentCount">100</span> / <span class="requireCount">222</span> </div>
                     </div>
-                    <div class="label"> <span class="currentCount">100</span> / <span class="requireCount">222</span> </div>
-                  </div>
-                </td>
-                <td class="step3">
-                  <div class="percent ui tiny progress" data-percent="50">
-                    <div class="bar">
-                      <div class="progress"></div>
+                  </td>
+                  <td class="step3">
+                    <div class="percent ui tiny progress" data-percent="50">
+                      <div class="bar">
+                        <div class="progress"></div>
+                      </div>
+                      <div class="label"> <span class="currentCount">100</span> / <span class="requireCount">222</span> </div>
                     </div>
-                    <div class="label"> <span class="currentCount">100</span> / <span class="requireCount">222</span> </div>
-                  </div>
-                </td>
-                <td class="step4">
-                  <div class="percent ui tiny progress" data-percent="50">
-                    <div class="bar">
-                      <div class="progress"></div>
+                  </td>
+                  <td class="step4">
+                    <div class="percent ui tiny progress" data-percent="50">
+                      <div class="bar">
+                        <div class="progress"></div>
+                      </div>
+                      <div class="label"> <span class="currentCount">100</span> / <span class="requireCount">222</span> </div>
                     </div>
-                    <div class="label"> <span class="currentCount">100</span> / <span class="requireCount">222</span> </div>
-                  </div>
-                </td>
-                <td class="step5">
-                  <div class="percent ui tiny progress" data-percent="50">
-                    <div class="bar">
-                      <div class="progress"></div>
+                  </td>
+                  <td class="step5">
+                    <div class="percent ui tiny progress" data-percent="50">
+                      <div class="bar">
+                        <div class="progress"></div>
+                      </div>
+                      <div class="label"> <span class="currentCount">100</span> / <span class="requireCount">222</span> </div>
                     </div>
-                    <div class="label"> <span class="currentCount">100</span> / <span class="requireCount">222</span> </div>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <script>
-            $('.progress').progress({showActivity: false});
-          </script>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <script>
+              $('.progress').progress({showActivity: false});
+            </script>
+	  </div>
         </div>
       </div>
     </div>

@@ -14,7 +14,7 @@ class OrderStatus {
 
   def showEmptyBox() = {
     S.error("目前無客戶訂單資料")
-    "table" #> NodeSeq.Empty
+    ".dataBlock" #> NodeSeq.Empty
   }
 
   def render = {
