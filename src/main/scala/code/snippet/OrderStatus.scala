@@ -24,7 +24,7 @@ class OrderStatus {
       case false =>
         ".row" #> orderStatus.map { record =>
 
-          val requireCount = (record.inputCount.get - (record.inputCount.get * 0.04)).toLong
+          val requireCount = (record.inputCount.get / 1.04).toLong
 
           val step1Percent = scala.math.min((((record.step1.get.toDouble / record.inputCount.get.toDouble) * 100)).toLong, 100)
           val step2Percent = scala.math.min(((record.step2.get.toDouble / requireCount) * 100).toLong, 100)
