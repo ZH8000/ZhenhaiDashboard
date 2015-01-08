@@ -14,8 +14,8 @@ object DailyJSON extends JsonReport {
 
   def apply(year: Int, month: Int): JValue = {
 
-    val startDate = f"$year-$month"
-    val endDate = f"$year-${month+1}"
+    val startDate = f"$year-$month%02d"
+    val endDate = f"$year-${month+1}%02d"
 
     val data = MongoDB.zhenhaiDB("daily").find("timestamp" $gte startDate $lt endDate)
     val dataByStep = data.toList.groupBy(getMachineTypeTitle).mapValues(getSumQty)
@@ -33,8 +33,8 @@ object DailyJSON extends JsonReport {
   }
 
   def apply(year: Int, month: Int, step: String): JValue = {
-    val startDate = f"$year-$month"
-    val endDate = f"$year-${month+1}"
+    val startDate = f"$year-$month%02d"
+    val endDate = f"$year-${month+1}%02d"
 
     val data = MongoDB.zhenhaiDB("daily").find("timestamp" $gte startDate $lt endDate).filter(x => getMachineTypeTitle(x) == step)
     val dataByDate = data.toList.groupBy(getDate).mapValues(getSumQty)
