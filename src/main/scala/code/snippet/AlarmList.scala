@@ -56,12 +56,11 @@ class AlarmList {
       ".alarmRow [id]" #> s"row-${alarm.id}" &
       ".dueDate *" #> dateFormatter.format(alarm.dueDate) &
       ".machineID *" #> alarm.machineID &
+      ".workerName *" #> alarm.name &
       ".desc *" #> alarm.description &
       ".dueDate [id]"      #> s"dueDate-${alarm.id}" &
       ".machineID [id]"    #> s"machineID-${alarm.id}" &
       ".desc [id]"  #> s"description-${alarm.id}" &
-      ".popup [data-title]" #> s"${alarm.name} / 2014-11-22" &
-      ".popup [data-content]" #> alarm.description &
       ".dueDate [class+]"      #> (if (alarm.isDone.get) "disabled" else "") &
       ".machineID [class+]"    #> (if (alarm.isDone.get) "disabled" else "") &
       ".desc [class+]"  #> (if (alarm.isDone.get) "del" else "") &
@@ -97,7 +96,6 @@ class AlarmList {
     val dateFormatter = new SimpleDateFormat("yyyy-MM-dd")
     ".alarmRow" #> alarms.map { alarm =>
 
-      println(alarm.isDone.get)
       ".alarmRow [id]" #> s"row-${alarm.id}" &
       ".dueDate *" #> dateFormatter.format(alarm.dueDate) &
       ".machineID *" #> alarm.machineID &

@@ -34,10 +34,21 @@
   .responsiveAlarm.column {
     margin-left: -100px;
   }
+
+  .alarmDiv {
+    height: 400px; overflow: scroll; margin-top:1em; padding-right:1em; overflow-x:hidden;
+    margin-right: 100px;
+  }
+
 }
 
+@media screen and (max-width: 1366px) {
 
+  .alarmDiv {
+    height: 400px; overflow: scroll; margin-top:1em; padding-right:1em; overflow-x:hidden;
+  }
 
+}
   </style>
 
 </head>
@@ -115,36 +126,38 @@
     <div class="six wide responsiveAlarm column" data-lift="AlarmList.postIt">
       <div class="ui header ribbon orange label">零件定期更換通知</div>
       <div class="nonAlarm ui segment">目前沒有排定的更換計劃</div>
-      <div class="urgentAlarmBlock ui divided list red segment" >
-        <div class="urgentAlarmRow popup item" style="padding-top: 10px;">
-          <div class="content">
-            <div>
+      <div class="alarmDiv">
+        <div class="urgentAlarmBlock ui divided list red segment" >
+          <div class="urgentAlarmRow item" style="padding-top: 10px;">
+            <div class="content">
+              <div>
+                <input name="doneCheckbox" type="checkbox" style="float: right">
+                <span><i class="importantMark ui red warning icon" ></i></span>
+                <span class="dueDate ui red horizontal label">2014-12-10</span>
+                <span class="machineID ui green horizontal label">MachineID</span>
+                <span class="worker ui horizontal label"><i class="ui user icon"></i> <span class="workerName">Worker</span></span>
+              </div>
+              <pre class="desc" style="margin-left: 2em; margin-top: 10px">Description....</pre>
+            </div>
+          </div>
+        </div>
+        <div class="alarmBlock ui divided list segment" >
+          <div class="alarmRow item" style="padding-top: 10px; padding-bottom: 10px">
+            <div class="content">
               <input name="doneCheckbox" type="checkbox" style="float: right">
-              <span><i class="importantMark ui red warning icon" ></i></span>
-              <span class="dueDate ui red horizontal label">2014-12-10</span>
+              <span><i class="importantMark ui red icon" ></i></span>
+              <span class="dueDate ui horizontal label">2014-12-10</span>
               <span class="machineID ui green horizontal label">MachineID</span>
+              <span class="worker ui horizontal label"><i class="ui user icon"></i> <span class="workerName">Worker</span></span>
             </div>
             <pre class="desc" style="margin-left: 2em; margin-top: 10px">Description....</pre>
           </div>
-        </div>
-      </div>
-      <div class="alarmBlock ui divided list segment" >
-        <div class="alarmRow popup item" style="padding-top: 10px; padding-bottom: 10px">
-          <div class="content">
-            <input name="doneCheckbox" type="checkbox" style="float: right">
-            <span><i class="importantMark ui red icon" ></i></span>
-            <span class="dueDate ui horizontal label">2014-12-10</span>
-            <span class="machineID ui black horizontal label">MachineID</span>
-          </div>
-          <pre class="desc" style="margin-left: 2em; margin-top: 10px">Description....</pre>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    $('.popup').popup({position: 'bottom center'});
-
     function updateUI(alarmID, isDone) {
       if (isDone) {
         $('#dueDate-' + alarmID).addClass("disabled")
