@@ -15,8 +15,7 @@
   <script src="/static/lib/javascript/jquery-2.1.1.js"></script>
   <script src="/static/sementicUI/semantic.min.js"></script>
   <script src="/static/jQueryUI/jquery-ui.min.js"></script>
-  <script src="/static/lib/javascript/jquery.mtz.monthpicker.js"></script>
-
+  <script src="/static/jQueryUI/datepicker-zh-TW.js"></script>
 </head>
 <body>
   <div class="ui fixed transparent inverted main menu">
@@ -68,6 +67,12 @@
           <label>組別</label>
           <div class="ui input">
             <input type="text" name="team">
+          </div>
+        </div>
+        <div class="field">
+          <label>入廠日期</label>
+          <div class="ui input">
+            <input type="text" name="onBoardDate" id="onBoardDate">
           </div>
         </div>
         <div class="inline fields">
@@ -123,6 +128,13 @@
             "prompt": "請輸入組別"
           }]
         },
+        "onBoardDate": {
+          "identifier": "onBoardDate",
+          "rules": [{
+            "type": "empty",
+            "prompt": "請輸入入廠時間"
+          }]
+        },
         "workerType": {
           "identifier": "workerType",
           "rules": [{
@@ -137,6 +149,8 @@
         $("#submitButton").click();
         return true;
       }})
+
+      $('#onBoardDate').datepicker({dateFormat: 'yy-mm-dd'});
 
     })
   </script>

@@ -71,6 +71,12 @@
             <input type="text" name="team">
           </div>
         </div>
+        <div class="field">
+          <label>入廠日期</label>
+          <div class="ui input">
+            <input type="text" name="onBoardDate" id="onBoardDate">
+          </div>
+        </div>
         <div class="inline fields">
           <div class="field">
             <label for="workerType">員工類別：</label>
@@ -117,6 +123,13 @@
             "prompt": "請輸入員工部門"
           }]
         },
+        "onBoardDate": {
+          "identifier": "onBoardDate",
+          "rules": [{
+            "type": "empty",
+            "prompt": "請輸入入廠時間"
+          }]
+        },
         "team": {
           "identifier": "team",
           "rules": [{
@@ -139,6 +152,7 @@
         return true;
       }})
 
+      $('#onBoardDate').datepicker({dateFormat: 'yy-mm-dd'});
     })
   </script>
 
