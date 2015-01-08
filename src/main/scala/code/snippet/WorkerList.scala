@@ -9,6 +9,7 @@ import net.liftweb.http.SHtml
 import net.liftweb.util.Helpers._
 import net.liftweb.http.js.JsCmds._
 import net.liftweb.http.js.jquery.JqJsCmds._
+import java.text.SimpleDateFormat
 
 class WorkerList {
 
@@ -27,6 +28,9 @@ class WorkerList {
   }
 
   def render = {
+
+    val dateFormatter = new SimpleDateFormat("yyyy-MM-dd")
+
     ".workerTable" #> departments.zipWithIndex.map { case(department, index) =>
       ".workerTable [data-tab]" #> department &
       ".workerTable [class+]" #> (if (index == 0) "active" else "") &
@@ -35,6 +39,8 @@ class WorkerList {
         ".workerName *" #> worker.name.get &
         ".workerID *" #> worker.workerID.get &
         ".workerTeam *" #> worker.team &
+        ".workerOnBoardDate *" #> dateFormatter.format(worker.onBoardDate.get) &
+        ".workingYears *" #> f"${worker.workingYears}%.1f" &
         ".workerType *" #> worker.workerTypeTitle &
         ".editLink [href]" #> s"/management/workers/edit/${worker.id}" &
         ".deleteLink [onclick]" #> SHtml.onEventIf(s"確定要刪除【${worker.name}】嗎？", deleteWorker(worker)_)

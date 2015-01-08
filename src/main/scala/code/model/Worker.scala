@@ -11,6 +11,7 @@ import net.liftweb.record.field._
 import net.liftweb.sitemap.Loc._
 import net.liftweb.http.OutputStreamResponse
 import net.liftweb.common._
+import net.liftweb.util.Helpers._
 
 object Worker extends Worker with MongoMetaRecord[Worker] {
   override def collectionName = "worker"
@@ -42,6 +43,16 @@ class Worker extends MongoRecord[Worker] with ObjectIdPk[Worker] {
   val workerType = new StringField(this, 20)
   val isDeleted = new BooleanField(this, false)
   val onBoardDate = new DateField(this)
+
+  def workingYears: Double = {
+    import org.joda.time.Days
+    import org.joda.time.DateTime
+    val daysBetween = Days.daysBetween(new DateTime(onBoardDate.get), new DateTime(now)).getDays
+    daysBetween match {
+      case day if day <= 0 => 0
+      case day             => day / 365.0
+    }
+  }
 
   def workerTypeTitle = workerType.get match {
     case "maintain" => "維修人員"
