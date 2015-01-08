@@ -18,7 +18,7 @@ object MachineMaintainLogJSON {
       val workerID = worker.map(_.workerID.get).openOr("查無此人")
       val workerName = worker.map(_.name.get).openOr("查無此人")
       val startTime = new Date(record.timestamp.get * 1000)
-      val endTime = new Date(record.timestamp.get * 1000)
+      val endTime = new Date(record.timestamp.get * 1000 + 5234500)
 
       Record(workerID, workerName, record.machineID.get, record.item.get, dateFormatter.format(startTime), dateFormatter.format(endTime))
     }
