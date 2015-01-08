@@ -35,6 +35,15 @@ class AlarmList {
     }
   }
 
+  def markAsDoneInPostIt(alarm: Alarm, value: String): JsCmd = {
+    val newRecord = alarm.isDone(true).doneTime(new Date).saveTheRecord()
+    newRecord match {
+      case Full(record) => JsRaw(s"""$$('#row-${alarm.id}').remove()""")
+      case _ => S.error("無法存檔")
+    }
+  }
+
+
   def markAsDone(alarm: Alarm)(status: Boolean): JsCmd = {
 
     val newRecord = alarm.isDone(status).doneTime(new Date).saveTheRecord()
@@ -46,14 +55,13 @@ class AlarmList {
         S.error("無法存檔")
         JsRaw(s"""updateUI('${alarm.id}', ${!status})""")
     }
-
   }
 
   def postIt = {
     val dateFormatter = new SimpleDateFormat("yyyy-MM-dd")
 
     def rowItem(alarm: Alarm) = {
-      ".alarmRow [id]" #> s"row-${alarm.id}" &
+      ".item [id]" #> s"row-${alarm.id}" &
       ".dueDate *" #> dateFormatter.format(alarm.dueDate) &
       ".machineID *" #> alarm.machineID &
       ".workerName *" #> alarm.name &
@@ -64,13 +72,14 @@ class AlarmList {
       ".dueDate [class+]"      #> (if (alarm.isDone.get) "disabled" else "") &
       ".machineID [class+]"    #> (if (alarm.isDone.get) "disabled" else "") &
       ".desc [class+]"  #> (if (alarm.isDone.get) "del" else "") &
-      "@doneLabel *"           #> (if (alarm.isDone.get) "已完成" else "末完成") &
-      "@doneCheckbox [checked+]" #> (if (alarm.isDone.get) Some("checked") else None) &
-      "@doneCheckbox" #> SHtml.ajaxCheckbox(alarm.isDone.get, markAsDone(alarm))
+      ".doneCheckbox [onclick]" #> SHtml.onEventIf(
+        s"是否確【${alarm.machineID}】的【${alarm.description}】認標記成已完成", 
+        markAsDoneInPostIt(alarm, _)
+      )
     }
 
-    val notDoneUrgent = urgentAlarms.filter(x => x.dueDateCalendar.compareTo(today) >= 0 || !x.isDone.get)
-    val notDoneNormal = normalAlarms.filter(x => x.dueDateCalendar.compareTo(today) >= 0 || !x.isDone.get)
+    val notDoneUrgent = urgentAlarms.filter(x => x.dueDateCalendar.compareTo(today) >= 0 && !x.isDone.get)
+    val notDoneNormal = normalAlarms.filter(x => x.dueDateCalendar.compareTo(today) >= 0 && !x.isDone.get)
 
     val urgentListBinding = notDoneUrgent.isEmpty match {
       case true  => ".urgentAlarmBlock" #> NodeSeq.Empty
