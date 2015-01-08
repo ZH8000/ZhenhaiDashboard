@@ -73,7 +73,7 @@ class WorkerStatistics {
 
     val records = WorkerStatisticsJSON()
     val maxValue = if (records.isEmpty) 0 else records.map(_.countQty).max
-    val scale = Scale(0, maxValue, 10, 800)
+    val scale = Scale(0, maxValue, 10, 300)
 
     records.isEmpty match {
       case true  => showErrorBox("查無資料")
@@ -98,7 +98,7 @@ class WorkerStatistics {
     val workerID = S.request.map(_.path(1)).filterNot(_ == "index").openOr("")
     val records = WorkerStatisticsJSON(workerID)
     val maxValue = if (records.isEmpty) 0 else records.map(_.countQty).max
-    val scale = Scale(0, maxValue, 10, 800)
+    val scale = Scale(0, maxValue, 10, 300)
 
     records.isEmpty match {
       case true  => showErrorBox("查無資料")
@@ -123,7 +123,7 @@ class WorkerStatistics {
     val yearAndMonth = S.request.map(_.path(2)).filterNot(_ == "index").openOr("")
     val records = WorkerStatisticsJSON(workerID, yearAndMonth)
     val maxValue = if (records.isEmpty) 0 else records.map(_.countQty).max
-    val scale = Scale(0, maxValue, 10, 800)
+    val scale = Scale(0, maxValue, 10, 300)
 
     records.isEmpty match {
       case true  => showErrorBox("查無資料")
@@ -150,7 +150,7 @@ class WorkerStatistics {
     val records = WorkerStatisticsJSON(workerID, yearAndMonth, week)
 
     val maxValue = if (records.isEmpty) 0 else records.map(_.countQty).max
-    val scale = Scale(0, maxValue, 10, 800)
+    val scale = Scale(0, maxValue, 10, 300)
 
     records.isEmpty match {
       case true  => showErrorBox("查無資料")
@@ -179,7 +179,7 @@ class WorkerStatistics {
 
     val records = WorkerStatisticsJSON(workerID, yearAndMonth, week, date)
     val maxValue = if (records.isEmpty) 0 else records.map(_.countQty).max
-    val scale = Scale(0, maxValue, 10, 800)
+    val scale = Scale(0, maxValue, 10, 300)
 
     records.isEmpty match {
       case true  => showErrorBox("查無資料")

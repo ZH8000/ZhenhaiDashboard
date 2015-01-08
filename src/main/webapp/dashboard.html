@@ -17,6 +17,28 @@
   <script src="/static/jQueryUI/jquery-ui.min.js"></script>
   <script src="/static/lib/javascript/jquery.mtz.monthpicker.js"></script>
   <script src="/static/custom/javascript/monthPicker.js"></script>
+  <style>
+
+@media screen and (min-width: 1280px) {
+
+  body {
+    color: red;
+  }
+
+  .responsiveIcon.grid {
+    padding-left: 100px;
+    padding-right: 100px;
+
+  }
+
+  .responsiveAlarm.column {
+    margin-left: -100px;
+  }
+}
+
+
+
+  </style>
 
 </head>
 <body>
@@ -41,9 +63,9 @@
     </div>
   </div>
 
-  <div class="ui grid" style="padding-top:60px; padding-bottom:20px; padding-left: 150px; padding-right: 150px" data-lift="Dashboard.reportLink">
-    <div class="twelve wide column">
-      <div class="center aligned three column ui stackable grid">
+  <div class="ui grid" style="padding-top:60px; padding-bottom:20px;" data-lift="Dashboard.reportLink">
+    <div class="ten wide column">
+      <div class="center aligned three column ui stackable responsiveIcon grid">
         <div class="column">
           <a href="/viewDetail" class="ui icon huge teal button">
             <i class="huge bar chart icon"></i>
@@ -74,13 +96,6 @@
             <div style="margin-top: 1em">維修記錄</div>
           </a>
         </div>
-        <div class="column" data-lift="Dashboard.alertLink">
-          <a href="javascript: void(0)" class="ui icon huge teal button">
-            <i class="huge warning icon"></i>
-            <div style="margin-top: 1em">機台異常</div>
-          </a>
-        </div>
-
         <div class="column">
           <a href="/machine" class="ui icon huge teal button">
             <i class="huge bug icon"></i>
@@ -95,12 +110,9 @@
         </div>
         <div class="column"></div>
         <div class="column"></div>
-
-
       </div>
-
     </div>
-    <div class="four wide column" data-lift="AlarmList.postIt">
+    <div class="six wide responsiveAlarm column" data-lift="AlarmList.postIt">
       <div class="ui header ribbon orange label">零件定期更換通知</div>
       <div class="nonAlarm ui segment">目前沒有排定的更換計劃</div>
       <div class="urgentAlarmBlock ui divided list red segment" >
