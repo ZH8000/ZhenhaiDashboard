@@ -40,7 +40,7 @@ class WorkerList {
         ".workerID *" #> worker.workerID.get &
         ".workerTeam *" #> worker.team &
         ".workerOnBoardDate *" #> dateFormatter.format(worker.onBoardDate.get) &
-        ".workingYears *" #> f"${worker.workingYears}%.1f" &
+        ".workingYears *" #> f"${worker.workingYears}" &
         ".workerType *" #> worker.workerTypeTitle &
         ".editLink [href]" #> s"/management/workers/edit/${worker.id}" &
         ".deleteLink [onclick]" #> SHtml.onEventIf(s"確定要刪除【${worker.name}】嗎？", deleteWorker(worker)_)

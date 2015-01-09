@@ -44,13 +44,13 @@ class Worker extends MongoRecord[Worker] with ObjectIdPk[Worker] {
   val isDeleted = new BooleanField(this, false)
   val onBoardDate = new DateField(this)
 
-  def workingYears: Double = {
+  def workingYears: Int = {
     import org.joda.time.Days
     import org.joda.time.DateTime
     val daysBetween = Days.daysBetween(new DateTime(onBoardDate.get), new DateTime(now)).getDays
     daysBetween match {
-      case day if day <= 0 => 0
-      case day             => day / 365.0
+      case day if day <= 0 => 1
+      case day             => (day / 365.0).ceil.toInt
     }
   }
 
