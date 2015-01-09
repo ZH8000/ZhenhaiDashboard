@@ -65,7 +65,7 @@
           </a>
           <div style="margin-top: 1em">
             請選擇年份：
-            <select data-lift="Dashboard.yearSelector">
+            <select data-lift="Dashboard.yearSelector" onchange="window.location='/monthly/' + $('#yearPicker').val()" id="yearPicker">
               <option type="text" value="1" onclick="">1</option>
             </select>
           </div>
