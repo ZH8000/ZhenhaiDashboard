@@ -31,3 +31,14 @@ html, body {
   padding-right: 15px; 
   margin-bottom: 10px;
 }
+
+
+@media screen and (min-width: 1280px) {
+
+  .onlyInPad {
+    display: none;
+  }
+
+
+}
+

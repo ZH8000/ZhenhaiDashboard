@@ -2,13 +2,13 @@
     <script data-lift="head" src="/static/jscolor/jscolor.js" type="text/javascript"></script>
     <span>背景顏色：</span>
       <span>
-        <input id="bgColor" class="color {hash: true, onImmediateChange:'setupBGColor(this)'}" value="#CEECF5" />
+        <input id="bgColor" class="color {hash: true, onImmediateChange:'setupBGColor(this)'}" value="#CEECF5" readonly="true"/>
+        <button class="onlyInPad">OK</button>
         <script id="bgColorJS"></script>
         <script>
           function setupBGColor(color) {
             $('body').css('background-color', $('#bgColor').val())
             $('html').css('background-color', $('#bgColor').val())
-
           }
         </script>
       </span>

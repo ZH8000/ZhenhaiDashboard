@@ -29,7 +29,7 @@ class BackgroundChanger {
     val bgColor = BackgroundColor.get.getOrElse("#CEECF5")
     "#bgColorJS *" #> OnLoad(JsRaw(s"""$$('body').css('background-color', '$bgColor'); $$('html').css('background-color', '$bgColor');""").cmd ) &
     "#bgColor [value]" #> bgColor &
-    "#bgColor [onchange]" #> SHtml.onEvent(setupColor _)
+    "#bgColor [onblur]" #> SHtml.onEvent(setupColor _)
   }
 }
 
