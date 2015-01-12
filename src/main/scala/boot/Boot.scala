@@ -121,6 +121,7 @@ class Boot
       case (req,failure) => NotFoundAsResponse(errorPageResponse(req, 404))
     })
 
+    LiftRules.loggedInTest = Full(() => !User.CurrentUser.get.isEmpty)
     LiftRules.exceptionHandler.prepend {
       case (runMode, req, exception) if runMode == RunModes.Production =>
         println(runMode)
