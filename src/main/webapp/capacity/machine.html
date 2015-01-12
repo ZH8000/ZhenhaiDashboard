@@ -1,322 +1,253 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <!-- Standard Meta -->
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-
-  <title>Zhenhai Dashboard</title>
-
-  <link rel="stylesheet" type="text/css" href="/static/sementicUI/semantic.min.css">
-  <link rel="stylesheet" type="text/css" href="/static/custom/css/custom.css">
-  <link rel="stylesheet" type="text/css" href="/static/jQueryUI/jquery-ui.min.css">
-  <link rel="stylesheet" type="text/css" href="/static/select2-3.5.1/select2.css">
-
-  <script src="/static/lib/javascript/jquery-2.1.1.js"></script>
-  <script src="/static/lib/javascript/d3.v3.min.js"></script>
-  <script src="/static/jQueryUI/jquery-ui.min.js"></script>
-  <script src="/static/jQueryUI/datepicker-zh-TW.js"></script>
-  <script src="/static/select2-3.5.1/select2.min.js"></script>
-  <script src="/static/select2-3.5.1/select2_locale_zh-TW.js"></script>
-
-  <script src="/static/sementicUI/semantic.min.js"></script>
-
-  <script src="/static/custom/javascript/chart.js"></script>
-  <script src="/static/custom/javascript/steps.js"></script>
-  <script src="/static/custom/javascript/table.js"></script>
-
-  <style>
-.barChart rect {
-  fill: steelblue;
-}
-
-.barChart text {
-  fill: black;
-  font: 16px sans-serif;
-  text-anchor: middle;
-}
-
-.barChart rect:hover {
-  fill: brown;
-}
-
-.slice path:hover {
-  fill: brown;
-}
-
-  </style>
-
-</head>
-<body data-lift="CapacityReport.machine">
-  <div class="ui fixed transparent inverted main menu">
-    <div class="container">
-      <a href="/" class="title header item">Zhenhai Dashboard</a>
-      <div data-lift="embed?what=backgroundChanger"></div>
-      <div class="right menu">
-        <div class="item">總覽</div>
-        <div class="ui simple dropdown item">
-          <div><i class="ui large list icon"></i></div>
-          <div class="menu">
-            <!-- <a class="item" href="/user">個人頁</a> -->
-            <a class="item" href="/user/logout"><i class="ui sign out icon"></i> 登出</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="center aligned one column ui grid" style="padding-top:60px; padding-bottom:20px">
+<div data-lift="Surround?with=default;at=content">
+  <div class="center aligned one column ui grid" data-lift="CapacityReport.machine">
     <div class="column">
       <div class="ui seven steps">
-        <a href="#" class="ui step" style="cursor: pointer">title</a>
+        <a href="#" class="ui step">title</a>
       </div>
     </div>
     <div class="column">
       <a id="csvURL" href="javascript: void(0)" class="ui right floated primary button">Export CSV File</a>
     </div>
-  </div>
+    <div class="ui grid">
 
-  <div class="ui grid">
+      <div class="four wide column">
+        <div id="datepicker"></div>
+        <div class="ui vertical menu">
+          <div class="header item">機器列表</div>
+          <div class="item">
+            <select id="machineList" data-lift="MachineList">
+                <option>MachineID</option>
+            </select>
+          </div>
 
-    <div class="four wide column">
-      <div id="datepicker"></div>
-      <div class="ui vertical menu">
-        <div class="header item">機器列表</div>
-        <div class="item">
-          <select id="machineList" data-lift="MachineList">
-              <option>MachineID</option>
-          </select>
-        </div>
-
-      </div>
-    </div>
-
-    <div class="twelve wide column data">
-      <div class="ui center aligned one column grid" id="loadingIndicator">
-        <div class="column">
-          <div class="ui active large text loader" style="margin-top: 5em">讀取中……</div>
         </div>
       </div>
-      <div class="ui one column page grid" style="display: none;" id="notFoundBlock">
-        <div class="column">
-          <div class="ui icon error message">
-            <i class="inbox icon"></i>
-            <div class="content">
-              <div class="header">查無資料</div>
-              <p>無法查詢到相關資料，請確定是否選擇了正確的日期與機器。</p>
+
+      <div class="twelve wide column data">
+        <div class="ui center aligned one column grid" id="loadingIndicator">
+          <div class="column">
+            <div data-lift="embed?what=loading"></div>
+          </div>
+        </div>
+        <div class="ui one column page hidden grid" id="notFoundBlock">
+          <div class="column">
+            <div class="ui icon error message">
+              <i class="inbox icon"></i>
+              <div class="content">
+                <div class="header">查無資料</div>
+                <p>無法查詢到相關資料，請確定是否選擇了正確的日期與機器。</p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div class="ui center aligned one column grid" id="loadingIndicator">
-        <div>Loading....</div>
-      </div>
-      <div class="ui center aligned two column grid data" style="display: none">
-
-        <div class="column">
-          <div class="container detailBarChart">
-            <svg class="barChart"></svg>
-          </div>
+        <div class="ui center aligned one column grid" id="loadingIndicator">
+          <div>Loading....</div>
         </div>
+        <div class="ui center aligned two column hidden grid data">
 
-        <div class="column"><svg class="pieChart"></svg></div>
-      </div>
-      <div class="data" style="display: none">
-        <table class="ui celled table segment">
-          <thead>
-            <tr>
-              <th>時間</th>
-              <th>良品數量</th>
-              <th>事件數量</th>
-              <th>事件類別</th>
-            </tr>
-          </thead>
-          <tbody id="table"></tbody>
-        </table>
+          <div class="column">
+            <div class="container detailBarChart">
+              <svg class="barChart"></svg>
+            </div>
+          </div>
+
+          <div class="column"><svg class="pieChart"></svg></div>
+        </div>
+        <div class="hidden grid data">
+          <table class="ui celled table segment">
+            <thead>
+              <tr>
+                <th>時間</th>
+                <th>良品數量</th>
+                <th>事件數量</th>
+                <th>事件類別</th>
+              </tr>
+            </thead>
+            <tbody id="table"></tbody>
+          </table>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div>
-    <input type="hidden" id="step" />
-    <input type="hidden" id="capacityRange" />
-    <input type="hidden" id="productMachine" />
-    <input type="hidden" id="fullYear" />
-    <input type="hidden" id="month" />
-    <input type="hidden" id="date" />
-    <input type="hidden" id="week" />
-    <input type="hidden" id="dataURL" />
-  </div>
-  <script>
-    
-    var step = $('#step').val()
-    var capacityRange = $('#capacityRange').val()
-    var productMachine = $('#productMachine').val()
-    var fullYear = +($('#fullYear').val())
-    var month = +($('#month').val())
-    var date = +($('#date').val())
-    var week = +($('#week').val())
-    
-    $("#datepicker").datepicker({
-      firstDay: 0,
-      onSelect: function(dateText, inst) {
+    <div>
+      <input type="hidden" id="step" />
+      <input type="hidden" id="capacityRange" />
+      <input type="hidden" id="productMachine" />
+      <input type="hidden" id="fullYear" />
+      <input type="hidden" id="month" />
+      <input type="hidden" id="date" />
+      <input type="hidden" id="week" />
+      <input type="hidden" id="dataURL" />
+    </div>
+    <script>
+      
+      var step = $('#step').val()
+      var capacityRange = $('#capacityRange').val()
+      var productMachine = $('#productMachine').val()
+      var fullYear = +($('#fullYear').val())
+      var month = +($('#month').val())
+      var date = +($('#date').val())
+      var week = +($('#week').val())
+      
+      $("#datepicker").datepicker({
+        firstDay: 0,
+        onSelect: function(dateText, inst) {
 
-        function strToDate(dateString) {
-          var columns = dateString.split("/");
-          return new Date(+columns[0], (+columns[1]-1), +columns[2]);
+          function strToDate(dateString) {
+            var columns = dateString.split("/");
+            return new Date(+columns[0], (+columns[1]-1), +columns[2]);
+          }
+
+          function getWeek(isoDate) {
+            var date = isoDate.getDate();
+            var day = isoDate.getDay();
+            return Math.ceil((date - 1 - day) / 7) + 1;
+          }
+
+          var isoDate = strToDate(dateText);
+
+          var url = "/total/" + step + "/" + capacityRange + "/" + isoDate.getFullYear() + "/" + (+isoDate.getMonth()+1) + "/" +
+                    getWeek(isoDate) + "/" + isoDate.getDate() + "/" + productMachine;
+
+          window.location = url;
         }
+      });
 
-        function getWeek(isoDate) {
-          var date = isoDate.getDate();
-          var day = isoDate.getDay();
-          return Math.ceil((date - 1 - day) / 7) + 1;
-        }
+      $("#datepicker").datepicker("setDate", new Date(fullYear, (+month - 1), date));
 
-        var isoDate = strToDate(dateText);
-
-        var url = "/total/" + step + "/" + capacityRange + "/" + isoDate.getFullYear() + "/" + (+isoDate.getMonth()+1) + "/" +
-                  getWeek(isoDate) + "/" + isoDate.getDate() + "/" + productMachine;
-
-        window.location = url;
-      }
-    });
-
-    $("#datepicker").datepicker("setDate", new Date(fullYear, (+month - 1), date));
-
-    setupMachineList(
-      '#machineList', productMachine, 
-      "/total/" + step + "/" + capacityRange + "/" + fullYear + "/" + month + "/" + week + "/" + date
-    );
-  </script>
-  <script>
-    $(function() {
+      setupMachineList(
+        '#machineList', productMachine, 
+        "/total/" + step + "/" + capacityRange + "/" + fullYear + "/" + month + "/" + week + "/" + date
+      );
+    </script>
+    <script>
+      $(function() {
 
 
 
-      function toPieChartData(dataJSON) {
-        var data = {};
-       
-        function addToData(name, value) {
-          if (data[name]) {
-            data[name] = (+(data[name]) + value)
-          } else {
-            data[name] = +value
+        function toPieChartData(dataJSON) {
+          var data = {};
+         
+          function addToData(name, value) {
+            if (data[name]) {
+              data[name] = (+(data[name]) + value)
+            } else {
+              data[name] = +value
+            } 
           } 
-        } 
 
-        for (var i = 0; i < dataJSON.length; i++) {
-          if (+(dataJSON[i].bad_qty) > 0) {
-            addToData(dataJSON[i].defact_id, dataJSON[i].bad_qty);
+          for (var i = 0; i < dataJSON.length; i++) {
+            if (+(dataJSON[i].bad_qty) > 0) {
+              addToData(dataJSON[i].defact_id, dataJSON[i].bad_qty);
+            }
+          }
+
+          var pieChartData = [];
+          var keys = Object.keys(data)
+          for (var i = 0; i < keys.length; i++) {
+            pieChartData.push({
+              label: keys[i],
+              value: data[keys[i]]
+            });
+          }
+
+          return pieChartData;
+        }
+
+        function toBarChartData(dataJSON) {
+          var data = {};
+         
+          function addToData(name, value) {
+            if (data[name]) {
+              data[name] = (+(data[name]) + value)
+            } else {
+              data[name] = +value
+            } 
+          } 
+
+          for (var i = 0; i < dataJSON.length; i++) {
+            var hours = dataJSON[i].timestamp.substring(11, 13);
+            addToData(hours + ":00", dataJSON[i].count_qty);
+          }
+
+          var barChartData = [];
+          var keys = Object.keys(data)
+          for (var i = 0; i < keys.length; i++) {
+            barChartData.push({
+              time: keys[i],
+              qty: data[keys[i]]
+            });
+          }
+
+          return barChartData;
+        }
+
+
+        function toTableSchema(dataJSON) {
+          return {
+            data: dataJSON.dataSet,
+            extractors: [
+              function (data) { return data.timestamp; },
+              function (data) { return data.count_qty == 0 ? "" : data.count_qty; },
+              function (data) { return data.bad_qty == 0 ? "" : data.bad_qty; },
+              function (data) { 
+                var model = machineModel[$('#productMachine').val()];
+                var eventTable = pinDefine[model];
+                var pin = eventTable ? eventTable["P" + data.defact_id ] : "";
+                return data.bad_qty == 0 ? "" : "[" + data.defact_id + "] " + pin;
+              }
+            ]
           }
         }
 
-        var pieChartData = [];
-        var keys = Object.keys(data)
-        for (var i = 0; i < keys.length; i++) {
-          pieChartData.push({
-            label: keys[i],
-            value: data[keys[i]]
-          });
-        }
+        var dataURL = $('#dataURL').val()
 
-        return pieChartData;
-      }
+        $.ajax(dataURL, {timeout: 30 * 1000}).done(function(data) {
 
-      function toBarChartData(dataJSON) {
-        var data = {};
-       
-        function addToData(name, value) {
-          if (data[name]) {
-            data[name] = (+(data[name]) + value)
-          } else {
-            data[name] = +value
-          } 
-        } 
+          if (!data.dataSet || data.dataSet.length == 0) {
+            $('#notFoundBlock').show();
+            return;
+          }
 
-        for (var i = 0; i < dataJSON.length; i++) {
-          var hours = dataJSON[i].timestamp.substring(11, 13);
-          addToData(hours + ":00", dataJSON[i].count_qty);
-        }
+          if (data.steps) { 
+            setStepsTitle("step", data.steps) 
+          }
 
-        var barChartData = [];
-        var keys = Object.keys(data)
-        for (var i = 0; i < keys.length; i++) {
-          barChartData.push({
-            time: keys[i],
-            qty: data[keys[i]]
-          });
-        }
+          setTable("#table", toTableSchema(data));
 
-        return barChartData;
-      }
+          var drawPieChart = pieChart({
+            width: 250,
+            height: 250,
+            radius: 100,
+            extractValue: function(data) { return data.value; },
+            extractName: function(data) { return data.label; }
+          })
 
+          drawPieChart(".pieChart", toPieChartData(data.dataSet));
 
-      function toTableSchema(dataJSON) {
-        return {
-          data: dataJSON.dataSet,
-          extractors: [
-            function (data) { return data.timestamp; },
-            function (data) { return data.count_qty == 0 ? "" : data.count_qty; },
-            function (data) { return data.bad_qty == 0 ? "" : data.bad_qty; },
-            function (data) { 
-              var model = machineModel[$('#productMachine').val()];
-              var eventTable = pinDefine[model];
-              var pin = eventTable ? eventTable["P" + data.defact_id ] : "";
-              return data.bad_qty == 0 ? "" : "[" + data.defact_id + "] " + pin;
-            }
-          ]
-        }
-      }
+          var drawBarChart = barChart({
+            totalHeight: 300,
+            barWidth: 50,
+            barPadding: 20,
+            topMargin: 20,
+            bottomMargin: 20,
+            extractValue: function(data) { return data.qty },
+            extractName: function(data) { return data.time }
+          })
 
-      var dataURL = $('#dataURL').val()
+          drawBarChart(".barChart", toBarChartData(data.dataSet));
 
-      $.ajax(dataURL, {timeout: 30 * 1000}).done(function(data) {
+          $(".data").show();
 
-        if (!data.dataSet || data.dataSet.length == 0) {
+        }).error(function() {
           $('#notFoundBlock').show();
-          return;
-        }
+        }).always(function() {
+          $("#loadingIndicator").hide();
 
-        if (data.steps) { 
-          setStepsTitle("step", data.steps) 
-        }
-
-        setTable("#table", toTableSchema(data));
-
-        var drawPieChart = pieChart({
-          width: 250,
-          height: 250,
-          radius: 100,
-          extractValue: function(data) { return data.value; },
-          extractName: function(data) { return data.label; }
-        })
-
-        drawPieChart(".pieChart", toPieChartData(data.dataSet));
-
-        var drawBarChart = barChart({
-          totalHeight: 300,
-          barWidth: 50,
-          barPadding: 20,
-          topMargin: 20,
-          bottomMargin: 20,
-          extractValue: function(data) { return data.qty },
-          extractName: function(data) { return data.time }
-        })
-
-        drawBarChart(".barChart", toBarChartData(data.dataSet));
-
-        $(".data").show();
-
-      }).error(function() {
-        $('#notFoundBlock').show();
-      }).always(function() {
-        $("#loadingIndicator").hide();
-
+        });
       });
-    });
-  </script>
+    </script>
 
-</body>
-
-</html>
+  </div>
+</div>

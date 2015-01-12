@@ -42,3 +42,110 @@ html, body {
 
 }
 
+@media screen and (min-width: 1280px) {
+
+  .responsiveIcon.grid {
+    padding-left: 100px;
+    padding-right: 100px;
+
+  }
+
+  .responsiveAlarm.column {
+    margin-left: -100px;
+  }
+
+  .alarmDiv {
+    height: 400px;
+    overflow: scroll;
+    overflow-x:hidden;
+    overflow-y: auto;
+    margin-top:1em;
+    padding-right:1em;
+    margin-right: 100px;
+  }
+
+}
+
+@media screen and (max-width: 1366px) {
+
+  .alarmDiv {
+    height: 400px;
+    margin-top:1em;
+    padding-right:1em;
+    overflow: scroll;
+    overflow-x:hidden;
+    overflow-y: auto;
+  }
+
+}
+
+.chart rect {
+  fill: steelblue;
+}
+
+.chart text {
+  fill: black;
+  font: 16px sans-serif;
+  text-anchor: middle;
+}
+
+.chart rect:hover {
+  fill: brown;
+  cursor: pointer;
+}
+
+.barChart rect {
+  fill: steelblue;
+}
+
+.barChart text {
+  fill: black;
+  font: 16px sans-serif;
+  text-anchor: middle;
+}
+
+.barChart rect:hover {
+  fill: brown;
+}
+
+.slice path:hover {
+  fill: brown;
+  cursor: pointer;
+
+}
+
+.ui.step {
+  cursor: pointer;
+}
+
+.svg.container {
+  overflow:auto; 
+  width: 80%;
+  margin-left: 10%;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.hidden.grid {
+  display: none;
+}
+
+.marginBottom {
+  margin-bottom: 5px;
+}
+
+.ui.sort.icon {
+  float: right;
+}
+
+.hidden.segment {
+  display: none;
+}
+
+.marginTop {
+  margin-top: 1em;
+}
+
+.ui.paddingTop.grid {
+  padding-top:60px; padding-bottom:20px;
+}
