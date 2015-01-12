@@ -2,7 +2,7 @@
   <div class="center aligned one column ui grid" data-lift="MonthlyReport.machine">
     <div class="column">
       <div class="ui six steps">
-        <a href="javascript: void(0)" class="ui step" style="cursor: pointer">Step Title</a>
+        <a href="javascript: void(0)" class="ui step">Step Title</a>
       </div>
     </div>
     <div class="column">
@@ -25,10 +25,10 @@
       <div class="twelve wide column data">
         <div class="ui center aligned one column grid" id="loadingIndicator">
          <div class="column">
-            <div class="ui active large text loader" style="margin-top: 5em">讀取中……</div>
+           <div data-lift="embed?what=loading"></div>
           </div>
         </div>
-        <div class="ui one column page grid" style="display: none;" id="notFoundBlock">
+        <div class="ui one column page hidden grid" id="notFoundBlock">
           <div class="column">
             <div class="ui icon error message">
               <i class="inbox icon"></i>
@@ -40,10 +40,7 @@
           </div>
         </div>
 
-        <div class="ui center aligned one column grid" id="loadingIndicator">
-          <div class="ui active large text loader" style="margin-top: 5em">讀取中……</div>
-        </div>
-        <div class="ui center aligned two column grid data" style="display: none">
+        <div class="ui center aligned two column hidden grid data">
 
           <div class="column">
             <div class="container detailBarChart">
@@ -53,7 +50,7 @@
 
           <div class="column"><svg class="pieChart"></svg></div>
         </div>
-        <div class="data" style="display: none">
+        <div class="hidden grid data">
           <table class="ui celled table segment">
             <thead>
               <tr>

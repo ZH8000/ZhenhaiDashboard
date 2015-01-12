@@ -114,3 +114,38 @@ html, body {
 
 }
 
+.ui.step {
+  cursor: pointer;
+}
+
+.svg.container {
+  overflow:auto; 
+  width: 80%;
+  margin-left: 10%;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.hidden.grid {
+  display: none;
+}
+
+.marginBottom {
+  margin-bottom: 5px;
+}
+
+.ui.sort.icon {
+  float: right;
+}
+
+.hidden.segment {
+  display: none;
+}
+
+.marginTop {
+  margin-top: 1em;
+}
+
+.ui.paddingTop.grid {
+  padding-top:60px; padding-bottom:20px;
+}

@@ -2,14 +2,14 @@
   <div class="center aligned one column ui grid" data-lift="DailyReport">
     <div class="column">
       <div class="ui four steps">
-        <a href="javascript: void(0)" class="ui step" style="cursor: pointer">StepTitle</a>
+        <a href="javascript: void(0)" class="ui step">StepTitle</a>
       </div>
     </div>
     <div class="column">
       <a id="csvURL" href="javascript: void(0)" class="ui right floated primary button">Export CSV File</a>
     </div>
     <div class="column">
-      <div class="ui one column page grid" style="display: none" id="notFoundBlock">
+      <div class="ui one column page hidden grid" id="notFoundBlock">
         <div class="column">
           <div class="ui icon error message">
             <i class="inbox icon"></i>
@@ -20,9 +20,9 @@
           </div>
         </div>
       </div>
-      <div class="container" style="overflow:auto; width: 80%; margin-left: 10%; padding-left: 15px; padding-right: 15px">
+      <div class="svg container">
         <div id="loadingIndicator">
-          <div class="ui active large text loader" style="margin-top: 5em">讀取中……</div>
+          <div data-lift="embed?what=loading"></div>
         </div>
         <svg class="chart"></svg>
       </div>
@@ -66,6 +66,5 @@
 
 
     </script>
-
   </div>
 </div>
