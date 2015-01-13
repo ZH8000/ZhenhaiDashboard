@@ -1776,4 +1776,14 @@ object MachineInfo {
   lazy val machineList = machineInfoList.map(_.machineID)
   lazy val ipTable = machineInfoList.map(machineInfo => machineInfo.ip -> machineInfo).toMap
   lazy val idTable = machineInfoList.map(machineInfo => machineInfo.machineID -> machineInfo).toMap
+
+  def getErrorDesc(machineID: String, defactID: Int): String = {
+    val errorDesc = for {
+      machineModel <- idTable.get(machineID).map(_.model)
+      pinDefineMap <- pinDefine.get(machineModel)
+      errorDesc    <- pinDefineMap.get("P" + defactID)
+    } yield s"[$defactID] $errorDesc"
+
+    errorDesc.getOrElse(s"[$defactID]")
+  }
 }

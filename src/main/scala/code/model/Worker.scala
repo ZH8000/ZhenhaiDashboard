@@ -13,6 +13,20 @@ import net.liftweb.http.OutputStreamResponse
 import net.liftweb.common._
 import net.liftweb.util.Helpers._
 
+object StrangeQty extends StrangeQty with MongoMetaRecord[StrangeQty] {
+  override def collectionName = "strangeQty"
+}
+
+class StrangeQty extends MongoRecord[StrangeQty] with ObjectIdPk[StrangeQty] {
+  def meta = StrangeQty
+
+  val count_qty = new LongField(this)
+  val emb_date = new LongField(this)
+  val bad_qty = new LongField(this)
+  val defact_id = new IntField(this)
+  val mach_id = new StringField(this, 15)
+}
+
 object Worker extends Worker with MongoMetaRecord[Worker] {
   override def collectionName = "worker"
 

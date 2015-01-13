@@ -1,0 +1,40 @@
+<div data-lift="Surround?with=default;at=content">
+  <div class="center aligned one column ui grid">
+    <div class="column">
+      <div class="one column ui page grid" data-lift="LazyLoad?template=loading">
+        <div class="column" data-lift="StrangeQty">
+
+          <div data-lift="lift:msgs?showAll=true">
+            <lift:error_msg class="ui red sys message"></lift:error_msg>
+            <lift:warning_msg class="ui yellow sys message"></lift:warning_msg>
+            <lift:notice_msg class="ui green sys message"></lift:notice_msg>
+          </div>
+
+          <div class="dataBlock">
+
+            <table class="ui celled table segment">
+              <thead>
+                <tr>
+                  <th class="ui center aligned">時間</th>
+                  <th class="ui center aligned">機台</th>
+                  <th class="ui center aligned">良品數</th>
+                  <th class="ui center aligned">事件數量</th>
+                  <th class="ui center aligned">事件</th>
+                </tr>
+              </thead>
+              <tbody id="table">
+                <tr class="row">
+                  <td class="ui center aligned timestamp">2014-12-11 11:12</td>
+                  <td class="ui center aligned machineID">E10</td>
+                  <td class="ui center aligned countQty">0</td>
+                  <td class="ui center aligned badQty">100</td>
+                  <td class="ui center aligned defactID">極性不良</td>
+                </tr>
+              </tbody>
+            </table>
+	  </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
