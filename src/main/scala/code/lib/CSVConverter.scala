@@ -30,8 +30,8 @@ object CSVConverter {
       val csvRecords = fields.map(field => toCSVField(record, field))
       val defactID = (record \\ defactIDField).values.toString
       val description = for {
-        machineModel <- MachineInfo.machineModel.get(machineID)
-        pinDefine <- MachineInfo.pinDefine.get(machineModel)
+        machineInfo <- MachineInfo.idTable.get(machineID)
+        pinDefine <- MachineInfo.pinDefine.get(machineInfo.model)
         pinDesc <- pinDefine.get(s"P${defactID}")
       } yield pinDesc
 
