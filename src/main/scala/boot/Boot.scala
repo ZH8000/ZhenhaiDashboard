@@ -50,6 +50,7 @@ class Boot
     Menu("ViewDetail") / "viewDetail" >> needLogin,
     Menu("Alert") / "alert" / "index" >> needLogin,
     Menu("Alert") / "alert" / "strangeQty" >> needLogin,
+    Menu("Alert") / "alert" / "alert" / * >> getTemplate("alert/alert") >> needLogin,
     Menu("Alive") / "alive",
     Menu("Capacity1") / "capacity" >> getTemplate("capacity/overview") >> needLogin,
     Menu("Capacity2") / "capacity" / * >> getTemplate("capacity/overview") >> needLogin,

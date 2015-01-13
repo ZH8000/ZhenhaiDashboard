@@ -18,6 +18,35 @@ import java.util.Date
 import java.util.Calendar
 import scala.xml.NodeSeq
 
+class AlertList {
+
+  import code.lib._
+
+  val Array(_, _, date) = S.uri.drop(1).split("/")
+  val alertList = code.model.Alert.findAll("date", date).toList.sortWith(_.timestamp.get < _.timestamp.get)
+
+  def showEmptyBox() = {
+     S.error("查無機台異常")
+     ".dataBlock" #> NodeSeq.Empty
+  }
+
+  def render = {
+
+    alertList.isEmpty match {
+      case true => showEmptyBox()
+      case false =>
+        ".row" #> alertList.map { item =>
+
+          val errorDesc = MachineInfo.getErrorDesc(item.mach_id.get, item.defact_id.get)
+
+          ".timestamp *" #> item.timestamp &
+          ".machineID *" #> item.mach_id &
+          ".defactID *" #> errorDesc
+        }
+    }
+  }
+}
+
 class StrangeQty {
 
   import code.lib._
