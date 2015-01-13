@@ -18,59 +18,6 @@ import java.util.Date
 import java.util.Calendar
 import scala.xml.NodeSeq
 
-class AlertList {
-
-  import code.lib._
-
-  val Array(_, _, date) = S.uri.drop(1).split("/")
-  val alertList = code.model.Alert.findAll("date", date).toList.sortWith(_.timestamp.get < _.timestamp.get)
-
-  def showEmptyBox() = {
-     S.error("查無機台異常")
-     ".dataBlock" #> NodeSeq.Empty
-  }
-
-  def render = {
-
-    alertList.isEmpty match {
-      case true => showEmptyBox()
-      case false =>
-        ".row" #> alertList.map { item =>
-
-          val errorDesc = MachineInfo.getErrorDesc(item.mach_id.get, item.defact_id.get)
-
-          ".timestamp *" #> item.timestamp &
-          ".machineID *" #> item.mach_id &
-          ".defactID *" #> errorDesc
-        }
-    }
-  }
-}
-
-class StrangeQty {
-
-  import code.lib._
-  val strangeQtyList = StrangeQty.findAll.toList.sortWith(_.emb_date.get > _.emb_date.get)
-  val dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-
-  def render = {
-    ".row" #> strangeQtyList.map { item =>
-
-      val errorDesc = if (item.count_qty.get > 0) {
-        ""
-      } else {
-        MachineInfo.getErrorDesc(item.mach_id.get, item.defact_id.get)
-      }
-
-      ".timestamp *" #> dateFormatter.format(new Date(item.emb_date.get * 1000)) &
-      ".machineID *" #> item.mach_id &
-      ".countQty *"  #> item.count_qty &
-      ".badQty *" #> item.bad_qty &
-      ".defactID *" #> errorDesc
-    }
-  }
-}
-
 class AlarmList {
 
   private def alarms = Alarm.findAll.toList.sortWith(_.dueDate.getTime < _.dueDate.getTime)
