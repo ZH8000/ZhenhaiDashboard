@@ -90,6 +90,8 @@ class Boot
     Menu("Managemen5") / "management" / "alarms" / "add" >> needLogin,
     Menu("Managemen6") / "management" / "alarms" / "index" >> needLogin,
     editAlarmMenu / "management" / "alarms" / "edit" / * >> getTemplate("management/alarms/edit") >> needLogin,
+    Menu("Managemen7") / "management" / "account" / "index" >> needLogin,
+    Menu("Managemen8") / "management" / "account" / "add" >> needLogin,
     Menu("Workers") / "workers" / "index" >> needLogin,
     Menu("Workers1") / "workers" / * >> getTemplate("workers/worker") >> needLogin,
     Menu("Workers2") / "workers" / * / * >> getTemplate("workers/weekly") >> needLogin,
@@ -99,6 +101,7 @@ class Boot
     Menu("TodayOrder") / "todayOrder" >> needLogin,
     Menu("OrderStatus") / "orderStatus" >> needLogin,
     Menu("MachineMaintainLog") / "machineMaintainLog"
+
   )
 
   val ensureLogin: PartialFunction[Req, Unit] = {

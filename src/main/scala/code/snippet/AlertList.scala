@@ -4,12 +4,35 @@ import code.model._
 import code.lib._
 
 import net.liftweb.http.S
+import net.liftweb.http.SHtml
 import net.liftweb.util.Helpers._
 import net.liftweb.util._
+import net.liftweb.http.js.JE._
 
 import scala.xml.NodeSeq
 import scala.collection.JavaConversions._
 import java.text.SimpleDateFormat
+
+class UserList {
+
+  def onDelete(userID: String)(value: String) = {
+    User.find(userID).foreach(_.delete_!)
+    JsRaw(s"""jQuery('#row-$userID').remove()""").cmd
+  }
+
+  def render = {
+    ".row" #> User.findAll.map { user =>
+
+      ".row [id]" #> s"row-${user.id}" &
+      ".username *" #> user.username &
+      ".workID *" #> user.employeeID &
+      ".email *" #> user.email &
+      ".group *" #> user.role &
+      ".deleteLink [onclick]" #> SHtml.onEventIf(s"確定要刪除【${user.username}】這個帳號嗎？", onDelete(user.id.get.toString)_)
+    }
+  }
+
+}
 
 class AlertList {
 
