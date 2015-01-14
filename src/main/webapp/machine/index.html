@@ -28,11 +28,12 @@
 
       <div class="ui two column page grid">
         <div class="column"><svg class="pieChart"></svg></div>
-        <div class="column" style="margin-top: 40px;">
-          <table class="ui right floated celled table">
+        <div class="column" style="margin-top: 40px;" data-lift="LazyLoad?template=loading">
+          <table class="ui right floated celled table" data-lift="TopFiveDefact">
             <thead>
-              <tr><th class="center aligned" colspan="4">前五大不良原因</th></tr>
+              <tr><th class="center aligned" colspan="5">前五大不良原因</th></tr>
               <tr>
+                <th class="ui center aligned">機台</th>
                 <th class="ui center aligned">事件</th>
                 <th class="ui center aligned">數量</th>
                 <th class="ui center aligned">製程</th>
@@ -40,42 +41,17 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td class="ui center aligned">TP位置不良</td>
-                <td class="ui center aligned">312</td>
-                <td class="ui center aligned">組立</td>
-                <td class="ui center aligned">2015-01-05</td>
-              </tr>
-              <tr>
-                <td class="ui center aligned">負加締前斷箔</td>
-                <td class="ui center aligned">245</td>
-                <td class="ui center aligned">加締卷曲</td>
-                <td class="ui center aligned">2015-01-05</td>
-              </tr>
-              <tr>
-                <td class="ui center aligned">TP 帶斷</td>
-                <td class="ui center aligned">209</td>
-                <td class="ui center aligned">加締卷曲</td>
-                <td class="ui center aligned">2015-01-05</td>
-              </tr>
-              <tr>
-                <td class="ui center aligned">極性不良</td>
-                <td class="ui center aligned">134</td>
-                <td class="ui center aligned">老化</td>
-                <td class="ui center aligned">2015-01-05</td>
-              </tr>
-              <tr>
-                <td class="ui center aligned">卷针定位不良</td>
-                <td class="ui center aligned">52</td>
-                <td class="ui center aligned">加締卷曲</td>
-                <td class="ui center aligned">2015-01-05</td>
+              <tr class="row">
+                <td class="ui center aligned machineID">E01</td>
+                <td class="ui center aligned defactID">TP位置不良</td>
+                <td class="ui center aligned badQty">312</td>
+                <td class="ui center aligned stepTitle">組立</td>
+                <td class="ui center aligned date">2015-01-05</td>
               </tr>
             </tbody>
           </table>
-
         </div>
       </div>
-
     </div>
     <div>
       <input type="hidden" id="dataURL" value="<%= dataURL %>" />

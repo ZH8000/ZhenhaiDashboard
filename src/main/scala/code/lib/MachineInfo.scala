@@ -1773,9 +1773,24 @@ object MachineInfo {
     MachineInfo("192.168.20.76",  "B08",    6, "TAP-306",     None)
   )
 
+  val machineTypeName = Map(
+    1 -> "加締卷取",  // E
+    2 -> "組立",      // G
+    3 -> "老化",      // A
+    4 -> "選別",      // A 左邊四台
+    5 -> "加工切角"   // T, C
+  )
+
   lazy val machineList = machineInfoList.map(_.machineID)
   lazy val ipTable = machineInfoList.map(machineInfo => machineInfo.ip -> machineInfo).toMap
   lazy val idTable = machineInfoList.map(machineInfo => machineInfo.machineID -> machineInfo).toMap
+
+  def getMachineTypeName(machineID: String): Option[String] = {
+    for {
+      machineType <- idTable.get(machineID).map(_.machineType)
+      machineTypeName <- machineTypeName.get(machineType)
+    } yield machineTypeName
+  }
 
   def getErrorDesc(machineID: String, defactID: Int): String = {
     val errorDesc = for {

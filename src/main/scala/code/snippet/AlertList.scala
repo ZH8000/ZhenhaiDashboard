@@ -9,6 +9,7 @@ import net.liftweb.util._
 
 import scala.xml.NodeSeq
 import scala.collection.JavaConversions._
+import java.text.SimpleDateFormat
 
 class AlertList {
 
