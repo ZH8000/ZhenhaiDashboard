@@ -1,0 +1,45 @@
+<div data-lift="Surround?with=default;at=content">
+  <div class="ui page grid">
+    <div class="column">
+
+      <a href="/management/account/add" class="ui right floated labled icon primary button"><i class="plus icon"></i> 新增帳號</a>
+
+      <div style="clear: both; margin-bottom: 20px"></div>
+
+      <div data-lift="lift:msgs?showAll=true">
+        <lift:error_msg class="ui red sys message"></lift:error_msg>
+        <lift:warning_msg class="ui yellow sys message"></lift:warning_msg>
+        <lift:notice_msg class="ui green sys message"></lift:notice_msg>
+      </div>
+
+      <div id="tab" style="margin-top: 1em;" data-lift="WorkerList">
+        <table class="ui celled table">
+          <thead>
+            <tr>
+              <th class="ui center aligned">帳號</th>
+              <th class="ui center aligned">工號</th>
+              <th class="ui center aligned">電子郵件</th>
+              <!-- <th class="ui center aligned">權限</th> -->
+              <th class="ui center aligned">動作</th>
+            </tr>
+          </thead>
+          <tbody data-lift="UserList">
+            <tr id="" class="row">
+              <td class="ui center aligned username">test</td>
+              <td class="ui center aligned workID">1234</td>
+              <td class="ui center aligned email">brianhsu.hsu@gmail.com</td>
+              <!-- <td class="ui center aligned role">系統管理員</td> -->
+              <td>
+                <div class="ui small buttons">
+                  <a href="/management/account/edit/" class="editLink ui icon button"><i class="ui edit icon"></i> 編輯</a>
+                  <div class="or"></div>
+                  <a href="javascript: void(0)" class="ui icon button deleteLink"><i class="ui trash icon"></i> 刪除</a>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
