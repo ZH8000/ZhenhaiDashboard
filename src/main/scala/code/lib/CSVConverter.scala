@@ -29,13 +29,9 @@ object CSVConverter {
     val csvRecords = dataSet.map { record =>
       val csvRecords = fields.map(field => toCSVField(record, field))
       val defactID = (record \\ defactIDField).values.toString
-      val description = for {
-        machineInfo <- MachineInfo.idTable.get(machineID)
-        pinDefine <- MachineInfo.pinDefine.get(machineInfo.model)
-        pinDesc <- pinDefine.get(s"P${defactID}")
-      } yield pinDesc
-
-      (csvRecords ++ List(s""""${description.getOrElse("")}"""")).mkString(",")
+      val description = MachineInfo.getErrorDesc(machineID, defactID.toInt)
+      
+      (csvRecords ++ List(s"$description")).mkString(",")
     }
 
     csvTitle + "\n" + csvRecords.mkString("\n")

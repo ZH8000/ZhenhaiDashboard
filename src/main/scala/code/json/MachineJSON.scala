@@ -82,7 +82,7 @@ object MachineJSON {
     val data = MongoDB.zhenhaiDB("dailyDefact").find(MongoDBObject("mach_id" -> machineID) ++ ("bad_qty" $gt 0))
     val dataJSON = data.toList.sortWith(byTimestamp).map { entry =>
       ("time" -> entry("timestamp").toString) ~
-      ("defact_id" -> entry("defact_id").toString.toLong) ~
+      ("defact_id" -> MachineInfo.getErrorDesc(machineID, entry("defact_id").toString.toInt)) ~
       ("bad_qty" -> entry("bad_qty").toString.toLong)
     }
 

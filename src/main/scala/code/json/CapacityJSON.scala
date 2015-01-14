@@ -127,7 +127,7 @@ object CapacityJSON extends JsonReport {
 
     val jsonData = data.map { entry => 
       ("timestamp" -> entry("timestamp").toString) ~
-      ("defact_id" -> entry("defact_id").toString) ~
+      ("defact_id" -> MachineInfo.getErrorDesc(machineID, entry("defact_id").toString.toInt)) ~
       ("count_qty" -> entry("count_qty").toString.toLong) ~
       ("bad_qty" -> entry("bad_qty").toString.toLong)
     }

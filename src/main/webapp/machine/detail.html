@@ -87,13 +87,7 @@
             'extractors': [
               function (data) { return data.time; },
               function (data) { return data.bad_qty; },
-              function (data) { 
-                var model = machineModel[machineID];
-                var eventTable = pinDefine[model];
-                var pin = eventTable ? eventTable["P" + data.defact_id ] : "";
-                return data.bad_qty == 0 ? "" : "[" + data.defact_id + "] " + pin;
-              }
-
+              function (data) { return data.defact_id; }
             ]
           };
 
@@ -104,6 +98,7 @@
 
         }).always(function() {
           $('#tableLoadingIndicator').hide();
+          $('#loadingIndicator').hide();
         }).error(function() {
           $('#notFoundBlock').show();
           $('#pieChart').hide();
