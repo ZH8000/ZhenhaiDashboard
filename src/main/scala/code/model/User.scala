@@ -37,5 +37,18 @@ class User extends MongoRecord[User] with ObjectIdPk[User] {
   val permission = new StringField(this, "administrator")
   val createdAt = new DateTimeField(this)
   val updateAt = new DateTimeField(this)
+
+  def hasPermission(requiredPermission: PermissionContent.Value): Boolean = {
+
+    permission.get match {
+      case "administrator" => true
+      case _ =>
+        val permissions = Permission.find("permissionName", permission.toString)
+                                    .map(_.permissionContent.get)
+                                    .openOr(Nil)
+
+        permissions.contains(requiredPermission.toString)
+    }
+  }
 }
 

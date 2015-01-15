@@ -1,4 +1,15 @@
 <div data-lift="Surround?with=default;at=content">
+  
+  <div class="ui page one column grid">
+    <div class="column">
+      <div data-lift="lift:msgs?showAll=true">
+        <lift:error_msg class="ui red sys message"></lift:error_msg>
+        <lift:warning_msg class="ui yellow sys message"></lift:warning_msg>
+        <lift:notice_msg class="ui green sys message"></lift:notice_msg>
+      </div>
+    </div>
+  </div>
+
   <div class="ui paddingTop grid" data-lift="Dashboard.reportLink">
     <div class="ten wide column">
       <div class="center aligned three column ui stackable responsiveIcon grid">

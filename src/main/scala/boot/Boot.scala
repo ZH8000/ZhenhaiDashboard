@@ -14,18 +14,23 @@ import net.liftweb.mongodb.MongoDB
 import net.liftweb.sitemap._
 import net.liftweb.sitemap.Loc.EarlyResponse
 import net.liftweb.sitemap.Loc.If
+import net.liftweb.sitemap.Loc.Unless
 import net.liftweb.sitemap.Loc.Template
 import net.liftweb.util.BasicTypesHelpers._
 import net.liftweb.util.DefaultConnectionIdentifier
 import net.liftweb.util.Props.RunModes
 
 import scala.xml.NodeSeq
+import code.lib._
 
 class Boot 
 {
   private def getTemplate(path: String) = Template(() => Templates(path.split("/").toList) openOr NodeSeq.Empty)
   private def needLogin = If(() => User.isLoggedIn, () => S.redirectTo("/", () => S.error("請先登入")))
-  //private def needLogin = If(() => true, () => S.redirectTo("/", () => S.error("請先登入")))
+  private def hasPermission(permission: PermissionContent.Value) = If(
+    () => { User.CurrentUser.get.map(_.hasPermission(permission)).openOr(false) }, 
+    () => S.redirectTo("/", () => S.error("權限不足"))
+  )
 
   private def redirectToDashboardIfLoggedIn = If(() => !User.isLoggedIn, () => S.redirectTo("/dashboard"))
   private def logout = EarlyResponse{ () =>
@@ -53,56 +58,198 @@ class Boot
     Menu("Alert") / "alert" / "alertDate" >> needLogin,
     Menu("Alert") / "alert" / "alert" / * >> getTemplate("alert/alert") >> needLogin,
     Menu("Alive") / "alive",
-    Menu("Capacity1") / "capacity" >> getTemplate("capacity/overview") >> needLogin,
-    Menu("Capacity2") / "capacity" / * >> getTemplate("capacity/overview") >> needLogin,
-    Menu("Capacity3") / "capacity" / * / * >> getTemplate("capacity/overview") >> needLogin,
-    Menu("Capacity4") / "capacity" / * / * / * / * >> getTemplate("capacity/overview") >> needLogin,
-    Menu("Capacity5") / "capacity" / * / * / * / * / * >> getTemplate("capacity/overview") >> needLogin,
-    Menu("Capacity6") / "capacity" / * / * / * / * / * / * >> getTemplate("capacity/overview") >> needLogin,
-    Menu("Capacity7") / "capacity" / * / * / * / * / * / * / * >> getTemplate("capacity/machine") >> needLogin,
-    Menu("Total1") / "total" >> getTemplate("total/overview") >> needLogin,
-    Menu("Total2") / "total" / * >> getTemplate("total/phi") >> needLogin,
-    Menu("Total3") / "total" / * / * >> getTemplate("total/overview") >> needLogin,
-    Menu("Total3") / "total" / * / * / * >> getTemplate("total/overview") >> needLogin,
-    Menu("Total4") / "total" / * / * / * / * >> getTemplate("total/overview") >> needLogin,
-    Menu("Total5") / "total" / * / * / * / * / * >> getTemplate("total/overview") >> needLogin,
-    Menu("Total6") / "total" / * / * / * / * / * / * >> getTemplate("total/overview") >> needLogin,
-    Menu("Total7") / "total" / * / * / * / * / * / * / * >> getTemplate("total/machine") >> needLogin,
-    Menu("Monthly1") / "monthly" / * >> getTemplate("monthly/overview") >> needLogin,
-    Menu("Monthly2") / "monthly" / * / * >> getTemplate("monthly/overview") >> needLogin,
-    Menu("Monthly3") / "monthly" / * / * / * >> getTemplate("monthly/overview") >> needLogin,
-    Menu("Monthly4") / "monthly" / * / * / * / * >> getTemplate("monthly/overview") >> needLogin,
-    Menu("Monthly5") / "monthly" / * / * / * / * / * >> getTemplate("monthly/overview") >> needLogin,
-    Menu("Monthly6") / "monthly" / * / * / * / * / * / * >> getTemplate("monthly/machine") >> needLogin,
-    Menu("Daily1") / "daily" / * / * >> getTemplate("daily/overview") >> needLogin,
-    Menu("Daily2") / "daily" / * / * / * >> getTemplate("daily/overview") >> needLogin,
-    Menu("Daily3") / "daily" / * / * / * / * >> getTemplate("daily/overview") >> needLogin,
-    Menu("Daily4") / "daily" / * / * / * / * / * >> getTemplate("daily/machine") >> needLogin,
-    Menu("Machine1") / "machine" >> getTemplate("machine/index") >> needLogin,
-    Menu("Machine2") / "machine" / * >> getTemplate("machine/overview") >> needLogin,
-    Menu("Machine3") / "machine" / * / * >> getTemplate("machine/overview") >> needLogin,
-    Menu("Machine4") / "machine" / * / * / * >> getTemplate("machine/detail") >> needLogin,
-    Menu("Managemen1") / "management" / "index" >> needLogin,
-    Menu("Managemen2") / "management" / "workers" / "add" >> needLogin,
-    Menu("Managemen3") / "management" / "workers" / "index" >> needLogin,
-    Menu("Managemen4") / "management" / "workers" / "barcode" >> Worker.barcodePDF,
-    editWorkerMenu / "management" / "workers" / "edit" / * >> getTemplate("management/workers/edit") >> needLogin,
-    Menu("Managemen5") / "management" / "alarms" / "add" >> needLogin,
-    Menu("Managemen6") / "management" / "alarms" / "index" >> needLogin,
-    editAlarmMenu / "management" / "alarms" / "edit" / * >> getTemplate("management/alarms/edit") >> needLogin,
-    Menu("Managemen7") / "management" / "account" / "index" >> needLogin,
-    Menu("Managemen8") / "management" / "account" / "add" >> needLogin,
-    Menu("Managemen8") / "management" / "account" / "addPermission" >> needLogin,
-    Menu("Workers") / "workers" / "index" >> needLogin,
-    Menu("Workers1") / "workers" / * >> getTemplate("workers/worker") >> needLogin,
-    Menu("Workers2") / "workers" / * / * >> getTemplate("workers/weekly") >> needLogin,
-    Menu("Workers3") / "workers" / * / * / * >> getTemplate("workers/daily") >> needLogin,
-    Menu("Workers4") / "workers" / * / * / * / * >> getTemplate("workers/detail") >> needLogin,
-    Menu("machineLevel") / "management" / "machineLevel" >> needLogin,
-    Menu("TodayOrder") / "todayOrder" >> needLogin,
-    Menu("OrderStatus") / "orderStatus" >> needLogin,
-    Menu("MachineMaintainLog") / "machineMaintainLog"
+    Menu("Capacity1") / "capacity" 
+      >> getTemplate("capacity/overview") 
+      >> needLogin 
+      >> hasPermission(PermissionContent.ReportCapacity),
+    Menu("Capacity2") / "capacity" / * 
+      >> getTemplate("capacity/overview") 
+      >> needLogin 
+      >> hasPermission(PermissionContent.ReportCapacity),
+    Menu("Capacity3") / "capacity" / * / * 
+      >> getTemplate("capacity/overview") 
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportCapacity),
+    Menu("Capacity4") / "capacity" / * / * / * / * 
+      >> getTemplate("capacity/overview") 
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportCapacity),
+    Menu("Capacity5") / "capacity" / * / * / * / * / * 
+      >> getTemplate("capacity/overview") 
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportCapacity),
+    Menu("Capacity6") / "capacity" / * / * / * / * / * / * 
+      >> getTemplate("capacity/overview") 
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportCapacity),
+    Menu("Capacity7") / "capacity" / * / * / * / * / * / * / * 
+      >> getTemplate("capacity/machine") 
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportCapacity),
+ 
+    Menu("Total1") / "total" 
+      >> getTemplate("total/overview") 
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportPhi),
+    Menu("Total2") / "total" / * 
+      >> getTemplate("total/phi") 
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportPhi),
+    Menu("Total3") / "total" / * / * 
+      >> getTemplate("total/overview") 
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportPhi),
+    Menu("Total3") / "total" / * / * / * 
+      >> getTemplate("total/overview") 
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportPhi),
+    Menu("Total4") / "total" / * / * / * / * 
+      >> getTemplate("total/overview") 
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportPhi),
+    Menu("Total5") / "total" / * / * / * / * / * 
+      >> getTemplate("total/overview") 
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportPhi),
+    Menu("Total6") / "total" / * / * / * / * / * / * 
+      >> getTemplate("total/overview") 
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportPhi),
+    Menu("Total7") / "total" / * / * / * / * / * / * / * 
+      >> getTemplate("total/machine") 
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportPhi),
+ 
+    Menu("Monthly1") / "monthly" / *
+      >> getTemplate("monthly/overview") 
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportMonthly),
+    Menu("Monthly2") / "monthly" / * / * 
+      >> getTemplate("monthly/overview") 
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportMonthly),
+    Menu("Monthly3") / "monthly" / * / * / * 
+      >> getTemplate("monthly/overview") 
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportMonthly),
+    Menu("Monthly4") / "monthly" / * / * / * / * 
+      >> getTemplate("monthly/overview") 
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportMonthly),
+    Menu("Monthly5") / "monthly" / * / * / * / * / * 
+      >> getTemplate("monthly/overview") 
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportMonthly),
+    Menu("Monthly6") / "monthly" / * / * / * / * / * / * 
+      >> getTemplate("monthly/machine") 
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportMonthly),
 
+    Menu("Daily1") / "daily" / * / * 
+      >> getTemplate("daily/overview") 
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportDaily),
+    Menu("Daily2") / "daily" / * / * / * 
+      >> getTemplate("daily/overview") 
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportDaily),
+    Menu("Daily3") / "daily" / * / * / * / * 
+      >> getTemplate("daily/overview") 
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportDaily),
+    Menu("Daily4") / "daily" / * / * / * / * / * 
+      >> getTemplate("daily/machine") 
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportDaily),
+ 
+    Menu("Machine1") / "machine" 
+      >> getTemplate("machine/index") 
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportBug),
+    Menu("Machine2") / "machine" / * 
+      >> getTemplate("machine/overview") 
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportBug),
+    Menu("Machine3") / "machine" / * / * 
+      >> getTemplate("machine/overview") 
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportBug),
+    Menu("Machine4") / "machine" / * / * / * 
+      >> getTemplate("machine/detail") 
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportBug),
+ 
+    Menu("Managemen1") / "management" / "index" 
+      >> needLogin
+      >> hasPermission(PermissionContent.ManagementWorker),
+    Menu("Managemen2") / "management" / "workers" / "add" 
+      >> needLogin
+      >> hasPermission(PermissionContent.ManagementWorker),
+    Menu("Managemen3") / "management" / "workers" / "index" 
+      >> needLogin
+      >> hasPermission(PermissionContent.ManagementWorker),
+    Menu("Managemen4") / "management" / "workers" / "barcode" 
+      >> needLogin
+      >> Worker.barcodePDF
+      >> hasPermission(PermissionContent.ManagementWorker),
+    editWorkerMenu / "management" / "workers" / "edit" / * 
+      >> getTemplate("management/workers/edit") 
+      >> needLogin
+      >> hasPermission(PermissionContent.ManagementWorker),
+
+    Menu("Managemen5") / "management" / "alarms" / "add" 
+      >> needLogin
+      >> hasPermission(PermissionContent.ManagementAlarm),
+    Menu("Managemen6") / "management" / "alarms" / "index" 
+      >> needLogin
+      >> hasPermission(PermissionContent.ManagementAlarm),
+    editAlarmMenu / "management" / "alarms" / "edit" / * 
+      >> getTemplate("management/alarms/edit") 
+      >> needLogin
+      >> hasPermission(PermissionContent.ManagementAlarm),
+ 
+    Menu("Managemen7") / "management" / "account" / "index" 
+      >> needLogin
+      >> hasPermission(PermissionContent.ManagementAccount),
+    Menu("Managemen8") / "management" / "account" / "add" 
+      >> needLogin
+      >> hasPermission(PermissionContent.ManagementAccount),
+    Menu("Managemen8") / "management" / "account" / "addPermission" 
+      >> needLogin
+      >> hasPermission(PermissionContent.ManagementAccount),
+ 
+    Menu("Workers") / "workers" / "index" 
+      >> needLogin
+      >> hasPermission(PermissionContent.ManagementWorker),
+    Menu("Workers1") / "workers" / * 
+      >> getTemplate("workers/worker") 
+      >> needLogin
+      >> hasPermission(PermissionContent.ManagementWorker),
+    Menu("Workers2") / "workers" / * / * 
+      >> getTemplate("workers/weekly") 
+      >> needLogin
+      >> hasPermission(PermissionContent.ManagementWorker),
+    Menu("Workers3") / "workers" / * / * / * 
+      >> getTemplate("workers/daily") 
+      >> needLogin
+      >> hasPermission(PermissionContent.ManagementWorker),
+    Menu("Workers4") / "workers" / * / * / * / * 
+      >> getTemplate("workers/detail") 
+      >> needLogin
+      >> hasPermission(PermissionContent.ManagementWorker),
+ 
+    Menu("machineLevel") / "management" / "machineLevel" 
+      >> needLogin
+      >> hasPermission(PermissionContent.ManagementMachineLevel),
+    Menu("TodayOrder") / "todayOrder" 
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportTodayOrder),
+    Menu("OrderStatus") / "orderStatus" 
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportOrderStatus),
+    Menu("MachineMaintainLog") / "machineMaintainLog"
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportMaintainLog)
   )
 
   val ensureLogin: PartialFunction[Req, Unit] = {
