@@ -10,6 +10,8 @@ import net.liftweb.mongodb.record.MongoMetaRecord
 import net.liftweb.mongodb.record.field._
 import net.liftweb.record.field._
 
+import code.lib._
+import net.liftweb.http.S
 
 object User extends User with MongoMetaRecord[User] {
 
@@ -32,8 +34,21 @@ class User extends MongoRecord[User] with ObjectIdPk[User] {
   val employeeID = new StringField(this, 20)
   val email = new EmailField(this, 255)
   val password = new PasswordField(this)
-  val role = new StringField(this, "administrator")
+  val permission = new StringField(this, "administrator")
   val createdAt = new DateTimeField(this)
   val updateAt = new DateTimeField(this)
+
+  def hasPermission(requiredPermission: PermissionContent.Value): Boolean = {
+
+    permission.get match {
+      case "administrator" => true
+      case _ =>
+        val permissions = Permission.find("permissionName", permission.toString)
+                                    .map(_.permissionContent.get)
+                                    .openOr(Nil)
+
+        permissions.contains(requiredPermission.toString)
+    }
+  }
 }
 
