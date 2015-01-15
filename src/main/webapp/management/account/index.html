@@ -3,6 +3,7 @@
     <div class="column">
 
       <a href="/management/account/add" class="ui right floated labled icon primary button"><i class="plus icon"></i> 新增帳號</a>
+      <a href="/management/account/addPermission" class="ui right floated labled icon primary button"><i class="plus icon"></i> 新增權限</a>
 
       <div style="clear: both; margin-bottom: 20px"></div>
 
@@ -12,32 +13,79 @@
         <lift:notice_msg class="ui green sys message"></lift:notice_msg>
       </div>
 
-      <div id="tab" style="margin-top: 1em;" data-lift="WorkerList">
-        <table class="ui celled table">
-          <thead>
-            <tr>
-              <th class="ui center aligned">帳號</th>
-              <th class="ui center aligned">工號</th>
-              <th class="ui center aligned">電子郵件</th>
-              <!-- <th class="ui center aligned">權限</th> -->
-              <th class="ui center aligned">動作</th>
-            </tr>
-          </thead>
-          <tbody data-lift="UserList">
-            <tr id="" class="row">
-              <td class="ui center aligned username">test</td>
-              <td class="ui center aligned workID">1234</td>
-              <td class="ui center aligned email">brianhsu.hsu@gmail.com</td>
-              <!-- <td class="ui center aligned role">系統管理員</td> -->
-              <td>
-                <div class="ui small buttons">
-                  <a href="javascript: void(0)" class="ui icon button deleteLink"><i class="ui trash icon"></i> 刪除</a>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="ui top attached tabular menu" style="padding-top: 2em;">
+        <div class="active item" data-tab="account">帳號</div>
+        <div class="item" data-tab="permission">權限</div>
       </div>
+
+      <div class="ui bottom attached active tab segment" data-tab="account">
+        <div id="tab" style="margin-top: 1em;">
+          <table class="ui celled table">
+            <thead>
+              <tr>
+                <th class="ui center aligned">帳號</th>
+                <th class="ui center aligned">工號</th>
+                <th class="ui center aligned">電子郵件</th>
+                <th class="ui center aligned">權限</th>
+                <th class="ui center aligned">動作</th>
+              </tr>
+            </thead>
+            <tbody data-lift="UserList">
+              <tr id="" class="row">
+                <td class="ui center aligned username">test</td>
+                <td class="ui center aligned workID">1234</td>
+                <td class="ui center aligned email">brianhsu.hsu@gmail.com</td>
+                <td class="ui center aligned permission">系統管理員</td>
+                <td>
+                  <div class="ui small buttons">
+                    <a href="javascript: void(0)" class="ui icon button deleteLink"><i class="ui trash icon"></i> 刪除</a>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="ui bottom attached tab segment" data-tab="permission">
+ 
+        <div id="tab" style="margin-top: 1em;">
+          <table class="ui celled table">
+            <thead>
+              <tr>
+                <th class="ui center aligned">權限名稱</th>
+                <th class="ui center aligned">允許功能</th>
+                <th class="ui center aligned">動作</th>
+              </tr>
+            </thead>
+            <tbody data-lift="PermissionList">
+              <tr>
+                <td class="ui center aligned permissionName">administrator</td>
+                <td class="ui aligned permissionContent">最高權限</td>
+                <td></td>
+              </tr>
+              <tr id="" class="row">
+                <td class="ui center aligned permissionName">administrator</td>
+                <td class="ui aligned">
+                  <div class="permissionContent">
+                    <input type="checkbox" class="checkbox"></input> 
+                    <span class="checkboxLabel">某權限</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="ui small buttons">
+                    <a href="javascript: void(0)" class="ui icon button deleteLink"><i class="ui trash icon"></i> 刪除</a>
+                  </div>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+      <script>
+$('.menu .item').tab();
+      </script>
     </div>
   </div>
 </div>

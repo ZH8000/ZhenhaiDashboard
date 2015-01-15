@@ -1,0 +1,55 @@
+<div data-lift="Surround?with=default;at=content">
+  <div class="ui page grid">
+
+    <div class="column">
+
+      <div data-lift="lift:msgs?showAll=true">
+        <lift:error_msg class="ui red sys message"></lift:error_msg>
+        <lift:warning_msg class="ui yellow sys message"></lift:warning_msg>
+        <lift:notice_msg class="ui green sys message"></lift:notice_msg>
+      </div>
+
+      <form class="ui form segment" id="addPermissionForm" data-lift="PermissionAdd?form=post">
+        <div class="field">
+          <label>權限名稱</label>
+          <div class="ui input">
+            <input type="text" name="permissionName" id="permissionName">
+          </div>
+        </div>
+        <div class="field">
+          <label>允許路徑</label>
+          <div class="ui input">
+            <textarea rows="20" type="text" name="permissionContent" id="permissionContent"></textarea>
+          </div>
+        </div>
+        <input class="ui right floated blue submit button" type="submit" value="新增權限" id="submitButton"/>
+      </form> 
+    </div>
+  </div>
+  <script>
+    $(function() {
+      var validations = {
+        "permissionName": {
+          "identifier": "permissionName",
+          "rules": [{
+            "type": "empty",
+            "prompt": "請輸入權限名稱"
+          }]
+        },
+        "permissionContent": {
+          "identifier": "permissionContent",
+          "rules": [{
+            "type": "empty",
+            "prompt": "請輸入允許路徑"
+          }]
+        }
+      }
+
+      $("#addPermissionForm").form(validations, {on: "blur", inline: true, onSuccess : function(){
+        $("#submitButton").click();
+        return true;
+      }})
+    })
+  </script>
+
+</div>

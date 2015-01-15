@@ -92,6 +92,7 @@ class Boot
     editAlarmMenu / "management" / "alarms" / "edit" / * >> getTemplate("management/alarms/edit") >> needLogin,
     Menu("Managemen7") / "management" / "account" / "index" >> needLogin,
     Menu("Managemen8") / "management" / "account" / "add" >> needLogin,
+    Menu("Managemen8") / "management" / "account" / "addPermission" >> needLogin,
     Menu("Workers") / "workers" / "index" >> needLogin,
     Menu("Workers1") / "workers" / * >> getTemplate("workers/worker") >> needLogin,
     Menu("Workers2") / "workers" / * / * >> getTemplate("workers/weekly") >> needLogin,

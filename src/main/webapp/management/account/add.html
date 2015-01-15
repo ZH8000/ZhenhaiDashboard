@@ -29,6 +29,15 @@
           </div>
         </div>
         <div class="field">
+          <label>權限</label>
+          <div class="ui input">
+            <select class="ui dropdown" id="permissionSelect">
+              <option value="administrator">系統管理員</option>
+              <option class="permissionItem" value="permission">Permission</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
           <label>密碼</label>
           <div class="ui input">
             <input type="password" name="password" id="password">
@@ -100,6 +109,7 @@
         }
       }
 
+      $('select.dropdown').dropdown();
       $("#addUserForm").form(validations, {on: "blur", inline: true, onSuccess : function(){
         $("#submitButton").click();
         return true;
