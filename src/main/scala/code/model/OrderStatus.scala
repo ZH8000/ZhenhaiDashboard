@@ -15,7 +15,6 @@ class OrderStatus extends MongoRecord[OrderStatus] with ObjectIdPk[OrderStatus] 
   def meta = OrderStatus
 
   val lastUpdated = new DateField(this)
-  val customer = new StringField(this, 100)
   val lotNo = new StringField(this, 100)
   val product = new StringField(this, 20)
   val inputCount = new LongField(this)

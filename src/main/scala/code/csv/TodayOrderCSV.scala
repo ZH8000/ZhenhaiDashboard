@@ -13,10 +13,10 @@ object TodayOrderCSV {
   def apply() = {
     val todayOrders = DailyOrder.findAll("timestamp", dateFormatter.format(today.getTime)).sortWith(_.lotNo.get < _.lotNo.get)
     val lines = todayOrders.map { record =>
-      s""""${record.lotNo}","${record.order}","${record.customer}","${record.product}","${record.status}""""
+      s""""${record.lotNo}","${record.order}","${record.product}","${record.status}""""
     }
 
-    s""""製令編號","訂單","客戶名稱","產品","生產狀態"""" + "\n" + lines.mkString("\n")
+    s""""製令編號","訂單","產品","生產狀態"""" + "\n" + lines.mkString("\n")
   }
 
 }

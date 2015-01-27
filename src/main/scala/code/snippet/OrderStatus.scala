@@ -10,7 +10,7 @@ import scala.xml.NodeSeq
 
 class OrderStatus {
 
-  val orderStatus = OrderStatus.findAll.sortWith(_.customer.get < _.customer.get)
+  val orderStatus = OrderStatus.findAll.sortWith(_.lotNo.get < _.lotNo.get)
 
   def showEmptyBox() = {
     S.error("目前無客戶訂單資料")
@@ -32,7 +32,6 @@ class OrderStatus {
           val step4Percent = scala.math.min(((record.step4.get.toDouble / requireCount) * 100).toLong, 100)
           val step5Percent = scala.math.min(((record.step5.get.toDouble / requireCount) * 100).toLong, 100)
 
-          ".customer *" #> record.customer &
           ".lotNo *" #> record.lotNo &
           ".product *" #> record.product &
           ".inputCount *" #> record.inputCount &
