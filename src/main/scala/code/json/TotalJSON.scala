@@ -60,7 +60,7 @@ object TotalJSON extends JsonReport {
     val startDate = f"$year-$month%02d"
     val endDate = f"$year-${month+1}%02d"
 
-    val data = MongoDB.zhenhaiDB(s"product-$productName").find("timestamp" $gte startDate $lt endDate).filter(_("machineTypeTitle") == step)
+    val data = MongoDB.zhenhaiDB(s"product-$productName").find("shiftDate" $gte startDate $lt endDate).filter(_("machineTypeTitle") == step)
 
     val dataByWeek = data.toList.groupBy(getWeek).mapValues(getSumQty)
     val sortedData = dataByWeek.toList.sortBy(_._1)
@@ -78,7 +78,7 @@ object TotalJSON extends JsonReport {
     val startDate = f"$year-$month%02d-01"
     val endDate = f"$year-${month+1}%02d-01"
 
-    val data = MongoDB.zhenhaiDB(s"product-$productName").find("timestamp" $gte startDate $lt endDate).filter(_("machineTypeTitle") == step)
+    val data = MongoDB.zhenhaiDB(s"product-$productName").find("shiftDate" $gte startDate $lt endDate).filter(_("machineTypeTitle") == step)
     val dataInWeek = data.filter { entry => 
       val Array(year, month, date) = entry("timestamp").toString.split("-").map(_.toInt)
       DateUtils.getWeek(year, month, date) == week
@@ -100,7 +100,7 @@ object TotalJSON extends JsonReport {
     val startDate = f"$year-$month%02d-${date}%02d"
     val endDate = f"$year-$month%02d-${date+1}%02d"
 
-    val data = MongoDB.zhenhaiDB(s"product-$productName").find("timestamp" $gte startDate $lt endDate).filter(_("machineTypeTitle") == step)
+    val data = MongoDB.zhenhaiDB(s"product-$productName").find("shiftDate" $gte startDate $lt endDate).filter(_("machineTypeTitle") == step)
     val dataByMachine = data.toList.groupBy(getMachineID).mapValues(getSumQty)
     val sortedData = dataByMachine.toList.sortBy(_._1)
     val sortedJSON = sortedData.map{ case (machineID, value) =>
@@ -114,7 +114,7 @@ object TotalJSON extends JsonReport {
 
   def apply(productName: String, year: Int, month: Int, week: Int, date: Int, machineID: String): JValue = {
 
-    val cacheTableName = f"$year-$month%02d-$date%02d"
+    val cacheTableName = f"shift-$year-$month%02d-$date%02d"
     val data = 
       MongoDB.zhenhaiDB(cacheTableName).
               find(MongoDBObject("product" -> productName, "mach_id" -> machineID)).

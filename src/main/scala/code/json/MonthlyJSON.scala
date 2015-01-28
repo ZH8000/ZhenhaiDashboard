@@ -16,7 +16,7 @@ object MonthlyJSON extends JsonReport {
     val startDate = f"$year-"
     val endDate = f"${year+1}-"
 
-    val data = MongoDB.zhenhaiDB("daily").find("timestamp" $gte startDate $lt endDate)
+    val data = MongoDB.zhenhaiDB("daily").find("shiftDate" $gte startDate $lt endDate)
     val dataByStep = data.toList.groupBy(getMachineTypeTitle).mapValues(getSumQty)
     val orderedKey = List("加締卷取", "組立", "老化", "選別", "加工切角")
 
@@ -34,7 +34,7 @@ object MonthlyJSON extends JsonReport {
     val startDate = f"$year-"
     val endDate = f"${year+1}-"
 
-    val data = MongoDB.zhenhaiDB("daily").find("timestamp" $gte startDate $lt endDate).filter(_("machineTypeTitle") == step)
+    val data = MongoDB.zhenhaiDB("daily").find("shiftDate" $gte startDate $lt endDate).filter(_("machineTypeTitle") == step)
     val dataByMonth = data.toList.groupBy(getYearMonth).mapValues(getSumQty)
 
     val sortedData = dataByMonth.toList.sortBy(_._1)
@@ -53,7 +53,7 @@ object MonthlyJSON extends JsonReport {
     val startDate = f"$year-$month%02d"
     val endDate = f"$year-${month+1}%02d"
 
-    val data = MongoDB.zhenhaiDB("daily").find("timestamp" $gte startDate $lt endDate).filter(_("machineTypeTitle") == step)
+    val data = MongoDB.zhenhaiDB("daily").find("shiftDate" $gte startDate $lt endDate).filter(_("machineTypeTitle") == step)
     val dataByWeek = data.toList.groupBy(getWeek).mapValues(getSumQty)
     val sortedData = dataByWeek.toList.sortBy(_._1)
     val sortedJSON = sortedData.map{ case (week, value) =>
@@ -71,9 +71,9 @@ object MonthlyJSON extends JsonReport {
     val startDate = f"$year-$month%02d-01"
     val endDate = f"$year-${month+1}%02d-01"
 
-    val data = MongoDB.zhenhaiDB(s"daily").find("timestamp" $gte startDate $lt endDate).filter(_("machineTypeTitle") == step)
+    val data = MongoDB.zhenhaiDB(s"daily").find("shiftDate" $gte startDate $lt endDate).filter(_("machineTypeTitle") == step)
     val dataInWeek = data.filter { entry => 
-      val Array(year, month, date) = entry("timestamp").toString.split("-").map(_.toInt)
+      val Array(year, month, date) = entry("shiftDate").toString.split("-").map(_.toInt)
       DateUtils.getWeek(year, month, date) == week
     }
 
@@ -94,7 +94,7 @@ object MonthlyJSON extends JsonReport {
     val startDate = f"$year-$month%02d-${date}%02d"
     val endDate = f"$year-$month%02d-${date+1}%02d"
 
-    val data = MongoDB.zhenhaiDB(s"daily").find("timestamp" $gte startDate $lt endDate).filter(_("machineTypeTitle") == step)
+    val data = MongoDB.zhenhaiDB(s"daily").find("shiftDate" $gte startDate $lt endDate).filter(_("machineTypeTitle") == step)
     val dataByMachine = data.toList.groupBy(getMachineID).mapValues(getSumQty)
 
     val sortedData = dataByMachine.toList.sortBy(_._1)
@@ -110,7 +110,7 @@ object MonthlyJSON extends JsonReport {
 
   def apply(year: Int, month: Int, week: Int, date: Int, machineID: String): JValue = {
 
-    val cacheTableName = f"$year-$month%02d-$date%02d"
+    val cacheTableName = f"shift-$year-$month%02d-$date%02d"
     val data = 
       MongoDB.zhenhaiDB(cacheTableName).
               find(MongoDBObject("mach_id" -> machineID)).

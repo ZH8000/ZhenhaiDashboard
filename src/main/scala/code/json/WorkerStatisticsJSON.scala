@@ -14,7 +14,7 @@ object WorkerStatisticsJSON {
   case class TitleRecord[T](title: T, countQty: Long)
 
   def isDeleted(workerMongoID: String) = getWorker(workerMongoID).map(_.isDeleted.get).getOrElse(true)
-  def getMonthlyTimestamp(record: WorkerDaily) = record.timestamp.get.substring(0, 7)
+  def getMonthlyTimestamp(record: WorkerDaily) = record.shiftDate.get.substring(0, 7)
   def getWorker(workerMongoID: String) = Worker.find(workerMongoID)
   def getWeek(dateString: String) = {
     val dateFormatter = new SimpleDateFormat("yyyy-MM-dd")
@@ -44,8 +44,8 @@ object WorkerStatisticsJSON {
   }
 
   def apply(workerMongoID: String, yearAndMonth: String) = {
-    val recordInMonth = WorkerDaily.findAll("workerMongoID", workerMongoID).filter(_.timestamp.get.startsWith(yearAndMonth))
-    val recordByWeeks = recordInMonth.groupBy(record => getWeek(record.timestamp.get))
+    val recordInMonth = WorkerDaily.findAll("workerMongoID", workerMongoID).filter(_.shiftDate.get.startsWith(yearAndMonth))
+    val recordByWeeks = recordInMonth.groupBy(record => getWeek(record.shiftDate.get))
     val records = for {
       (week, records) <- recordByWeeks
       countQtys = records.map(_.countQty.get)
@@ -58,9 +58,9 @@ object WorkerStatisticsJSON {
 
     val recordInMonth = WorkerDaily
                           .findAll("workerMongoID", workerMongoID)
-                          .filter(x => x.timestamp.get.startsWith(yearAndMonth) && getWeek(x.timestamp.get).toString == week)
+                          .filter(x => x.shiftDate.get.startsWith(yearAndMonth) && getWeek(x.shiftDate.get).toString == week)
 
-    val recordByDate = recordInMonth.groupBy(_.timestamp.get)
+    val recordByDate = recordInMonth.groupBy(_.shiftDate.get)
     val records = for {
       (date, records) <- recordByDate
       countQtys = records.map(_.countQty.get)
@@ -74,7 +74,7 @@ object WorkerStatisticsJSON {
 
     val recordInDate = WorkerDaily
                           .findAll("workerMongoID", workerMongoID)
-                          .filter(x => x.timestamp.get == s"$yearAndMonth-$date")
+                          .filter(x => x.shiftDate.get == s"$yearAndMonth-$date")
 
     val records = recordInDate.map(x => TitleRecord(x.machineID.get, x.countQty.get))
 

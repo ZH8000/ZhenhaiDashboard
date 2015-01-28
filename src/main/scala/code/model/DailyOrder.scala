@@ -15,6 +15,7 @@ class DailyOrder extends MongoRecord[DailyOrder] with ObjectIdPk[DailyOrder] {
   def meta = DailyOrder
 
   val timestamp = new StringField(this, 10)
+  val shiftDate = new StringField(this, 10)
   val lotNo = new StringField(this, 100)
   val order = new StringField(this, 100)
   val product = new StringField(this, 100)

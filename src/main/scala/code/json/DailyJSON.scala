@@ -17,7 +17,7 @@ object DailyJSON extends JsonReport {
     val startDate = f"$year-$month%02d"
     val endDate = f"$year-${month+1}%02d"
 
-    val data = MongoDB.zhenhaiDB("daily").find("timestamp" $gte startDate $lt endDate)
+    val data = MongoDB.zhenhaiDB("daily").find("shiftDate" $gte startDate $lt endDate)
     val dataByStep = data.toList.groupBy(getMachineTypeTitle).mapValues(getSumQty)
 
     val orderedKey = List("加締卷取", "組立", "老化", "選別", "加工切角")
@@ -36,7 +36,7 @@ object DailyJSON extends JsonReport {
     val startDate = f"$year-$month%02d"
     val endDate = f"$year-${month+1}%02d"
 
-    val data = MongoDB.zhenhaiDB("daily").find("timestamp" $gte startDate $lt endDate).filter(x => getMachineTypeTitle(x) == step)
+    val data = MongoDB.zhenhaiDB("daily").find("shiftDate" $gte startDate $lt endDate).filter(x => getMachineTypeTitle(x) == step)
     val dataByDate = data.toList.groupBy(getDate).mapValues(getSumQty)
     val sortedData = dataByDate.toList.sortBy(_._1)
     val sortedJSON = sortedData.map{ case (date, value) =>
@@ -53,7 +53,7 @@ object DailyJSON extends JsonReport {
     val startDate = f"$year-$month%02d-${date}%02d"
     val endDate = f"$year-$month%02d-${date+1}%02d"
 
-    val data = MongoDB.zhenhaiDB(s"daily").find("timestamp" $gte startDate $lt endDate).filter(x => getMachineTypeTitle(x) == step)
+    val data = MongoDB.zhenhaiDB(s"daily").find("shiftDate" $gte startDate $lt endDate).filter(x => getMachineTypeTitle(x) == step)
     val dataByMachine = data.toList.groupBy(getMachineID).mapValues(getSumQty)
 
     val sortedData = dataByMachine.toList.sortBy(_._1)
@@ -68,7 +68,7 @@ object DailyJSON extends JsonReport {
 
   def apply(year: Int, month: Int, step: String, date: Int, machineID: String): JValue = {
 
-    val cacheTableName = f"$year-$month%02d-$date%02d"
+    val cacheTableName = f"shift-$year-$month%02d-$date%02d"
     val data = 
       MongoDB.zhenhaiDB(cacheTableName).
               find(MongoDBObject("mach_id" -> machineID)).
