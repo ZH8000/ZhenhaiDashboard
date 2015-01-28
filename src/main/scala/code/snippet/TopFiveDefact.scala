@@ -18,7 +18,7 @@ class TopFiveDefact {
 
   def render = {
     println(todayString)
-    val topFiveReason = TopReason.findAll("date", "2015-01-13").sortWith(_.bad_qty.get > _.bad_qty.get).take(5)
+    val topFiveReason = TopReason.findAll("date", todayString).sortWith(_.bad_qty.get > _.bad_qty.get).take(5)
 
     ".row" #> topFiveReason.map { reason =>
       ".machineID *"  #> reason.mach_id &
