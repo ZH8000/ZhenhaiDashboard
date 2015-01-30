@@ -92,7 +92,7 @@ class Boot
       >> needLogin
       >> hasPermission(PermissionContent.ReportPhi),
     Menu("Total2") / "total" / * 
-      >> getTemplate("total/phi") 
+      >> getTemplate("total/overview") 
       >> needLogin
       >> hasPermission(PermissionContent.ReportPhi),
     Menu("Total3") / "total" / * / * 
