@@ -34,12 +34,12 @@ trait JsonReport {
   }
 
   def getSumQty(dataList: Iterable[DBObject]) = dataList.map(data => data("count_qty").toString.toLong).sum
-  def getDate(entry: DBObject) = entry("timestamp").toString.split("-")(2).toLong
+  def getDate(entry: DBObject) = entry("shiftDate").toString.split("-")(2).toLong
   def getMachineTypeTitle(entry: DBObject) = entry("machineTypeTitle").toString
   def getMachineID(entry: DBObject) = entry("mach_id").toString
-  def getYearMonth(entry: DBObject) = entry("timestamp").toString.substring(0, 7)
+  def getYearMonth(entry: DBObject) = entry("shiftDate").toString.substring(0, 7)
   def getWeek(entry: DBObject) = {
-    val Array(year, month, date) = entry("timestamp").toString.split("-")
+    val Array(year, month, date) = entry("shiftDate").toString.split("-")
     DateUtils.getWeek(year.toInt, month.toInt, date.toInt)
   }
 }

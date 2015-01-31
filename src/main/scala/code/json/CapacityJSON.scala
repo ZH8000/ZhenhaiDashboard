@@ -120,6 +120,7 @@ object CapacityJSON extends JsonReport {
   def apply(step: String, capacity: String, year: Int, month: Int, week: Int, date: Int, machineID: String): JValue = {
 
     val cacheTableName = f"shift-$year-$month%02d-$date%02d"
+
     val data = 
       MongoDB.zhenhaiDB(cacheTableName).
               find(MongoDBObject("machineTypeTitle" -> step, "mach_id" -> machineID, "capacityRange" -> capacity)).

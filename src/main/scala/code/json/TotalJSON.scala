@@ -80,7 +80,7 @@ object TotalJSON extends JsonReport {
 
     val data = MongoDB.zhenhaiDB(s"product-$productName").find("shiftDate" $gte startDate $lt endDate).filter(_("machineTypeTitle") == step)
     val dataInWeek = data.filter { entry => 
-      val Array(year, month, date) = entry("timestamp").toString.split("-").map(_.toInt)
+      val Array(year, month, date) = entry("shiftDate").toString.split("-").map(_.toInt)
       DateUtils.getWeek(year, month, date) == week
     }
 
