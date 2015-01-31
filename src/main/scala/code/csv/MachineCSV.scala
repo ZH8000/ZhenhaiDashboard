@@ -29,7 +29,7 @@ object MachineCSV {
 
     CSVConverter(
       List("日期", "事件數量", "事件種類"), 
-      List("time", "bad_qty", "defact_id"), 
+      List("time", "event_qty", "defact_id"), 
       machineID,
       "說明", "defact_id",
       jsonData

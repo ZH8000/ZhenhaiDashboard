@@ -17,14 +17,13 @@ class TopFiveDefact {
   val todayString = dateFormatter.format(now)
 
   def render = {
-    println(todayString)
-    val topFiveReason = TopReason.findAll("shiftDate", todayString).sortWith(_.bad_qty.get > _.bad_qty.get).take(5)
+    val topFiveReason = TopReason.findAll("shiftDate", todayString).sortWith(_.event_qty.get > _.event_qty.get).take(5)
 
     ".row" #> topFiveReason.map { reason =>
       ".machineID *"  #> reason.mach_id &
       ".defactID *"   #> MachineInfo.getErrorDesc(reason.mach_id.get, reason.defact_id.get) &
       ".stepTitle *"  #> MachineInfo.getMachineTypeName(reason.mach_id.get) &
-      ".badQty *"     #> reason.bad_qty &
+      ".eventQty *"   #> reason.event_qty &
       ".date *"       #> reason.date
     }
   }

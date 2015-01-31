@@ -16,7 +16,7 @@ class StrangeQty extends MongoRecord[StrangeQty] with ObjectIdPk[StrangeQty] {
 
   val count_qty = new LongField(this)
   val emb_date = new LongField(this)
-  val bad_qty = new LongField(this)
+  val event_qty = new LongField(this)
   val defact_id = new IntField(this)
   val mach_id = new StringField(this, 15)
 }

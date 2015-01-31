@@ -40,7 +40,7 @@ class StrangeQty {
           ".timestamp *" #> dateFormatter.format(new Date(item.emb_date.get * 1000)) &
           ".machineID *" #> item.mach_id &
           ".countQty *"  #> item.count_qty &
-          ".badQty *" #> item.bad_qty &
+          ".badQty *" #> item.event_qty &
           ".defactID *" #> errorDesc
         }
     }

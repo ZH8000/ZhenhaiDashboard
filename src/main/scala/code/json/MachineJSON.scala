@@ -17,11 +17,11 @@ object MachineJSON {
   def getMachineID(entry: DBObject) = entry("mach_id").toString
   def getDefactID(entry: DBObject) = entry("defact_id").toString
 
-  def getSumBadQty(dataList: List[DBObject]) = dataList.map(data => data("bad_qty").toString.toLong).sum
+  def getSumBadQty(dataList: List[DBObject]) = dataList.map(data => data("event_qty").toString.toLong).sum
 
   def overview: JValue = {
 
-    val data = MongoDB.zhenhaiDB("reasonByMachine").find("bad_qty" $gt 0)
+    val data = MongoDB.zhenhaiDB("reasonByMachine").find("event_qty" $gt 0)
     val dataByMachineID = data.toList.groupBy(getMachineType).mapValues(getSumBadQty)
     val dataJSON = dataByMachineID.map{ case (machineType, value) =>
       ("name" -> machineType) ~
@@ -34,7 +34,7 @@ object MachineJSON {
 
   def apply(machineType: String): JValue = {
 
-    val data = MongoDB.zhenhaiDB("reasonByMachine").find(MongoDBObject("mach_type" -> machineType) ++ ("bad_qty" $gt 0))
+    val data = MongoDB.zhenhaiDB("reasonByMachine").find(MongoDBObject("mach_type" -> machineType) ++ ("event_qty" $gt 0))
     val dataByMachineModel = data.toList.groupBy(getMachineModel).mapValues(getSumBadQty)
     val dataJSON = dataByMachineModel.map{ case (machineModel, value) =>
       ("name" -> machineModel) ~
@@ -50,7 +50,7 @@ object MachineJSON {
     val data = MongoDB.zhenhaiDB("reasonByMachine").find(
       MongoDBObject("mach_type" -> machineType) ++ 
       MongoDBObject("mach_model" -> machineModel) ++
-      ("bad_qty" $gt 0)
+      ("event_qty" $gt 0)
     )
     val dataByMachineID = data.toList.groupBy(getMachineID).mapValues(getSumBadQty)
     val dataJSON = dataByMachineID.map{ case (machineID, value) =>
@@ -64,11 +64,11 @@ object MachineJSON {
 
   def detailPie(machineID: String): JValue = {
 
-    val data = MongoDB.zhenhaiDB("dailyDefact").find(MongoDBObject("mach_id" -> machineID) ++ ("bad_qty" $gt 0))
+    val data = MongoDB.zhenhaiDB("dailyDefact").find(MongoDBObject("mach_id" -> machineID) ++ ("event_qty" $gt 0))
     val dataByDefactID = data.toList.groupBy(getDefactID).mapValues(getSumBadQty)
     val sortedData = dataByDefactID.toList.sortBy(_._1.toLong)
     val dataJSON = sortedData.map{ case (defactID, value) =>
-      ("name" -> defactID) ~
+      ("name" -> MachineInfo.getErrorDesc(machineID, defactID.toInt)) ~
       ("value" -> value)
     }
 
@@ -79,11 +79,11 @@ object MachineJSON {
 
     def byTimestamp(objA: DBObject, objB: DBObject) = objA("timestamp").toString < objB("timestamp").toString
 
-    val data = MongoDB.zhenhaiDB("dailyDefact").find(MongoDBObject("mach_id" -> machineID) ++ ("bad_qty" $gt 0))
+    val data = MongoDB.zhenhaiDB("dailyDefact").find(MongoDBObject("mach_id" -> machineID) ++ ("event_qty" $gt 0))
     val dataJSON = data.toList.sortWith(byTimestamp).map { entry =>
       ("time" -> entry("timestamp").toString) ~
       ("defact_id" -> MachineInfo.getErrorDesc(machineID, entry("defact_id").toString.toInt)) ~
-      ("bad_qty" -> entry("bad_qty").toString.toLong)
+      ("event_qty" -> entry("event_qty").toString.toLong)
     }
 
     dataJSON

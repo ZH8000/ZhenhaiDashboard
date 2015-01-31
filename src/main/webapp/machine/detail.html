@@ -74,7 +74,6 @@
           width: 400,
           height: 400,
           radius: 180,
-          threshold: 0,
           extractValue: function(data) { return data.value; },
           extractName: function(data) { return data.name; }
         })
@@ -86,7 +85,7 @@
             'data': data,
             'extractors': [
               function (data) { return data.time; },
-              function (data) { return data.bad_qty; },
+              function (data) { return data.event_qty; },
               function (data) { return data.defact_id; }
             ]
           };

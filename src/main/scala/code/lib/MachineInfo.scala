@@ -1754,7 +1754,46 @@ object MachineInfo {
       "P50" -> "GND"
     )
   )
-  
+
+  val defactDescription = Map(
+    0   -> "短路不良",
+    1   -> "素子卷取不良",
+    2   -> "胶帯贴付不良",
+    3   -> "素子导线棒不良",
+    4   -> "负导线棒不良",
+    5   -> "正导线棒不良",
+    6   -> "卷针定位不良",
+    7   -> "负电解纸无",
+    8   -> "正电解纸无",
+    9   -> "正导线棒测试",
+    10  -> "负导线棒测试",
+    11  -> "无胶带",
+    12  -> "TP轮无定位",
+    13  -> "TP纸带无",
+    14  -> "TP胶带无",
+    15  -> "无正箔",
+    16  -> "无负箔",
+    17  -> "无正导线棒",
+    18  -> "无负导线棒",
+    19  -> "正加締前斷箔",
+    20  -> "正加缔后断箔",
+    21  -> "負加締前斷箔",
+    22  -> "负加缔后断箔",
+    23  -> "正铝箔供给",
+    24  -> "负铝箔供给断箔",
+    25  -> "负铝箔供给",
+    26  -> "正铝箔供给断箔",
+    27  -> "開路不良計數",
+    28  -> "短路不良計數",
+    29  -> "LC不良計數",
+    30  -> "LC2不良計數",
+    31  -> "容量不良計數",
+    32  -> "損失不良計數",
+    33  -> "重測不良計數",
+    34  -> "極性不良"
+  )
+
+
   val machineInfoList = List(
     MachineInfo("192.168.10.1",   "E01",    1, "TSW-100T",    None),
     MachineInfo("192.168.10.2",   "G01",    2, "FTO-2200A",   None),
@@ -2106,12 +2145,6 @@ object MachineInfo {
   }
 
   def getErrorDesc(machineID: String, defactID: Int): String = {
-    val errorDesc = for {
-      machineModel <- idTable.get(machineID).map(_.model)
-      pinDefineMap <- pinDefine.get(machineModel)
-      errorDesc    <- pinDefineMap.get("P" + defactID)
-    } yield s"[$defactID] $errorDesc"
-
-    errorDesc.getOrElse(s"[$defactID]")
+    defactDescription.get(defactID).getOrElse(s"[$defactID]")
   }
 }
