@@ -18,13 +18,16 @@ object DailyJSON extends JsonReport {
     val endDate = f"$year-${month+1}%02d"
 
     val data = MongoDB.zhenhaiDB("daily").find("shiftDate" $gte startDate $lt endDate)
-    val dataByStep = data.toList.groupBy(getMachineTypeTitle).mapValues(getSumQty)
+    val dataByStep = data.toList.groupBy(entry => entry("machineType").toString.toInt).mapValues(getSumQty)
 
-    val orderedKey = List("加締卷取", "組立", "老化", "選別", "加工切角")
+    println("=========>" + data)
+
+    val orderedKey = List(1, 2, 3, 4, 5)
 
     val dataSet = orderedKey.map { case step => 
       val countQty = dataByStep.getOrElse(step, 0L)
-      ("name"  -> step) ~ 
+      val machineTypeName = MachineInfo.machineTypeName.get(step).getOrElse("Unknown")
+      ("name"  -> machineTypeName) ~ 
       ("value" -> countQty) ~ 
       ("link"  -> s"/daily/$year/$month/$step")
     }
@@ -36,7 +39,10 @@ object DailyJSON extends JsonReport {
     val startDate = f"$year-$month%02d"
     val endDate = f"$year-${month+1}%02d"
 
-    val data = MongoDB.zhenhaiDB("daily").find("shiftDate" $gte startDate $lt endDate).filter(x => getMachineTypeTitle(x) == step)
+    val data = MongoDB.zhenhaiDB("daily")
+                      .find("shiftDate" $gte startDate $lt endDate)
+		      .filter(entry => entry("machineType") == step.toInt)
+
     val dataByDate = data.toList.groupBy(getDate).mapValues(getSumQty)
     val sortedData = dataByDate.toList.sortBy(_._1)
     val sortedJSON = sortedData.map{ case (date, value) =>
@@ -53,7 +59,9 @@ object DailyJSON extends JsonReport {
     val startDate = f"$year-$month%02d-${date}%02d"
     val endDate = f"$year-$month%02d-${date+1}%02d"
 
-    val data = MongoDB.zhenhaiDB(s"daily").find("shiftDate" $gte startDate $lt endDate).filter(x => getMachineTypeTitle(x) == step)
+    val data = MongoDB.zhenhaiDB(s"daily")
+                      .find("shiftDate" $gte startDate $lt endDate)
+		      .filter(entry => entry("machineType") == step.toInt)
     val dataByMachine = data.toList.groupBy(getMachineID).mapValues(getSumQty)
 
     val sortedData = dataByMachine.toList.sortBy(_._1)

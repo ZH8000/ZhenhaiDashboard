@@ -8,7 +8,9 @@ import net.liftweb.http.S
 
 class MonthlyReport {
 
+  def stepTitle(step: String) = MachineInfo.machineTypeName.get(step.toInt).getOrElse("Unknown")
   def getSteps(uri: List[String]) = uri match {
+
     case "monthly" :: year :: Nil =>
       List(
         Step(s"$year 年", true, Some(s"/monthly/$year")),
@@ -22,7 +24,7 @@ class MonthlyReport {
     case "monthly" :: year :: step :: Nil =>
       List(
         Step(s"$year 年", true, Some(s"/monthly/$year")),
-        Step(urlDecode(step), true, Some(s"/monthly/$year/$step")),
+        Step(stepTitle(urlDecode(step)), true, Some(s"/monthly/$year/$step")),
         Step("月份"),
         Step("週"),
         Step("日期"),
@@ -33,7 +35,7 @@ class MonthlyReport {
     case "monthly" :: year :: step :: month :: Nil =>
       List(
         Step(s"$year 年", true, Some(s"/monthly/$year")),
-        Step(urlDecode(step), true, Some(s"/monthly/$year/$step")),
+        Step(stepTitle(urlDecode(step)), true, Some(s"/monthly/$year/$step")),
         Step(s"$month 月", true, Some(s"/monthly/$year/$step/$month")),
         Step("週"),
         Step("日期"),
@@ -43,7 +45,7 @@ class MonthlyReport {
     case "monthly" :: year :: step :: month :: week :: Nil =>
       List(
         Step(s"$year 年", true, Some(s"/monthly/$year")),
-        Step(urlDecode(step), true, Some(s"/monthly/$year/$step")),
+        Step(stepTitle(urlDecode(step)), true, Some(s"/monthly/$year/$step")),
         Step(s"$month 月", true, Some(s"/monthly/$year/$step/$month")),
         Step(s"第 $week 週", true, Some(s"/monthly/$year/$step/$month/$week")),
         Step("日期"),
@@ -53,7 +55,7 @@ class MonthlyReport {
     case "monthly" :: year :: step :: month :: week :: date :: Nil =>
       List(
         Step(s"$year 年", true, Some(s"/monthly/$year")),
-        Step(urlDecode(step), true, Some(s"/monthly/$year/$step")),
+        Step(stepTitle(urlDecode(step)), true, Some(s"/monthly/$year/$step")),
         Step(s"$month 月", true, Some(s"/monthly/$year/$step/$month")),
         Step(s"第 $week 週", true, Some(s"/monthly/$year/$step/$month/$week")),
         Step(s"$date 日", true, Some(s"/monthly/$year/$step/$month/$week/$date")),
@@ -63,7 +65,7 @@ class MonthlyReport {
     case "monthly" :: year :: step :: month :: week :: date :: machineID :: Nil =>
       List(
         Step(s"$year 年", true, Some(s"/monthly/$year")),
-        Step(urlDecode(step), true, Some(s"/monthly/$year/$step")),
+        Step(stepTitle(urlDecode(step)), true, Some(s"/monthly/$year/$step")),
         Step(s"$month 月", true, Some(s"/monthly/$year/$step/$month")),
         Step(s"第 $week 週", true, Some(s"/monthly/$year/$step/$month/$week")),
         Step(s"$date 日", true, Some(s"/monthly/$year/$step/$month/$week/$date")),

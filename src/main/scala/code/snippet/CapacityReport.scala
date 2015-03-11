@@ -7,7 +7,10 @@ import net.liftweb.http.S
 
 class CapacityReport {
 
+  def stepTitle(step: String) = MachineInfo.machineTypeName.get(step.toInt).getOrElse("Unknown")
+
   def getSteps(uri: List[String]) = uri match {
+
     case "capacity" :: Nil => 
       List(
         Step("總覽", true, Some("/capacity")), 
@@ -22,7 +25,7 @@ class CapacityReport {
     case "capacity" :: step :: Nil => 
       List(
         Step("總覽", true, Some("/capacity")), 
-        Step(urlDecode(step), true, Some(s"/capacity/$step")),
+        Step(stepTitle(urlDecode(step)), true, Some(s"/capacity/$step")),
         Step("容量"),
         Step("月份"),
         Step("週"),
@@ -33,7 +36,7 @@ class CapacityReport {
     case "capacity" :: step :: capacity :: Nil => 
       List(
         Step("總覽", true, Some("/capacity")), 
-        Step(urlDecode(step), true, Some(s"/capacity/$step")),
+        Step(stepTitle(urlDecode(step)), true, Some(s"/capacity/$step")),
         Step(s"${urlDecode(capacity)} Φ", true, Some(s"/capacity/$step/$capacity")),
         Step("月份"),
         Step("週"),
@@ -44,7 +47,7 @@ class CapacityReport {
     case "capacity" :: step :: capacity :: year :: month :: Nil => 
       List(
         Step("總覽", true, Some("/capacity")), 
-        Step(urlDecode(step), true, Some(s"/capacity/$step")),
+        Step(stepTitle(urlDecode(step)), true, Some(s"/capacity/$step")),
         Step(s"${urlDecode(capacity)} Φ", true, Some(s"/capacity/$step/$capacity")),
         Step(s"$year-$month", true, Some(s"/capacity/$step/$capacity/$year/$month")),
         Step("週"),
@@ -55,7 +58,7 @@ class CapacityReport {
     case "capacity" :: step :: capacity :: year :: month :: week :: Nil => 
       List(
         Step("總覽", true, Some("/capacity")), 
-        Step(urlDecode(step), true, Some(s"/capacity/$step")),
+        Step(stepTitle(urlDecode(step)), true, Some(s"/capacity/$step")),
         Step(s"${urlDecode(capacity)} Φ", true, Some(s"/capacity/$step/$capacity")),
         Step(s"$year-$month", true, Some(s"/capacity/$step/$capacity/$year/$month")),
         Step(s"第 $week 週", true, Some(s"/capacity/$step/$capacity/$year/$month/$week")),
@@ -66,7 +69,7 @@ class CapacityReport {
     case "capacity" :: step :: capacity :: year :: month :: week :: date :: Nil => 
       List(
         Step("總覽", true, Some("/capacity")), 
-        Step(urlDecode(step), true, Some(s"/capacity/$step")),
+        Step(stepTitle(urlDecode(step)), true, Some(s"/capacity/$step")),
         Step(s"${urlDecode(capacity)} Φ", true, Some(s"/capacity/$step/$capacity")),
         Step(s"$year-$month", true, Some(s"/capacity/$step/$capacity/$year/$month")),
         Step(s"第 $week 週", true, Some(s"/capacity/$step/$capacity/$year/$month/$week")),
@@ -77,7 +80,7 @@ class CapacityReport {
     case "capacity" :: step :: capacity :: year :: month :: week :: date :: machineID :: Nil => 
       List(
         Step("總覽", true, Some("/capacity")), 
-        Step(urlDecode(step), true, Some(s"/capacity/$step")),
+        Step(stepTitle(urlDecode(step)), true, Some(s"/capacity/$step")),
         Step(s"${urlDecode(capacity)} Φ", true, Some(s"/capacity/$step/$capacity")),
         Step(s"$year-$month", true, Some(s"/capacity/$step/$capacity/$year/$month")),
         Step(s"第 $week 週", true, Some(s"/capacity/$step/$capacity/$year/$month/$week")),

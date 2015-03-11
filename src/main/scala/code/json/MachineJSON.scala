@@ -68,7 +68,7 @@ object MachineJSON {
     val dataByDefactID = data.toList.groupBy(getDefactID).mapValues(getSumBadQty)
     val sortedData = dataByDefactID.toList.sortBy(_._1.toLong)
     val dataJSON = sortedData.map{ case (defactID, value) =>
-      ("name" -> defactID) ~
+      ("name" -> MachineInfo.getErrorDesc(machineID, defactID.toInt)) ~
       ("value" -> value)
     }
 

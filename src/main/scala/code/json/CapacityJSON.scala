@@ -15,12 +15,13 @@ object CapacityJSON extends JsonReport {
 
   def overview: JValue = {
 
-    val groupedData = MongoDB.zhenhaiDB("product").groupBy(x => x.get("machineTypeTitle")).mapValues(getSumQty)
-    val orderedKey = List("加締卷取", "組立", "老化", "選別", "加工切角")
+    val groupedData = MongoDB.zhenhaiDB("product").groupBy(x => x.get("machineType").toString.toInt).mapValues(getSumQty)
+    val orderedKey = List(1, 2, 3, 4, 5)
 
     val dataSet = orderedKey.map { case key => 
       val countQty = groupedData.getOrElse(key, 0L)
-      ("name" -> key) ~ ("value" -> countQty) ~ ("link" -> s"/capacity/$key")
+      val machineTypeTitle = MachineInfo.machineTypeName.get(key).getOrElse("Unknown")
+      ("name" -> machineTypeTitle) ~ ("value" -> countQty) ~ ("link" -> s"/capacity/$key")
     }
 
     ("dataSet" -> dataSet)
@@ -28,7 +29,7 @@ object CapacityJSON extends JsonReport {
 
   def apply(step: String): JValue = {
 
-    val data = MongoDB.zhenhaiDB(s"product").find(MongoDBObject("machineTypeTitle" -> step)).toList
+    val data = MongoDB.zhenhaiDB(s"product").find(MongoDBObject("machineType" -> step.toInt)).toList
     val dataByCapacity = data.groupBy(record => record.get("capacityRange").toString).mapValues(getSumQty)
     val sortedData = List("5 - 8", "10 - 12.5", "16 - 18", "Unknown").filter(dataByCapacity contains _)
     val sortedJSON = sortedData.map{ capacity =>
@@ -42,7 +43,7 @@ object CapacityJSON extends JsonReport {
 
   def apply(step: String, capacity: String): JValue = {
 
-    val data = MongoDB.zhenhaiDB(s"daily").find(MongoDBObject("machineTypeTitle" -> step, "capacityRange" -> capacity)).toList
+    val data = MongoDB.zhenhaiDB(s"daily").find(MongoDBObject("machineType" -> step.toInt, "capacityRange" -> capacity)).toList
     val dataByProduct = data.groupBy(getYearMonth).mapValues(getSumQty)
     val sortedData = dataByProduct.toList.sortBy(_._1)
     val sortedJSON = sortedData.map{ case (yearAndMonth, value) =>
@@ -61,7 +62,7 @@ object CapacityJSON extends JsonReport {
     val endDate = f"$year-${month+1}%02d"
 
     val data = MongoDB.zhenhaiDB(s"daily").find("shiftDate" $gte startDate $lt endDate)
-                      .filter(record => record("machineTypeTitle") == step && record("capacityRange") == capacity)
+                      .filter(record => record("machineType") == step.toInt && record("capacityRange") == capacity)
 
     val dataByWeek = data.toList.groupBy(getWeek).mapValues(getSumQty)
     val sortedData = dataByWeek.toList.sortBy(_._1)
@@ -80,7 +81,7 @@ object CapacityJSON extends JsonReport {
     val endDate = f"$year-${month+1}%02d-01"
 
     val data = MongoDB.zhenhaiDB(s"daily").find("shiftDate" $gte startDate $lt endDate)
-                      .filter(record => record("machineTypeTitle") == step && record("capacityRange") == capacity)
+                      .filter(record => record("machineType") == step.toInt && record("capacityRange") == capacity)
 
     val dataInWeek = data.filter { entry => 
       val Array(year, month, date) = entry("shiftDate").toString.split("-").map(_.toInt)
@@ -104,7 +105,7 @@ object CapacityJSON extends JsonReport {
     val endDate = f"$year-$month%02d-${date+1}%02d"
 
     val data = MongoDB.zhenhaiDB(s"daily").find("shiftDate" $gte startDate $lt endDate)
-                      .filter(record => record("machineTypeTitle") == step && record("capacityRange") == capacity)
+                      .filter(record => record("machineType") == step.toInt && record("capacityRange") == capacity)
 
     val dataByMachine = data.toList.groupBy(getMachineID).mapValues(getSumQty)
     val sortedData = dataByMachine.toList.sortBy(_._1)
@@ -123,7 +124,7 @@ object CapacityJSON extends JsonReport {
 
     val data = 
       MongoDB.zhenhaiDB(cacheTableName).
-              find(MongoDBObject("machineTypeTitle" -> step, "mach_id" -> machineID, "capacityRange" -> capacity)).
+              find(MongoDBObject("machineType" -> step.toInt, "mach_id" -> machineID, "capacityRange" -> capacity)).
               sort(MongoDBObject("timestamp" -> 1))
 
     val jsonData = data.map { entry => 

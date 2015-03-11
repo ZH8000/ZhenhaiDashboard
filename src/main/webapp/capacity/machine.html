@@ -10,7 +10,7 @@
     </div>
     <div class="ui grid">
 
-      <div class="four wide column">
+      <div class="six wide column">
         <div id="datepicker"></div>
         <div class="ui vertical menu">
           <div class="header item">機器列表</div>
@@ -23,7 +23,7 @@
         </div>
       </div>
 
-      <div class="twelve wide column data">
+      <div class="ten wide column data">
         <div class="ui center aligned one column grid" id="loadingIndicator">
           <div class="column">
             <div data-lift="embed?what=loading"></div>
@@ -72,7 +72,7 @@
 
     <div>
       <input type="hidden" id="step" />
-      <input type="hidden" id="capacityRange" />
+      <input type="hidden" id="capacity" />
       <input type="hidden" id="productMachine" />
       <input type="hidden" id="fullYear" />
       <input type="hidden" id="month" />
@@ -83,7 +83,7 @@
     <script>
       
       var step = $('#step').val()
-      var capacityRange = $('#capacityRange').val()
+      var capacity = $('#capacity').val()
       var productMachine = $('#productMachine').val()
       var fullYear = +($('#fullYear').val())
       var month = +($('#month').val())
@@ -107,7 +107,7 @@
 
           var isoDate = strToDate(dateText);
 
-          var url = "/total/" + step + "/" + capacityRange + "/" + isoDate.getFullYear() + "/" + (+isoDate.getMonth()+1) + "/" +
+          var url = "/total/" + step + "/" + capacity + "/" + isoDate.getFullYear() + "/" + (+isoDate.getMonth()+1) + "/" +
                     getWeek(isoDate) + "/" + isoDate.getDate() + "/" + productMachine;
 
           window.location = url;
@@ -115,10 +115,11 @@
       });
 
       $("#datepicker").datepicker("setDate", new Date(fullYear, (+month - 1), date));
+      $("#datepicker").datepicker("option", "dateFormat", "yy/mm/dd");
 
       setupMachineList(
         '#machineList', productMachine, 
-        "/total/" + step + "/" + capacityRange + "/" + fullYear + "/" + month + "/" + week + "/" + date
+        "/total/" + step + "/" + capacity + "/" + fullYear + "/" + month + "/" + week + "/" + date
       );
     </script>
     <script>

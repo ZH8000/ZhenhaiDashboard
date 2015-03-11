@@ -10,7 +10,7 @@
     </div>
     <div class="ui grid">
 
-      <div class="four wide column">
+      <div class="six wide column">
         <div id="datepicker"></div>
         <div class="ui vertical menu">
           <div class="header item">機器列表</div>
@@ -23,7 +23,7 @@
         </div>
       </div>
 
-      <div class="twelve wide column data">
+      <div class="ten wide column data">
         <div class="ui center aligned one column grid" id="loadingIndicator">
           <div data-lift="embed?what=loading"></div>
         </div>
@@ -110,6 +110,7 @@
       });
 
       $("#datepicker").datepicker("setDate", new Date(fullYear, (+month - 1), date));
+      $("#datepicker").datepicker("option", "dateFormat", "yy/mm/dd");
 
       setupMachineList(
         '#machineList', productMachine, 

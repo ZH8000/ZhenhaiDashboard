@@ -8,6 +8,8 @@ import net.liftweb.http.S
 
 class DailyReport {
 
+  def stepTitle(step: String) = MachineInfo.machineTypeName.get(step.toInt).getOrElse("Unknown")
+
   def getSteps(uri: List[String]) = uri match {
 
     case "daily" :: year :: month :: Nil =>
@@ -21,7 +23,7 @@ class DailyReport {
     case "daily" :: year :: month :: step :: Nil =>
       List(
         Step(s"$year 年 $month 月", true, Some(s"/daily/$year/$month")),
-        Step(urlDecode(step), true, Some(s"/daily/$year/$month/$step")),
+        Step(stepTitle(urlDecode(step)), true, Some(s"/daily/$year/$month/$step")),
         Step("日期"),
         Step("機器")
       )
@@ -29,7 +31,7 @@ class DailyReport {
     case "daily" :: year :: month :: step :: date :: Nil =>
       List(
         Step(s"$year 年 $month 月", true, Some(s"/daily/$year/$month")),
-        Step(urlDecode(step), true, Some(s"/daily/$year/$month/$step")),
+        Step(stepTitle(urlDecode(step)), true, Some(s"/daily/$year/$month/$step")),
         Step(s"$date 日", true, Some(s"/daily/$year/$month/$step/$date")),
         Step("機器")
       )
@@ -37,7 +39,7 @@ class DailyReport {
     case "daily" :: year :: month :: step :: date :: machineID :: Nil =>
       List(
         Step(s"$year 年 $month 月", true, Some(s"/daily/$year/$month")),
-        Step(urlDecode(step), true, Some(s"/daily/$year/$month/$step")),
+        Step(stepTitle(urlDecode(step)), true, Some(s"/daily/$year/$month/$step")),
         Step(s"$date 日", true, Some(s"/daily/$year/$month/$step/$date")),
         Step(s"$machineID", true, Some(s"/daily/$year/$month/$step/$date/$machineID"))
       )
