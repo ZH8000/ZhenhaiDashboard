@@ -86,7 +86,7 @@ object DailyJSON extends JsonReport {
       ("timestamp" -> entry("timestamp").toString) ~
       ("defact_id" -> MachineInfo.getErrorDesc(machineID, entry("defact_id").toString.toInt)) ~
       ("count_qty" -> entry("count_qty").toString.toLong) ~
-      ("bad_qty" -> entry("bad_qty").toString.toLong)
+      ("event_qty" -> entry("event_qty").toString.toLong)
     }
 
     ("dataSet" -> jsonData.toList.sortBy(x => Record(x)))

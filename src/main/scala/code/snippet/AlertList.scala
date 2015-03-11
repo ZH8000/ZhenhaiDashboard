@@ -39,7 +39,7 @@ class AlertList {
       case false =>
         ".row" #> alertList.map { item =>
 
-          val errorDesc = MachineInfo.getErrorDesc(item.mach_id.get, item.defact_id.get)
+          val errorDesc = MachineInfo.getErrorDesc(item.mach_id.get, item.eventID.get)
 
           ".timestamp *" #> item.timestamp &
           ".machineID *" #> item.mach_id &

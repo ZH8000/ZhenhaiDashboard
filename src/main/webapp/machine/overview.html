@@ -30,13 +30,11 @@
     </div>
     <div>
       <input type="hidden" id="dataURL" value="<%= dataURL %>" />
-      <input type="hidden" id="threshold" value="<%= threshold %>" />
     </div>
 
     <script>
 
       var dataURL = $('#dataURL').val();
-      var threshold = $('#threshold').val();
 
       $.ajax(dataURL, {timeout: 30 * 1000}).done(function(data) {
 
@@ -50,7 +48,6 @@
           width: 400,
           height: 400,
           radius: 180,
-          threshold: threshold,
           extractValue: function(data) { return data.value; },
           extractName: function(data) { return data.name; }
         })

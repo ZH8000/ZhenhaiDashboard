@@ -43,7 +43,7 @@ object TotalCSV {
 
     CSVConverter(
       List("日期", "生產數量", "錯誤數量", "錯誤種類"), 
-      List("timestamp", "count_qty", "bad_qty", "defact_id"), 
+      List("timestamp", "count_qty", "event_qty", "defact_id"), 
       machineID,
       "說明", "defact_id",
       jsonData

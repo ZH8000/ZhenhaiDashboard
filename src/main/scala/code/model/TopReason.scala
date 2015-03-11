@@ -22,7 +22,7 @@ class TopReason extends MongoRecord[TopReason] with ObjectIdPk[TopReason] {
   val defact_id = new IntField(this)
   val mach_id = new StringField(this, 15)
   val mach_model = new StringField(this, 20)
-  val bad_qty = new LongField(this)
+  val event_qty = new LongField(this)
 
 }
 

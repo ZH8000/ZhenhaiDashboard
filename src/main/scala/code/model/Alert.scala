@@ -18,7 +18,7 @@ class Alert extends MongoRecord[Alert] with ObjectIdPk[Alert] {
   def meta = Alert
 
   val timestamp = new StringField(this, 20)
-  val defact_id = new IntField(this)
+  val eventID = new IntField(this)
   val mach_id = new StringField(this, 15)
 }
 

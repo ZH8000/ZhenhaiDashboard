@@ -139,8 +139,8 @@
           } 
 
           for (var i = 0; i < dataJSON.length; i++) {
-            if (+(dataJSON[i].bad_qty) > 0) {
-              addToData(dataJSON[i].defact_id, dataJSON[i].bad_qty);
+            if (+(dataJSON[i].event_qty) > 0) {
+              addToData(dataJSON[i].defact_id, dataJSON[i].event_qty);
             }
           }
 
@@ -191,7 +191,7 @@
             extractors: [
               function (data) { return data.timestamp; },
               function (data) { return data.count_qty == 0 ? "" : data.count_qty; },
-              function (data) { return data.bad_qty == 0 ? "" : data.bad_qty; },
+              function (data) { return data.event_qty == 0 ? "" : data.event_qty; },
               function (data) { return data.count_qty > 0 ? "" : data.defact_id; }
             ]
           }
