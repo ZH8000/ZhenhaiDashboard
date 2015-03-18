@@ -28,10 +28,9 @@ object CSVConverter {
     val csvTitle = (titles ++ List(descTitle)).mkString(",")
     val csvRecords = dataSet.map { record =>
       val csvRecords = fields.map(field => toCSVField(record, field))
-      val defactID = (record \\ defactIDField).values.toString
-      val description = MachineInfo.getErrorDesc(machineID, defactID.toInt)
+      val defactDescription = (record \\ defactIDField).values.toString
       
-      (csvRecords ++ List(s"$description")).mkString(",")
+      (csvRecords ++ List(s"$defactDescription")).mkString(",")
     }
 
     csvTitle + "\n" + csvRecords.mkString("\n")

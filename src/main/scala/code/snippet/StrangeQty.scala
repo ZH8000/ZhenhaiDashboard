@@ -32,7 +32,7 @@ class StrangeQty {
         ".row" #> strangeQtyList.map { item =>
 
           val errorDesc = if (item.count_qty.get > 0) {
-            ""
+	    ""
           } else {
             MachineInfo.getErrorDesc(item.mach_id.get, item.defact_id.get)
           }

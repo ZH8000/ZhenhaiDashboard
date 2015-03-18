@@ -2145,6 +2145,6 @@ object MachineInfo {
   }
 
   def getErrorDesc(machineID: String, defactID: Int): String = {
-    defactDescription.get(defactID).getOrElse(s"[$defactID]")
+    defactDescription.get(defactID).getOrElse(defactID.toString)
   }
 }

@@ -83,10 +83,18 @@ object DailyJSON extends JsonReport {
               sort(MongoDBObject("timestamp" -> 1))
 
     val jsonData = data.map { entry => 
+
+      val countQty = entry("count_qty").toString.toLong
+      val defactDescription = (countQty > 0) match {
+        case true  => "良品數"
+	case false => MachineInfo.getErrorDesc(machineID, entry("defact_id").toString.toInt)
+      }
+
       ("timestamp" -> entry("timestamp").toString) ~
-      ("defact_id" -> MachineInfo.getErrorDesc(machineID, entry("defact_id").toString.toInt)) ~
+      ("defact_id" -> defactDescription) ~
       ("count_qty" -> entry("count_qty").toString.toLong) ~
       ("event_qty" -> entry("event_qty").toString.toLong)
+
     }
 
     ("dataSet" -> jsonData.toList.sortBy(x => Record(x)))
