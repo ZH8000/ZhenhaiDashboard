@@ -32,9 +32,9 @@
             </div>
           </div>
           <div class="field">
-            <label>倒數天數</label>
+            <label>目標良品數</label>
             <div class="ui input">
-              <input type="text" name="countdownDays" />
+              <input type="text" name="countdownQty" />
             </div>
           </div>
         </div>
@@ -63,7 +63,7 @@
             <div class="description inverse segment">
               <div class="ui header">機台：<span id="dialogMachineID"></span></div>
               <div class="ui header">起算日期：<span id="dialogStartDate"></span></div>
-              <div class="ui header">維修倒數：<span id="dialogCountdownDays"></span> 天</div>
+              <div class="ui header">維修倒數：<span id="dialogCountdownDays"></span></div>
               <div class="ui header">說明：</div>
               <pre id="dialogDescription"></pre>
             </div>
@@ -96,11 +96,11 @@
             "prompt": "請選擇起算日期"
           }]
         },
-        "countdownDays": {
-          "identifier": "countdownDays",
+        "countdownQty": {
+          "identifier": "countdownQty",
           "rules": [{
             "type": "empty",
-            "prompt": "請輸入倒數日期"
+            "prompt": "請輸入目標良品數"
           }]
         },
         "description": {
@@ -123,11 +123,11 @@
       }})
     })
 
-    function showModalDialog(machineID, startDate, countdownDays, description) {
+    function showModalDialog(machineID, startDate, countdownQty, description) {
       var description = $('#description').val();
       $('#dialogMachineID').text(machineID)
       $('#dialogStartDate').text(startDate)
-      $('#dialogCountdownDays').text(countdownDays)
+      $('#dialogCountdownDays').text(countdownQty)
       $('#dialogDescription').text(description)
       $('.ui.modal').modal('show');
     }

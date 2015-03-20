@@ -27,7 +27,8 @@ class Alarm extends MongoRecord[Alarm] with ObjectIdPk[Alarm] {
   val workerID = new StringField(this, 20)
   val workerMongoID = new StringField(this, 32)
   val startDate = new DateField(this)
-  val countdownDays = new IntField(this)
+  val countdownQty = new IntField(this)
+  val countQty = new IntField(this)
   val machineID = new StringField(this, 10)
   val description = new StringField(this, 60)
 
@@ -36,21 +37,8 @@ class Alarm extends MongoRecord[Alarm] with ObjectIdPk[Alarm] {
   val doneWorkerID = new StringField(this, 20)
   val doneWorkerMongoID = new StringField(this, 32)
 
-  def dueDateCalendar = {
-    val calendar = Calendar.getInstance
-    calendar.setTime(startDate.get)
-    calendar.add(Calendar.DAY_OF_MONTH, countdownDays.get)
-    calendar
-  }
+  def isUrgentEvent = countdownQty.get <= countQty.get
 
-  def dueDate: Date = dueDateCalendar.getTime
-
-  def dueDateString = new SimpleDateFormat("yyyy-MM-dd").format(dueDate)
-  def isUrgentEvent = {
-    val marginDate = Calendar.getInstance
-    marginDate.add(Calendar.DAY_OF_MONTH, 7)
-    dueDate.before(marginDate.getTime)
-  }
 
 }
 

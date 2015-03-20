@@ -26,7 +26,7 @@ class AlarmEdit(alarm: Alarm) {
   private var workerBox: Box[Worker] = Worker.find(alarm.workerMongoID.toString)
   private var startDateBox: Box[String] = Full(new SimpleDateFormat("yyyy-MM-dd").format(alarm.startDate.get))
   private var machineIDBox: Box[String] = Full(alarm.machineID.toString)
-  private var countdownDaysBox: Box[String] = Full(alarm.countdownDays.toString).filter(_ != "0")
+  private var countdownQtyBox: Box[String] = Full(alarm.countdownQty.toString).filter(_ != "0")
   private var descriptionBox: Box[String] = Full(alarm.description.toString)
   private def currentDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date)
 
@@ -49,7 +49,7 @@ class AlarmEdit(alarm: Alarm) {
 
     var startDateBox = S.param("startDate")
     var machineIDBox = S.param("machineID")
-    var countdownDaysBox = S.param("countdownDays")
+    var countdownQtyBox = S.param("countdownQty")
     var descriptionBox = S.param("description")
 
     val alarmRecord = for {
@@ -57,8 +57,8 @@ class AlarmEdit(alarm: Alarm) {
       startDateStr     <- startDateBox.filterNot(_.trim.isEmpty) ?~ "請輸入起算日期"
       startDate        <- toDate(startDateStr)
       machineID        <- machineIDBox.filterNot(_.trim.isEmpty) ?~ "請輸入維修機台"
-      countdownDaysStr <- countdownDaysBox.filterNot(_.trim.isEmpty) ?~ "請輸入倒數天數"
-      countdownDays    <- asInt(countdownDaysStr)
+      countdownQtyStr <- countdownQtyBox.filterNot(_.trim.isEmpty) ?~ "請輸入目標良品數"
+      countdownQty    <- asInt(countdownQtyStr)
       description      <- descriptionBox.filterNot(_.trim.isEmpty) ?~ "請輸入描述"
       _                <- descriptionBox.filterMsg("描述字數不能多於 60 字")(_.length <= 60)
     } yield {
@@ -67,7 +67,7 @@ class AlarmEdit(alarm: Alarm) {
            .startDate(startDate)
            .machineID(machineID)
            .workerID(worker.workerID.get)
-           .countdownDays(countdownDays)
+           .countdownQty(countdownQty)
            .description(description)
     }
 
@@ -75,7 +75,7 @@ class AlarmEdit(alarm: Alarm) {
       case Full(alarm) =>
         val startDate = startDateBox.getOrElse("")
         val machineID = alarm.machineID
-        JsRaw(s"""showModalDialog('$machineID', '$startDate', ${alarm.countdownDays});""")
+        JsRaw(s"""showModalDialog('$machineID', '$startDate', ${alarm.countdownQty});""")
       case Failure(msg, _, _) => S.error(msg)
       case Empty => S.error("無法寫入資料庫")
     }
@@ -96,7 +96,7 @@ class AlarmEdit(alarm: Alarm) {
     "@workerID"                 #> SHtml.ajaxText(defaultWorkerID, false, setWorker _, "name" -> "workerID") &
     "@name [value]"             #> defaultWorkerName &
     "@startDate [value]"        #> defaultStartDate &
-    "@countdownDays [value]"    #> countdownDaysBox &
+    "@countdownQty [value]"     #> countdownQtyBox &
     "@defaultMachineID [value]" #> machineIDBox &
     "@description *"            #> descriptionBox &
     ".machineItem" #> MachineInfo.machineList.map { machineID =>
