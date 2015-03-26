@@ -18,7 +18,6 @@ class OrderStatus extends MongoRecord[OrderStatus] with ObjectIdPk[OrderStatus] 
   val lotNo = new StringField(this, 100)
   val partNo = new StringField(this, 100)
   val product = new StringField(this, 20)
-  val customer = new StringField(this, 20)
   val inputCount = new LongField(this)
 
   val step1WorkerID = new StringField(this, 100)
@@ -51,5 +50,6 @@ class OrderStatus extends MongoRecord[OrderStatus] with ObjectIdPk[OrderStatus] 
   val step4StartTime = new LongField(this)
   val step5StartTime = new LongField(this)
 
+  def customer = "AAAAA" //! Change to real customer data.
 }
 

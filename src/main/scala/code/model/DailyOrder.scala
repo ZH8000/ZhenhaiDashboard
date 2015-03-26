@@ -20,5 +20,8 @@ class DailyOrder extends MongoRecord[DailyOrder] with ObjectIdPk[DailyOrder] {
   val order = new StringField(this, 100)
   val product = new StringField(this, 100)
   val status = new IntField(this, -1)
+
+  def customer = "AAAAA" //! Change to real customer data.
+
 }
 
