@@ -4,6 +4,7 @@ case class MachineInfo(ip: String, machineID: String, machineType: Int, model: S
 
 object MachineInfo {
 
+  val maintenanceCodes = List("MMM01", "MMM02", "MMM03", "MMM04", "MMM05", "MMM06", "MMM07", "MMM08")
 
   val pinDefine = Map(
     "ATS" ->   Map(

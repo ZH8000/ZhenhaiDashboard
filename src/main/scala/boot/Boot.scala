@@ -250,6 +250,13 @@ class Boot
     Menu("MachineMaintainLog") / "machineMaintainLog"
       >> needLogin
       >> hasPermission(PermissionContent.ReportMaintainLog),
+    Menu("MachineMaintenanceCode") / "management" / "maintenanceCode"
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportMaintainLog),
+    Menu("Managemen4") / "management" / "maintenanceCodePDF" 
+      >> needLogin
+      >> MaintenanceCode.barcodePDF
+      >> hasPermission(PermissionContent.ReportMaintainLog),
 
     Menu("ProductionCard") / "productionCard" 
       >> needLogin
