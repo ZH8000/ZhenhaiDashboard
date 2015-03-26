@@ -69,4 +69,9 @@ object CsvRestAPI extends RestHelper {
     case "machineMaintainLog" :: Nil Get req => toCSVResponse(MachineMaintainLogCSV())
   })
 
+  serve("api" / "csv" / "productionCard" prefix {
+    case lotNo :: Nil Get req => toCSVResponse(ProductionCard(lotNo))
+  })
+
+
 }

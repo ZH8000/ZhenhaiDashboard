@@ -249,7 +249,12 @@ class Boot
       >> hasPermission(PermissionContent.ReportOrderStatus),
     Menu("MachineMaintainLog") / "machineMaintainLog"
       >> needLogin
-      >> hasPermission(PermissionContent.ReportMaintainLog)
+      >> hasPermission(PermissionContent.ReportMaintainLog),
+
+    Menu("ProductionCard") / "productionCard" 
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportOrderStatus)
+
   )
 
   val ensureLogin: PartialFunction[Req, Unit] = {
