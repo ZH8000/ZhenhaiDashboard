@@ -13,7 +13,7 @@ object MaintenanceCodePDF {
   def createBarcodeLabel(maintenanceCode: MaintenanceCode, pdfWriter: PdfWriter) = {
 
     val cell = new PdfPCell
-    val barCode = new Barcode128()
+    val barCode = new Barcode39()
     val descriptionTag = new Paragraph(maintenanceCode.description.get, chineseFont)
 
     barCode.setCode(maintenanceCode.code.get)

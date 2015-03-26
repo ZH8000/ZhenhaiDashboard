@@ -16,14 +16,14 @@ object WorkerBarcodePDF {
     val department = worker.department.get
     val workerID = worker.workerID.get
     val cell = new PdfPCell
-    val barCode = new Barcode128()
+    val barCode = new Barcode39()
 
     val departmentTag = new Paragraph(s"【$department】 $workerID", chineseFont)
     val nameTag = new Paragraph(s"$workerName", chineseFont)
 
     val barcodePrefix = if (worker.workerType.get == "maintain") "M" else "P"
 
-    barCode.setCode("XXX" + barcodePrefix + worker.id)
+    barCode.setCode("XXX" + barcodePrefix + worker.id.toString.toUpperCase)
     nameTag.setAlignment(Element.ALIGN_CENTER)
     departmentTag.setAlignment(Element.ALIGN_CENTER)
 
