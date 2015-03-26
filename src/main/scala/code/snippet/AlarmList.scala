@@ -20,17 +20,17 @@ import scala.xml.NodeSeq
 
 class AlarmList {
 
-  private def alarms = Alarm.findAll.toList.sortWith(_.dueDate.getTime < _.dueDate.getTime)
+  private def alarms = Alarm.findAll.toList.sortWith(_.machineID.get < _.machineID.get)
   private val (urgentAlarms, normalAlarms) = alarms.partition(_.isUrgentEvent)
 
   def deleteAlarm(alarm: Alarm)(value: String) = {
    
     alarm.delete_! match {
       case true => 
-        S.notice(s"已刪除【${alarm.dueDateString} / ${alarm.machineID}】 此筆記錄")
+        S.notice(s"已刪除【${alarm.machineID} / ${alarm.description}】 此筆記錄")
         Hide(s"row-${alarm.id}")
       case false => 
-        S.error(s"無法刪除【${alarm.dueDateString} / ${alarm.machineID}】 此筆記錄")
+        S.error(s"無法刪除【${alarm.machineID} / ${alarm.description}】 此筆記錄")
         Noop
     }
   }
@@ -62,14 +62,13 @@ class AlarmList {
 
     def rowItem(alarm: Alarm) = {
       ".item [id]" #> s"row-${alarm.id}" &
-      ".dueDate *" #> dateFormatter.format(alarm.dueDate) &
       ".machineID *" #> alarm.machineID &
       ".workerName *" #> alarm.name &
+      ".countQty *" #> alarm.countQty &
+      ".countdownQty *" #> alarm.countdownQty &
       ".desc *" #> alarm.description &
-      ".dueDate [id]"      #> s"dueDate-${alarm.id}" &
       ".machineID [id]"    #> s"machineID-${alarm.id}" &
       ".desc [id]"  #> s"description-${alarm.id}" &
-      ".dueDate [class+]"      #> (if (alarm.isDone.get) "disabled" else "") &
       ".machineID [class+]"    #> (if (alarm.isDone.get) "disabled" else "") &
       ".desc [class+]"  #> (if (alarm.isDone.get) "del" else "") &
       ".doneCheckbox [onclick]" #> SHtml.onEventIf(
@@ -78,27 +77,14 @@ class AlarmList {
       )
     }
 
-    val notDoneUrgent = urgentAlarms.filter(x => x.dueDateCalendar.compareTo(today) >= 0 && !x.isDone.get)
-    val notDoneNormal = normalAlarms.filter(x => x.dueDateCalendar.compareTo(today) >= 0 && !x.isDone.get)
+    val notDoneUrgent = urgentAlarms.filterNot(_.isDone.get)
 
-    val urgentListBinding = notDoneUrgent.isEmpty match {
+    notDoneUrgent.isEmpty match {
       case true  => ".urgentAlarmBlock" #> NodeSeq.Empty
-      case flase => ".urgentAlarmRow"   #> notDoneUrgent.map { alarm => rowItem(alarm) }
+      case flase => 
+        ".nonAlarm"         #> NodeSeq.Empty &
+        ".urgentAlarmRow"   #> notDoneUrgent.map { alarm => rowItem(alarm) } 
     }
-    val alarmListBinding = notDoneNormal.isEmpty match {
-      case true  => ".alarmBlock" #> NodeSeq.Empty
-      case false => ".alarmRow" #> notDoneNormal.map { alarm => rowItem(alarm) }
-    }
-
-    if (notDoneUrgent.isEmpty && notDoneNormal.isEmpty) {
-      ".urgentAlarmBlock" #> NodeSeq.Empty &
-      ".alarmBlock" #> NodeSeq.Empty
-    } else {
-      urgentListBinding &
-      alarmListBinding &
-      ".nonAlarm" #> NodeSeq.Empty
-    }
-
   }
 
   def render = {
@@ -106,14 +92,15 @@ class AlarmList {
     ".alarmRow" #> alarms.map { alarm =>
 
       ".alarmRow [id]" #> s"row-${alarm.id}" &
-      ".dueDate *" #> dateFormatter.format(alarm.dueDate) &
       ".machineID *" #> alarm.machineID &
       ".description *" #> alarm.description &
+      ".countdownQty *" #> alarm.countdownQty &
+      ".countQty *" #> alarm.countQty &
       ".workerID *" #> alarm.workerID &
       ".workerName *" #> alarm.name &
       ".editLink [href]" #> s"/management/alarms/edit/${alarm.id}" &
       ".doneCheckbox" #> SHtml.ajaxCheckbox(alarm.isDone.get, markAsDone(alarm)) &
-      ".deleteLink [onclick]" #> SHtml.onEventIf(s"確定要刪除【${alarm.dueDateString} / ${alarm.machineID}】嗎？", deleteAlarm(alarm)_)
+      ".deleteLink [onclick]" #> SHtml.onEventIf(s"確定要刪除【${alarm.machineID} / ${alarm.description}】嗎？", deleteAlarm(alarm)_)
     }
   }
 }

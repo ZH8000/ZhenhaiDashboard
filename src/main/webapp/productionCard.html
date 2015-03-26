@@ -1,0 +1,44 @@
+<div data-lift="Surround?with=default;at=content">
+  <div class="center aligned one column ui grid">
+    <div class="column">
+      <div class="one column ui grid" data-lift="LazyLoad?template=loading">
+        <div class="column" data-lift="ProductionCard">
+
+          <div data-lift="lift:msgs?showAll=true">
+            <lift:error_msg class="ui red sys message"></lift:error_msg>
+            <lift:warning_msg class="ui yellow sys message"></lift:warning_msg>
+            <lift:notice_msg class="ui green sys message"></lift:notice_msg>
+          </div>
+
+          <div class="dataBlock">
+            <table class="ui celled table segment">
+              <thead>
+                <tr>
+                  <th class="ui center aligned">製令編號</th>
+                  <th class="ui center aligned">料號</th>
+                  <th class="ui center aligned">客戶</th>
+                  <th class="ui center aligned">規格</th>
+                  <th class="ui center aligned">投入數</th>
+                  <th class="ui center aligned">生產管理卡 CSV</th>
+                </tr>
+              </thead>
+              <tbody id="table">
+                <tr class="row">
+                  <td class="ui collapsing center aligned lotNo">製令編號</td>
+                  <td class="ui collapsing center aligned partNo">料號</td>
+                  <td class="ui collapsing center aligned customer">客戶</td>
+                  <td class="ui collapsing center aligned product">規格</td>
+                  <td class="ui collapsing center aligned inputCount">投入數</td>
+                  <td class="ui collapsing center aligned csvExport"><a href="#" class="ui primary small export button">匯出</a></td>
+                </tr>
+              </tbody>
+            </table>
+            <script>
+              $('.progress').progress({showActivity: false});
+            </script>
+	  </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
