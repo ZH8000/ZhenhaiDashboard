@@ -50,6 +50,6 @@ class OrderStatus extends MongoRecord[OrderStatus] with ObjectIdPk[OrderStatus] 
   val step4StartTime = new LongField(this)
   val step5StartTime = new LongField(this)
 
-  def customer = "AAAAA" //! Change to real customer data.
+  def customer = Customer.fromPartNo(partNo.get)
 }
 

@@ -34,6 +34,7 @@ class OrderStatus {
 
           ".lotNo *" #> record.lotNo &
           ".product *" #> record.product &
+          ".customer *" #> record.customer &
           ".inputCount *" #> record.inputCount &
           ".requireCount *" #> requireCount.toLong &
           ".step1" #> (

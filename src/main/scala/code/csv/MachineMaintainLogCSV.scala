@@ -7,7 +7,7 @@ object MachineMaintainLogCSV {
   def apply() = {
 
     val lines = MachineMaintainLogJSON.getLogs.map { record =>
-      s""""${record.workerID}","${record.workerName}","${record.machineID}","${record.item}"""" +
+      s""""${record.workerID}","${record.workerName}","${record.machineID}","${record.maintenanceCode}"""" +
       s""""${record.startTime}","${record.endTime}""""
     }
 

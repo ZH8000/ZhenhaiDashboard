@@ -16,7 +16,7 @@ class MachineMaintainLog extends MongoRecord[MachineMaintainLog] with ObjectIdPk
 
   val workerMongoID = new StringField(this, 24)
   val timestamp = new LongField(this)
-  val item = new StringField(this, 100)
+  val maintenanceCode = new StringField(this, 100)
   val machineID = new StringField(this, 10)
   val status = new StringField(this, 10)
 }

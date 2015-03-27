@@ -19,6 +19,9 @@ class MachineMaintainLog {
 
   def render = {
 
+    val maintenanceCodeDescription = 
+      MaintenanceCode.findAll.map(record => (record.code.get -> record.description.get)).toMap
+
     logs.isEmpty match {
       case true  => showEmptyBox()
       case false =>
@@ -26,9 +29,10 @@ class MachineMaintainLog {
           ".workerID *"   #> record.workerID &
           ".workerName *" #> record.workerName &
           ".machineID *"  #> record.machineID &
-          ".item *"       #> record.item &
+          ".item *"       #> record.maintenanceCode &
           ".startTime *"  #> record.startTime &
-          ".endTime *"    #> record.endTime
+          ".endTime *"    #> record.endTime &
+          ".desc *"       #> maintenanceCodeDescription.get(record.maintenanceCode).getOrElse("")
         }
     }
   }

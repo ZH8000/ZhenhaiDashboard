@@ -16,12 +16,12 @@ class DailyOrder extends MongoRecord[DailyOrder] with ObjectIdPk[DailyOrder] {
 
   val timestamp = new StringField(this, 10)
   val shiftDate = new StringField(this, 10)
+  val partNo = new StringField(this, 100)
   val lotNo = new StringField(this, 100)
-  val order = new StringField(this, 100)
   val product = new StringField(this, 100)
   val status = new IntField(this, -1)
 
-  def customer = "AAAAA" //! Change to real customer data.
+  def customer = Customer.fromPartNo(partNo.get)
 
 }
 

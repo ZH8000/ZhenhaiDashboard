@@ -2,6 +2,13 @@ package code.lib
 
 object Customer {
 
+  def fromPartNo(partNo: String) = try {
+    val customerCode = partNo.substring(19, 23)
+    customers.get(customerCode).getOrElse("Unknown")
+  } catch {
+    case e: Exception => "Unknown"
+  }
+
   val customers = Map(
     "0002" -> "惠州益源",
     "0004" -> "威海集團",

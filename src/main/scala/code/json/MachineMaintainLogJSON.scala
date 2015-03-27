@@ -7,7 +7,11 @@ import java.util.Date
 
 object MachineMaintainLogJSON {
   
-  case class Record(workerID: String, workerName: String, machineID: String, item: String, startTime: String, endTime: String)
+  case class Record(
+    workerID: String, workerName: String, machineID: String, 
+    maintenanceCode: String, 
+    startTime: String, endTime: String
+  )
 
   val dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 
@@ -20,7 +24,10 @@ object MachineMaintainLogJSON {
       val startTime = new Date(record.timestamp.get * 1000)
       val endTime = new Date(record.timestamp.get * 1000 + 5234500)
 
-      Record(workerID, workerName, record.machineID.get, record.item.get, dateFormatter.format(startTime), dateFormatter.format(endTime))
+      Record(
+        workerID, workerName, record.machineID.get, record.maintenanceCode.get, 
+        dateFormatter.format(startTime), dateFormatter.format(endTime)
+      )
     }
   }
 
