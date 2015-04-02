@@ -264,7 +264,11 @@ class Boot
       >> MaintenanceCode.barcodePDF
       >> hasPermission(PermissionContent.ReportMaintainLog),
 
-    Menu("ProductionCard") / "productionCard" 
+    Menu("ProductionCard") / "productionCard"  / "index"
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportOrderStatus),
+    Menu("ProductionCard2") / "productionCard"  / *
+      >> getTemplate("productionCard/detail")
       >> needLogin
       >> hasPermission(PermissionContent.ReportOrderStatus)
 
