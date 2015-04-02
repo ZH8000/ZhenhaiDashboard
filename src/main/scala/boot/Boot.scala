@@ -247,9 +247,15 @@ class Boot
     Menu("OrderStatus") / "orderStatus" 
       >> needLogin
       >> hasPermission(PermissionContent.ReportOrderStatus),
-    Menu("MachineMaintainLog") / "machineMaintainLog"
+
+    Menu("MachineMaintenance") / "maintenanceLog" / "index"
       >> needLogin
       >> hasPermission(PermissionContent.ReportMaintainLog),
+    Menu("MachineMaintenanceDetail") / "maintenanceLog" / *
+      >> getTemplate("maintenanceLog/detail")
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportMaintainLog),
+
     Menu("MachineMaintenanceCode") / "management" / "maintenanceCode"
       >> needLogin
       >> hasPermission(PermissionContent.ReportMaintainLog),
