@@ -16,7 +16,7 @@ object MaintenanceCodePDF {
     val barCode = new Barcode39()
     val descriptionTag = new Paragraph(maintenanceCode.description.get, chineseFont)
 
-    barCode.setCode("MMM" + maintenanceCode.code.get)
+    barCode.setCode("UUU" + maintenanceCode.code.get)
     descriptionTag.setAlignment(Element.ALIGN_CENTER)
 
     cell.setPadding(10)
