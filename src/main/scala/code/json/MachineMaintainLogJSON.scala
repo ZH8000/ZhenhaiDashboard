@@ -15,6 +15,7 @@ object MachineMaintainLogJSON {
 
   val dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 
+  /*
   def getLogs = {
     MachineMaintainLog.findAll.sortWith(_.timestamp.get > _.timestamp.get).map { record =>
 
@@ -30,6 +31,8 @@ object MachineMaintainLogJSON {
       )
     }
   }
+  */
+  def getLogs: List[Record] = Nil
 
 }
 
