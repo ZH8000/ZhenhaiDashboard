@@ -5,8 +5,8 @@ import code.json._
 
 object OrderStatusCSV {
 
-  def apply() = {
-    val orderStatus = OrderStatus.findAll.sortWith(_.lotNo.get < _.lotNo.get)
+  def apply(date:String) = {
+    val orderStatus = OrderStatus.findAll("shiftDate", date).sortWith(_.lotNo.get < _.lotNo.get)
     val lines = orderStatus.map { record =>
       val requireCount = (record.inputCount.get - (record.inputCount.get * 0.04)).toLong
       s""""${record.lotNo}","${record.customer}","${record.product}",${record.inputCount},$requireCount,${record.step1},""" + 

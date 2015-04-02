@@ -20,6 +20,11 @@ class DailyOrder extends MongoRecord[DailyOrder] with ObjectIdPk[DailyOrder] {
   val lotNo = new StringField(this, 100)
   val product = new StringField(this, 100)
   val status = new IntField(this, -1)
+  val step1Status = new IntField(this, -1)
+  val step2Status = new IntField(this, -1)
+  val step3Status = new IntField(this, -1)
+  val step4Status = new IntField(this, -1)
+  val step5Status = new IntField(this, -1)
 
   def customer = Customer.fromPartNo(partNo.get)
 

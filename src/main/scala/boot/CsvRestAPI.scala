@@ -64,7 +64,6 @@ object CsvRestAPI extends RestHelper {
   })
 
   serve("api" / "csv" prefix {
-    case "orderStatus" :: Nil Get req => toCSVResponse(OrderStatusCSV())
     case "todayOrder" :: Nil Get req => toCSVResponse(TodayOrderCSV())
   })
 
@@ -74,6 +73,10 @@ object CsvRestAPI extends RestHelper {
 
   serve("api" / "csv" / "maintenanceLog" prefix {
     case date :: Nil Get req => toCSVResponse(MachineMaintainLogCSV(date))
+  })
+
+  serve("api" / "csv" / "orderStatus" prefix {
+    case date :: Nil Get req => toCSVResponse(OrderStatusCSV(date))
   })
 
 

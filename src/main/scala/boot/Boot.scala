@@ -244,7 +244,12 @@ class Boot
     Menu("TodayOrder") / "todayOrder" 
       >> needLogin
       >> hasPermission(PermissionContent.ReportTodayOrder),
-    Menu("OrderStatus") / "orderStatus" 
+
+    Menu("OrderStatus") / "orderStatus" / "index"
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportOrderStatus),
+    Menu("OrderStatusDetail") / "orderStatus" / *
+      >> getTemplate("orderStatus/detail")
       >> needLogin
       >> hasPermission(PermissionContent.ReportOrderStatus),
 
