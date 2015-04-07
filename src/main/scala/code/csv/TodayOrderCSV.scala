@@ -11,7 +11,8 @@ object TodayOrderCSV {
   val dateFormatter = new SimpleDateFormat("yyyy-MM-dd")
 
   def apply() = {
-    val todayOrders = DailyOrder.findAll("timestamp", dateFormatter.format(today.getTime)).sortWith(_.lotNo.get < _.lotNo.get)
+    val todayString = dateFormatter.format(today.getTime)
+    val todayOrders = ProductionStatus.findAll("lastUpdatedShifted", todayString).sortWith(_.lotNo.get < _.lotNo.get)
     val lines = todayOrders.map { record =>
       s""""${record.lotNo}","${record.customer}","${record.product}","${record.status}""""
     }

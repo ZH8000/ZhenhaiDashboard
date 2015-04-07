@@ -11,7 +11,7 @@ import scala.xml.NodeSeq
 class TodayOrder {
 
   val dateFormatter = new SimpleDateFormat("yyyy-MM-dd")
-  val order = DailyOrder.findAll("timestamp", dateFormatter.format(today.getTime)).sortWith(_.lotNo.get < _.lotNo.get)
+  val order = ProductionStatus.findAll("lastUpdatedShifted", dateFormatter.format(today.getTime)).sortWith(_.lotNo.get < _.lotNo.get)
   val statusToDescription = Map(
     1 -> "生產中",
     2 -> "維修中",

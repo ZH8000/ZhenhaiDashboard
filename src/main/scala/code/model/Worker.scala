@@ -29,6 +29,7 @@ object Worker extends Worker with MongoMetaRecord[Worker] {
 
   def findByWorkerID(workerID: String) = Worker.find(MongoDBObject("workerID" -> workerID, "isDeleted" -> false))
   def findByWorkerName(name: String) = Worker.find(MongoDBObject("name" -> name, "isDeleted" -> false))
+  def findByMongoID(mongoID: String) = Worker.find(MongoDBObject("_id" -> mongoID, "isDeleted" -> false))
 
   def barcodePDF = new EarlyResponse(() => 
     Full(OutputStreamResponse(WorkerBarcodePDF.createPDF _, -1, List("Content-Type" -> "application/pdf")))
