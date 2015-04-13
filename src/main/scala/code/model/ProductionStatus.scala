@@ -9,7 +9,7 @@ import net.liftweb.record.field._
 
 
 object ProductionStatus extends ProductionStatus with MongoMetaRecord[ProductionStatus] {
-  override def collectionName = "dailyOrder"
+  override def collectionName = "productionStatus"
 }
 
 class ProductionStatus extends MongoRecord[ProductionStatus] with ObjectIdPk[ProductionStatus] {
