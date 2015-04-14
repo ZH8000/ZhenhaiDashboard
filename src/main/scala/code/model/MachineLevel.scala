@@ -37,7 +37,11 @@ class MachineLevel extends MongoRecord[MachineLevel] with ObjectIdPk[MachineLeve
 
     diff.map { case (totalTarget, targetToNextLevel) =>
       val scale = Scale(0, totalTarget, 0, 100)
-      val percent = scale(targetToNextLevel)
+      val percent = count match {
+        case 0 => 0
+        case _ => scale(targetToNextLevel)
+      }
+
       (targetToNextLevel, percent)
     }
   }
