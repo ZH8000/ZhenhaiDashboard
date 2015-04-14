@@ -2,6 +2,7 @@ package code.snippet
 
 import code.json._
 import code.model._
+import code.lib._
 
 import net.liftweb.http.S
 import net.liftweb.util.Helpers._
@@ -28,24 +29,23 @@ class MachineMaintainLog {
     val Array(_, date) = S.uri.drop(1).split("/")
     val logs = MachineMaintainLogJSON.getLogs(date)
 
-    val maintenanceCodeDescription = 
-      MaintenanceCode.findAll.map(record => (record.code.get -> record.description.get)).toMap
-
     logs.isEmpty match {
       case true  => showEmptyBox()
       case false =>
         "#csvURL [href]" #> s"/api/csv/maintenanceLog/${date}" &
         ".row" #> logs.map { record =>
 
-          val codeDescriptions = record.maintenanceCode.map(code => maintenanceCodeDescription.get(code).getOrElse(code))
+          val machineInfoHolder = MachineInfo.idTable.get(record.machineID)
+          val machineType = machineInfoHolder.map(_.machineType).getOrElse(-1)
+          val codeMapping = MaintenanceCode.mapping.get(machineType).getOrElse(Map.empty[Int, String])
+          val codeDescriptions = record.maintenanceCode.map(code => codeMapping.get(code.toInt).getOrElse(code))
 
           ".workerID *"   #> record.workerID &
           ".workerName *" #> record.workerName &
           ".machineID *"  #> record.machineID &
-          ".item *"       #> record.maintenanceCode &
+          ".item *"       #> codeDescriptions &
           ".startTime *"  #> record.startTime &
-          ".endTime *"    #> record.endTime &
-          ".desc *"       #> codeDescriptions.mkString("、")
+          ".endTime *"    #> record.endTime
         }
     }
   }

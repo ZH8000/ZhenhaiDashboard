@@ -261,9 +261,6 @@ class Boot
       >> needLogin
       >> hasPermission(PermissionContent.ReportMaintainLog),
 
-    Menu("MachineMaintenanceCode") / "management" / "maintenanceCode"
-      >> needLogin
-      >> hasPermission(PermissionContent.ReportMaintainLog),
     Menu("Managemen4") / "management" / "maintenanceCodePDF" 
       >> needLogin
       >> MaintenanceCode.barcodePDF

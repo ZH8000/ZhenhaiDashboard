@@ -2,19 +2,18 @@ package code.csv
 
 import code.json._
 import code.model._
+import code.lib._
 
 object MachineMaintainLogCSV {
   
   def apply(date: String) = {
 
-    val maintenanceCodeDescription = 
-            MaintenanceCode.findAll.map(record => (record.code.get -> record.description.get)).toMap
-
     val lines = MachineMaintainLogJSON.getLogs(date).map { record =>
 
-      val codeDescriptions = 
-        record.maintenanceCode.map(code => maintenanceCodeDescription.get(code).getOrElse(code))
-              .mkString("、")
+      val machineInfoHolder = MachineInfo.idTable.get(record.machineID)
+      val machineType = machineInfoHolder.map(_.machineType).getOrElse(-1)
+      val codeMapping = MaintenanceCode.mapping.get(machineType).getOrElse(Map.empty[Int, String])
+      val codeDescriptions = record.maintenanceCode.map(code => codeMapping.get(code.toInt).getOrElse(code)).mkString("、")
 
       s""""${record.workerID}","${record.workerName}","${record.machineID}","${codeDescriptions}",""" +
       s""""${record.startTime}","${record.endTime}""""
