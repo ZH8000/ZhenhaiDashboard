@@ -51,5 +51,14 @@ class OrderStatus extends MongoRecord[OrderStatus] with ObjectIdPk[OrderStatus] 
   val step5StartTime = new LongField(this, -1)
 
   def customer = Customer.fromPartNo(partNo.get)
+
+  def isStepDone(step: Int) = step match {
+    case 1 => step1.get >= inputCount.get
+    case 2 => step2.get >= (inputCount.get / 1.04).toLong
+    case 3 => step3.get >= (inputCount.get / 1.04).toLong
+    case 4 => step4.get >= (inputCount.get / 1.04).toLong
+    case 5 => step5.get >= (inputCount.get / 1.04).toLong
+  }
+
 }
 
