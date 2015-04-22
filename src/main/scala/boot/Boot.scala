@@ -53,6 +53,9 @@ class Boot
     Menu("assets") / "test" / **,
     Menu("Home") / "index" >> redirectToDashboardIfLoggedIn,
     Menu("Logout") / "user" / "logout" >> logout,
+    Menu("ChangePassword") / "user" / "changePassword" 
+      >> needLogin
+      >> hasPermission(PermissionContent.ManagementAccount),
     Menu("Dashboard") / "dashboard" >> needLogin,
     Menu("ViewDetail") / "viewDetail" >> needLogin,
     Menu("Alert") / "alert" / "index" >> needLogin,

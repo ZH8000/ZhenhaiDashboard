@@ -15,12 +15,12 @@ import net.liftweb.common._
 class UserEdit(user: User) extends StatefulSnippet {
 
   
-  private var username: String = _
-  private var workerID: String = _
-  private var email: String = _
+  private var username: String = user.username.get
+  private var workerID: String = user.employeeID.get
+  private var email: String = user.email.get
   private var password: String = ""
   private var confirmPassword: String = ""
-  private var permission: String = _
+  private var permission: String = user.permission.get
 
   def dispatch = {
     case "render" => render
@@ -68,9 +68,9 @@ class UserEdit(user: User) extends StatefulSnippet {
       if (permission.permissionName.get == user.permission.get) selected else notSelected
 
     } andThen
-    "name=username [value]" #> user.username &
-    "name=workerID" #> SHtml.text(user.employeeID.get, workerID = _) &
-    "name=email"    #> SHtml.text(user.email.get, email = _) &
+    "name=username [value]" #> username &
+    "name=workerID" #> SHtml.text(workerID, workerID = _) &
+    "name=email"    #> SHtml.text(email, email = _) &
     "name=password" #> SHtml.password(password, password = _) &
     "name=confirmPassword" #> SHtml.password(confirmPassword, confirmPassword = _) &
     "#permissionSelect" #> SHtml.onSubmit(permission = _) &
