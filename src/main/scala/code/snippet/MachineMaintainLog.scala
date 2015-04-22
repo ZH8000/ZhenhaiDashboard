@@ -33,19 +33,22 @@ class MachineMaintainLog {
       case true  => showEmptyBox()
       case false =>
         "#csvURL [href]" #> s"/api/csv/maintenanceLog/${date}" &
-        ".row" #> logs.map { record =>
+        ".row" #> logs.zipWithIndex.map { case (record, counter) =>
 
           val machineInfoHolder = MachineInfo.idTable.get(record.machineID)
           val machineType = machineInfoHolder.map(_.machineType).getOrElse(-1)
           val codeMapping = MaintenanceCode.mapping.get(machineType).getOrElse(Map.empty[Int, String])
           val codeDescriptions = record.maintenanceCode.map(code => codeMapping.get(code.toInt).getOrElse(code))
 
-          ".workerID *"   #> record.workerID &
-          ".workerName *" #> record.workerName &
+          ".counter *"  #> (counter + 1) &
+          ".startWorkerName *" #> record.startWorkerName &
           ".machineID *"  #> record.machineID &
           ".item *"       #> codeDescriptions &
           ".startTime *"  #> record.startTime &
-          ".endTime *"    #> record.endTime
+          ".endTime *"    #> record.endTime &
+          ".endWorkerName *" #> record.endWorkerName &
+          ".totalTime *" #> record.totalTime
+
         }
     }
   }

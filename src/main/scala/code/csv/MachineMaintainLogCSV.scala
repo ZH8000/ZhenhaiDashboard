@@ -15,11 +15,12 @@ object MachineMaintainLogCSV {
       val codeMapping = MaintenanceCode.mapping.get(machineType).getOrElse(Map.empty[Int, String])
       val codeDescriptions = record.maintenanceCode.map(code => codeMapping.get(code.toInt).getOrElse(code)).mkString("、")
 
-      s""""${record.workerID}","${record.workerName}","${record.machineID}","${codeDescriptions}",""" +
-      s""""${record.startTime}","${record.endTime}""""
+      s""""${record.machineID}","${codeDescriptions}",""" +
+      s""""${record.startTime}","${record.startWorkerName}",""" +
+      s""""${record.endTime}", ${record.endWorkerName}, ${record.totalTime}"""
     }
 
-    s""""工號","姓名","機台","維修項目","開始時間","結束時間"""" + "\n" +
+    s""""機台","維修項目","開始時間","員工","結束時間","員工","總計時間"""" + "\n" +
     lines.mkString("\n")
   }
 

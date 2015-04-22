@@ -13,7 +13,8 @@ object MaintenanceCodePDF {
      BaseFont.NOT_EMBEDDED
   )
 
-  val chineseFont = new Font(baseFont, 10)
+  val chineseFont = new Font(baseFont, 6) 
+  val titleFont = new Font(baseFont, 10)
 
   def createBarcodeLabel(code: Int, step: String, description: String, pdfWriter: PdfWriter) = {
 
@@ -23,14 +24,15 @@ object MaintenanceCodePDF {
     val descriptionTag = new Paragraph(s"$description", chineseFont)
 
     barCode.setCode("UUU" + code)
+    barCode.setBarHeight(5)
+    barCode.setSize(1.5f)
+    barCode.setBaseline(1.5f)
+    barCode.setFont(baseFont)
 
-    stepTag.setAlignment(Element.ALIGN_CENTER)
     descriptionTag.setAlignment(Element.ALIGN_CENTER)
-
-    cell.setPadding(10)
+    cell.setPadding(5)
     cell.setHorizontalAlignment(Element.ALIGN_CENTER)
     cell.addElement(barCode.createImageWithBarcode(new PdfContentByte(pdfWriter), null, null))
-    cell.addElement(stepTag)
     cell.addElement(descriptionTag)
 
     cell
@@ -44,7 +46,7 @@ object MaintenanceCodePDF {
   def createPDF(outputStream: OutputStream) = {
     val document = new Document(PageSize.A4)
     val pdfWriter = PdfWriter.getInstance(document, outputStream)
-    val table = new PdfPTable(3)
+    val table = new PdfPTable(1)
     val steps = 
       (1 -> "加締卷取") ::
       (2 -> "組立") ::
@@ -53,22 +55,30 @@ object MaintenanceCodePDF {
       (5 -> "加工切角") :: Nil
 
     document.open()
-    document.newPage()
-
     pdfWriter.setPageEmpty(false)
 
     for {
       (step, stepTitle) <- steps
-      code <- 1 :: 2 :: 3 :: 4 :: 5 :: 6 :: 7 :: 8 :: 9 :: Nil
-      codeMapping <- MaintenanceCode.mapping.get(step)
-      codeTitle <- codeMapping.get(code)
     } {
-      table.addCell(createBarcodeLabel(code, stepTitle, codeTitle, pdfWriter))
+      val pageTitle = new Paragraph(stepTitle, titleFont)
+      pageTitle.setAlignment(Element.ALIGN_CENTER)
+      pageTitle.setSpacingAfter(10)
+      document.add(pageTitle)
+      val table = new PdfPTable(1)
+      table.setWidthPercentage(20f)
+
+      for {
+        code <- 1 :: 2 :: 3 :: 4 :: 5 :: 6 :: 7 :: 8 :: 9 :: Nil
+        codeMapping <- MaintenanceCode.mapping.get(step)
+        codeTitle <- codeMapping.get(code)
+      } {
+        table.addCell(createBarcodeLabel(code, stepTitle, codeTitle, pdfWriter))
+      }
+      table.completeRow()
+      document.add(table)
+      document.newPage()
     }
 
-    table.completeRow()
-
-    document.add(table)
     document.close()
   }
 
