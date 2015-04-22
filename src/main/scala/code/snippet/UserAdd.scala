@@ -11,6 +11,8 @@ import net.liftweb.util.Helpers._
 import net.liftweb.util._
 import net.liftweb.common.Box._
 import net.liftweb.common._
+import net.liftweb.util.Mailer
+import net.liftweb.util.Mailer._
 
 class UserAdd extends StatefulSnippet {
 
@@ -51,7 +53,27 @@ class UserAdd extends StatefulSnippet {
       case Failure(message, _, _) => S.error(message)
       case Full(user) => 
         user.saveTheRecord() match {
-          case Full(_) => S.redirectTo("/management/account/", () => S.notice(s"已成功新增帳號【${user.username}】"))
+          case Full(_) => 
+
+            Mailer.sendMail(
+              From("admin@zhenhai.com.tw"),
+              Subject("雲端系統帳號已建立"),
+              To(user.email.get),
+              PlainMailBodyType(
+                """| Dear %s
+                   |
+                   | 已建立雲端系統帳號，請使用以下帳號密碼登入：
+                   |
+                   | 帳號：%s
+                   | 密碼：%s
+                   |""".stripMargin.format(user.username.get, user.username.get, password)
+              ) 
+            )
+
+            S.redirectTo(
+              "/management/account/", 
+              () => S.notice(s"已成功新增帳號【${user.username}】")
+            )
           case _ => S.error("無法儲存至資料庫，請稍候再試")
         }
     }

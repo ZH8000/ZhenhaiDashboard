@@ -1,9 +1,9 @@
 package bootstrap.liftweb
 
+import code.lib._
 import code.model._
-
 import com.mongodb.MongoClient
-
+import javax.mail.{Authenticator,PasswordAuthentication}
 import net.liftweb.common.{Full, Empty}
 import net.liftweb.http._
 import net.liftweb.http.LiftRules
@@ -14,14 +14,13 @@ import net.liftweb.mongodb.MongoDB
 import net.liftweb.sitemap._
 import net.liftweb.sitemap.Loc.EarlyResponse
 import net.liftweb.sitemap.Loc.If
-import net.liftweb.sitemap.Loc.Unless
 import net.liftweb.sitemap.Loc.Template
+import net.liftweb.sitemap.Loc.Unless
 import net.liftweb.util.BasicTypesHelpers._
 import net.liftweb.util.DefaultConnectionIdentifier
 import net.liftweb.util.Props.RunModes
-
+import net.liftweb.util.{Props, Mailer}
 import scala.xml.NodeSeq
-import code.lib._
 
 class Boot 
 {
@@ -317,6 +316,14 @@ class Boot
         exception.printStackTrace()
         println(s"===================================")
         errorPageResponse(req, 500)
+    }
+
+    Mailer.authenticator = for {
+      user <- Props.get("mail.user")
+      pass <- Props.get("mail.password")
+    } yield new Authenticator {
+      override def getPasswordAuthentication =
+        new PasswordAuthentication(user,pass)
     }
   }
 }
