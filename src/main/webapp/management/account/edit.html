@@ -1,0 +1,120 @@
+<div data-lift="Surround?with=default;at=content">
+  <div class="ui page grid">
+
+    <div class="column">
+
+      <div data-lift="lift:msgs?showAll=true">
+        <lift:error_msg class="ui red sys message"></lift:error_msg>
+        <lift:warning_msg class="ui yellow sys message"></lift:warning_msg>
+        <lift:notice_msg class="ui green sys message"></lift:notice_msg>
+      </div>
+
+      <form class="ui form segment" id="addUserForm" data-lift="UserEdit?form=post">
+        <div class="field">
+          <label>帳號</label>
+          <div class="ui input">
+            <input type="text" name="username" id="username" readonly>
+          </div>
+        </div>
+        <div class="field">
+          <label>工號</label>
+          <div class="ui input">
+            <input type="text" name="workerID" id="workerID">
+          </div>
+        </div>
+        <div class="field">
+          <label>電子郵件</label>
+          <div class="ui input">
+            <input type="text" name="email" id="email">
+          </div>
+        </div>
+        <div class="field">
+          <label>權限</label>
+          <div class="ui input">
+            <select class="ui dropdown" id="permissionSelect">
+              <option value="administrator">系統管理員</option>
+              <option class="permissionItem" value="permission">Permission</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label>密碼</label>
+          <div class="ui input">
+            <input type="password" name="password" id="password">
+          </div>
+        </div>
+        <div class="field">
+          <label>確認密碼</label>
+          <div class="ui input">
+            <input type="password" name="confirmPassword" id="confirmPassword">
+          </div>
+        </div>
+        <input class="ui right floated blue submit button" type="submit" value="更新員工資料" id="submitButton"/>
+      </form> 
+    </div>
+  </div>
+  <script>
+    $(function() {
+      var validations = {
+        "name": {
+          "identifier": "username",
+          "rules": [{
+            "type": "empty",
+            "prompt": "請輸入帳號"
+          }]
+        },
+        "workerID": {
+          "identifier": "workerID",
+          "rules": [{
+            "type": "empty",
+            "prompt": "請輸入員工工號"
+          }]
+        },
+        "email": {
+          "identifier": "email",
+          "rules": [{
+            "type": "empty",
+            "prompt": "請輸入電子郵件"
+          },{
+            "type": "email",
+            "prompt": "電子郵件格式錯誤"
+          }]
+        },
+        "password": {
+          "identifier": "password",
+          "rules": [{
+            "type": "empty",
+            "prompt": "請輸入密碼"
+          },
+          {
+            "type": "length[8]",
+            "prompt": "請輸入至少八個字元"
+          }]
+        },
+        "confirmPassword": {
+          "identifier": "confirmPassword",
+          "rules": [{
+            "type": "empty",
+            "prompt": "請輸入密碼"
+          },
+          {
+            "type": "match[password]",
+            "prompt": "與密碼不符，請檢查"
+          },
+          {
+            "type": "length[8]",
+            "prompt": "請輸入至少八個字元"
+          }]
+
+        }
+      }
+
+      $('select.dropdown').dropdown();
+      $("#addUserForm").form(validations, {on: "blur", inline: true, onSuccess : function(){
+        $("#submitButton").click();
+        return true;
+      }})
+    })
+  </script>
+
+</div>

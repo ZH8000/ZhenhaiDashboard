@@ -1,9 +1,9 @@
 package bootstrap.liftweb
 
+import code.lib._
 import code.model._
-
 import com.mongodb.MongoClient
-
+import javax.mail.{Authenticator,PasswordAuthentication}
 import net.liftweb.common.{Full, Empty}
 import net.liftweb.http._
 import net.liftweb.http.LiftRules
@@ -14,14 +14,13 @@ import net.liftweb.mongodb.MongoDB
 import net.liftweb.sitemap._
 import net.liftweb.sitemap.Loc.EarlyResponse
 import net.liftweb.sitemap.Loc.If
-import net.liftweb.sitemap.Loc.Unless
 import net.liftweb.sitemap.Loc.Template
+import net.liftweb.sitemap.Loc.Unless
 import net.liftweb.util.BasicTypesHelpers._
 import net.liftweb.util.DefaultConnectionIdentifier
 import net.liftweb.util.Props.RunModes
-
+import net.liftweb.util.{Props, Mailer}
 import scala.xml.NodeSeq
-import code.lib._
 
 class Boot 
 {
@@ -43,6 +42,8 @@ class Boot
   }
 
   val editWorkerMenu = Menu.param[Worker]("EditWorker", "EditWorker", id => Worker.find(id), worker => worker.id.get.toString)
+  val editUserMenu = Menu.param[User]("EditUser", "EditUser", id => User.find(id), user => user.id.get.toString)
+ 
   val editAlarmMenu = Menu.param[Alarm]("EditAlarm", "EditAlarm", id => Alarm.find(id), alarm => alarm.id.get.toString)
   def workerMenu(menuID: String) = Menu.param[Worker](menuID, menuID, id => Worker.find(id), worker => worker.id.get.toString)
 
@@ -51,6 +52,9 @@ class Boot
     Menu("assets") / "test" / **,
     Menu("Home") / "index" >> redirectToDashboardIfLoggedIn,
     Menu("Logout") / "user" / "logout" >> logout,
+    Menu("ChangePassword") / "user" / "changePassword" 
+      >> needLogin
+      >> hasPermission(PermissionContent.ManagementAccount),
     Menu("Dashboard") / "dashboard" >> needLogin,
     Menu("ViewDetail") / "viewDetail" >> needLogin,
     Menu("Alert") / "alert" / "index" >> needLogin,
@@ -217,7 +221,11 @@ class Boot
     Menu("Managemen8") / "management" / "account" / "addPermission" 
       >> needLogin
       >> hasPermission(PermissionContent.ManagementAccount),
- 
+    editUserMenu / "management" / "account" / "edit" / * 
+      >> getTemplate("management/account/edit") 
+      >> needLogin
+      >> hasPermission(PermissionContent.ManagementAccount),
+
     Menu("Workers") / "workers" / "index" 
       >> needLogin
       >> hasPermission(PermissionContent.ManagementWorker),
@@ -308,6 +316,14 @@ class Boot
         exception.printStackTrace()
         println(s"===================================")
         errorPageResponse(req, 500)
+    }
+
+    Mailer.authenticator = for {
+      user <- Props.get("mail.user")
+      pass <- Props.get("mail.password")
+    } yield new Authenticator {
+      override def getPasswordAuthentication =
+        new PasswordAuthentication(user,pass)
     }
   }
 }
