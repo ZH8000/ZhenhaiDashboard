@@ -43,6 +43,8 @@ class Boot
   }
 
   val editWorkerMenu = Menu.param[Worker]("EditWorker", "EditWorker", id => Worker.find(id), worker => worker.id.get.toString)
+  val editUserMenu = Menu.param[User]("EditUser", "EditUser", id => User.find(id), user => user.id.get.toString)
+ 
   val editAlarmMenu = Menu.param[Alarm]("EditAlarm", "EditAlarm", id => Alarm.find(id), alarm => alarm.id.get.toString)
   def workerMenu(menuID: String) = Menu.param[Worker](menuID, menuID, id => Worker.find(id), worker => worker.id.get.toString)
 
@@ -217,7 +219,11 @@ class Boot
     Menu("Managemen8") / "management" / "account" / "addPermission" 
       >> needLogin
       >> hasPermission(PermissionContent.ManagementAccount),
- 
+    editUserMenu / "management" / "account" / "edit" / * 
+      >> getTemplate("management/account/edit") 
+      >> needLogin
+      >> hasPermission(PermissionContent.ManagementAccount),
+
     Menu("Workers") / "workers" / "index" 
       >> needLogin
       >> hasPermission(PermissionContent.ManagementWorker),

@@ -24,6 +24,7 @@ class UserList {
       ".workID *" #> user.employeeID &
       ".email *" #> user.email &
       ".permission *" #> user.permission &
+      ".editLink [href]" #> s"/management/account/edit/${user.id}" &
       ".deleteLink [onclick]" #> SHtml.onEventIf(s"確定要刪除【${user.username}】這個帳號嗎？", onDelete(user.id.get.toString)_)
     }
   }
