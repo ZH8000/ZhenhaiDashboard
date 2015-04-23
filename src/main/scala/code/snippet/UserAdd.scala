@@ -64,6 +64,7 @@ class UserAdd extends StatefulSnippet {
                    |
                    | 已建立雲端系統帳號，請使用以下帳號密碼登入：
                    |
+                   | 網址：http://221.4.141.146
                    | 帳號：%s
                    | 密碼：%s
                    |""".stripMargin.format(user.username.get, user.username.get, password)
