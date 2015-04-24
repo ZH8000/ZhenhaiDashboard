@@ -23,7 +23,13 @@ class AlarmAdd extends AlarmEdit(Alarm.createRecord)
 
 class AlarmEdit(alarm: Alarm) {
 
-  private val Array(_, _, step, _) = S.uri.split("/").drop(1)
+  private val step = {
+    S.uri.split("/").drop(1).toList match {
+      case "management" :: "alarms" :: "edit" :: alarmID :: Nil => alarm.step.get
+      case "management" :: "alarms" :: step :: "add" :: Nil => step
+      case _ => ""
+    }
+  }
   private var machineIDBox: Box[String] = Full(alarm.machineID.toString)
   private var countdownQtyBox: Box[String] = Full(alarm.countdownQty.toString).filter(_ != "0")
   private var descriptionBox: Box[String] = Full(alarm.description.toString)
@@ -63,7 +69,7 @@ class AlarmEdit(alarm: Alarm) {
 
   def onConfirm(value: String): JsCmd = {
     alarm.saveTheRecord() match {
-      case Full(alarm) => S.redirectTo(s"/management/alarms/$step", () => S.notice("成功新增或修改維修行事曆"))
+      case Full(alarm) => S.redirectTo(s"/management/alarms/${alarm.step}", () => S.notice("成功新增或修改維修行事曆"))
       case Failure(msg, _, _) => S.error(msg)
       case Empty => S.error("無法寫入資料庫")
     }
