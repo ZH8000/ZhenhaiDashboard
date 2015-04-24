@@ -1,0 +1,71 @@
+<div data-lift="Surround?with=default;at=content">
+  <div class="ui page grid">
+
+    <div class="column" data-lift="AlarmList.addLink">
+
+       <a href="#" id="addLink" class="ui right floated labled icon primary button"><i class="plus icon"></i> 新增維修行事曆</a>
+
+       <div style="clear: both; margin-bottom: 20px"></div>
+
+       <div data-lift="lift:msgs?showAll=true">
+         <lift:error_msg class="ui red sys message"></lift:error_msg>
+         <lift:warning_msg class="ui yellow sys message"></lift:warning_msg>
+         <lift:notice_msg class="ui green sys message"></lift:notice_msg>
+       </div>
+
+       <div class="ui segment">
+         <table class="ui celled table" data-lift="AlarmList">
+           <thead>
+             <tr>
+               <th>機台</th>
+               <th>更換循環</th>
+               <th>累計良品數（個）</th>
+               <th>累計良品數（萬）</th>
+               <th>下次更換</th>
+               <th>描述</th>
+               <th>已完成</th>
+               <th>已更換次數</th>
+               <th>動作</th>
+              </tr>
+              <tr id="" class="alarmRow">
+                <td class="machineID"></td>
+                <td class="countdownQty"></td>
+                <td class="countQty"></td>
+                <td class="countQtyWan"></td>
+                <td class="nextCount"></td>
+                <td><pre class="description"></pre></td>
+                <td class="doneCheckboxHolder">
+                  <input type="button" class="doneCheckbox ui tiny primary button" value="標記為已完成"/> 
+                </td>
+                <td class="replacedCounter"></td>
+ 
+                <td>
+                  <div class="ui small buttons">
+                    <a href="/management/alarms/edit/" class="editLink ui icon button"><i class="ui edit icon"></i> 編輯</a>
+                    <div class="or"></div>
+                    <a href="javascript: void(0)" class="ui icon button deleteLink"><i class="ui trash icon"></i> 刪除</a>
+                  </div>
+                </td>
+              </tr>
+           </thead>
+           <tbody>
+           </tbody>
+         </table>
+       </div>
+       <script>
+
+         function updateUI(alarmID, nextCount, replacedCounter) {
+            console.log("alarmID:" + alarmID);
+            console.log("nextCount:" + nextCount);
+            console.log("replacedCounter:" + replacedCounter);
+
+            $("#nextCount-" + alarmID).text(nextCount);
+            $("#replacedCounter-" + alarmID).text(replacedCounter);
+            $('#doneCheckboxHolder-' + alarmID).text("Ｖ");
+         }
+
+       </script>
+
+    </div>
+  </div>
+</div>

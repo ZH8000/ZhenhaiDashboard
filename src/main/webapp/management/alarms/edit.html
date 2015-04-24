@@ -10,40 +10,19 @@
       </div>
 
       <form class="ui form segment" data-lift="AlarmEdit?form=ajax&class=ui form segment">
-        <div class="two fields">
-          <div class="field">
-            <label>工號</label>
-            <div class="ui input">
-              <input type="text" name="workerID" />
-            </div>
-          </div>
-          <div class="field">
-            <label>姓名</label>
-            <div class="ui input">
-              <input type="text" name="name" disabled id="name"/ >
-            </div>
-          </div>
-        </div>
-        <div class="two fields">
-          <div class="field">
-            <label>起算日期</label>
-            <div class="ui input">
-              <input type="text" name="startDate" id="startDate"/>
-            </div>
-          </div>
-          <div class="field">
-            <label>目標良品數</label>
-            <div class="ui input">
-              <input type="text" name="countdownQty" />
-            </div>
-          </div>
-        </div>
         <div class="field">
           <label>機台</label>
           <div class="ui input">
             <select name="machineID" style="width: 100%" id="machineID">
               <option class="machineItem item" value="MachineID">MachineID</option>
             </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>更換零件循環累計良品數（單位：個）</label>
+          <div class="ui input">
+            <input type="text" name="countdownQty" />
           </div>
         </div>
         <div class="field">

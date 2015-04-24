@@ -3,8 +3,6 @@
 
     <div class="column">
 
-       <a href="/management/alarms/add" class="ui right floated labled icon primary button"><i class="plus icon"></i> 新增維修行事曆</a>
-
        <div style="clear: both; margin-bottom: 20px"></div>
 
        <div data-lift="lift:msgs?showAll=true">
@@ -13,35 +11,12 @@
          <lift:notice_msg class="ui green sys message"></lift:notice_msg>
        </div>
 
-       <div class="ui segment">
-         <table class="ui celled table" data-lift="AlarmList">
-           <thead>
-             <tr>
-               <th>目標良品數</th><th>目前良品數</th><th>機台</th><th>描述</th>
-               <th>工號</th><th>員工</th><th>已完成</th><th>動作</th>
-              </tr>
-              <tr id="" class="alarmRow">
-                <td class="countdownQty"></td>
-                <td class="countQty"></td>
-                <td class="machineID"></td>
-                <td><pre class="description"></pre></td>
-                <td class="workerID"></td>
-                <td class="workerName"></td>
-                <td>
-                  <input type="checkbox" class="doneCheckbox" />
-                </td>
-                <td>
-                  <div class="ui small buttons">
-                    <a href="/management/alarms/edit/" class="editLink ui icon button"><i class="ui edit icon"></i> 編輯</a>
-                    <div class="or"></div>
-                    <a href="javascript: void(0)" class="ui icon button deleteLink"><i class="ui trash icon"></i> 刪除</a>
-                  </div>
-                </td>
-              </tr>
-           </thead>
-           <tbody>
-           </tbody>
-         </table>
+       <div class="ui three column wide grid">
+         <div class="column"><a href="step1" class="ui huge primary button">加締</a></div>
+         <div class="column"><a href="step2" class="ui huge primary button">組立</a></div>
+         <div class="column"><a href="step3" class="ui huge primary button">老化</a></div>
+         <div class="column"><a href="step4" class="ui huge primary button">選別</a></div>
+         <div class="column"><a href="step5" class="ui huge primary button">加工</a></div>
        </div>
 
     </div>

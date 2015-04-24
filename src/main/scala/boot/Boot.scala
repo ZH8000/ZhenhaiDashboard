@@ -201,10 +201,15 @@ class Boot
       >> needLogin
       >> hasPermission(PermissionContent.ManagementWorker),
 
-    Menu("Managemen5") / "management" / "alarms" / "add" 
+    Menu("Managemen6") / "management" / "alarms" / "index" 
       >> needLogin
       >> hasPermission(PermissionContent.ManagementAlarm),
-    Menu("Managemen6") / "management" / "alarms" / "index" 
+    Menu("Managemen6") / "management" / "alarms" / * 
+      >> getTemplate("management/alarms/list") 
+      >> needLogin
+      >> hasPermission(PermissionContent.ManagementAlarm),
+    Menu("Managemen5") / "management" / "alarms" / * / "add" 
+      >> getTemplate("management/alarms/add") 
       >> needLogin
       >> hasPermission(PermissionContent.ManagementAlarm),
     editAlarmMenu / "management" / "alarms" / "edit" / * 

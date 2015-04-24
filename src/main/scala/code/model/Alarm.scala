@@ -16,6 +16,22 @@ import java.util.Calendar
 import java.util.Date
 import java.text.SimpleDateFormat
 
+object MachineCounter extends MachineCounter with MongoMetaRecord[MachineCounter] {
+  override def collectionName = "machineCounter"
+
+  def getCount(machineID: String): Long = MachineCounter.find("machineID", machineID).map(_.counter.get).getOrElse(0)
+  def toHashMap: Map[String, Long] = MachineCounter.findAll.map(x => x.machineID.get -> x.counter.get).toMap
+}
+
+class MachineCounter extends MongoRecord[MachineCounter] with ObjectIdPk[MachineCounter] {
+  def meta = MachineCounter
+
+  val machineID = new StringField(this, 10)
+  val counter = new LongField(this, 0)
+}
+
+
+
 object Alarm extends Alarm with MongoMetaRecord[Alarm] {
   override def collectionName = "alarm"
 }
@@ -23,12 +39,8 @@ object Alarm extends Alarm with MongoMetaRecord[Alarm] {
 class Alarm extends MongoRecord[Alarm] with ObjectIdPk[Alarm] {
   def meta = Alarm
 
-  val name = new StringField(this, 10)
-  val workerID = new StringField(this, 20)
-  val workerMongoID = new StringField(this, 32)
-  val startDate = new DateField(this)
-  val countdownQty = new IntField(this)
-  val countQty = new IntField(this)
+  val step = new StringField(this, 5)
+  val countdownQty = new LongField(this)
   val machineID = new StringField(this, 10)
   val description = new StringField(this, 60)
 
@@ -36,8 +48,10 @@ class Alarm extends MongoRecord[Alarm] with ObjectIdPk[Alarm] {
   val doneTime = new DateField(this)
   val doneWorkerID = new StringField(this, 20)
   val doneWorkerMongoID = new StringField(this, 32)
+  val replacedCounter = new IntField(this, 0)
+  val lastReplaceCount = new LongField(this, 0)
 
-  def isUrgentEvent = countdownQty.get <= countQty.get
+  def isUrgentEvent = lastReplaceCount.get + countdownQty.get <= MachineCounter.getCount(machineID.get)
 
 
 }

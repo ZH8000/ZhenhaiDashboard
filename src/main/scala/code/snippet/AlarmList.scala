@@ -20,7 +20,12 @@ import scala.xml.NodeSeq
 
 class AlarmList {
 
-  private def alarms = Alarm.findAll.toList.sortWith(_.machineID.get < _.machineID.get)
+  private def alarms = {
+    S.uri.split("/").drop(1) match {
+      case Array("dashboard") => Alarm.findAll.toList.sortWith(_.machineID.get < _.machineID.get)
+      case Array(_, _, step)  => Alarm.findAll("step", step).toList.sortWith(_.machineID.get < _.machineID.get)
+    }
+  }
   private val (urgentAlarms, normalAlarms) = alarms.partition(_.isUrgentEvent)
 
   def deleteAlarm(alarm: Alarm)(value: String) = {
@@ -36,7 +41,17 @@ class AlarmList {
   }
 
   def markAsDoneInPostIt(alarm: Alarm, value: String): JsCmd = {
-    val newRecord = alarm.isDone(true).doneTime(new Date).saveTheRecord()
+
+    val machineIDToCounter = MachineCounter.toHashMap
+    val countQty = machineIDToCounter.get(alarm.machineID.get).getOrElse(0L)
+
+    val newRecord = 
+      alarm.isDone(true)
+           .doneTime(new Date)
+           .lastReplaceCount(countQty)
+           .replacedCounter(alarm.replacedCounter.get + 1)
+           .saveTheRecord()
+
     newRecord match {
       case Full(record) => JsRaw(s"""$$('#row-${alarm.id}').remove()""")
       case _ => S.error("無法存檔")
@@ -44,27 +59,37 @@ class AlarmList {
   }
 
 
-  def markAsDone(alarm: Alarm)(status: Boolean): JsCmd = {
+  def markAsDone(alarm: Alarm, value: String): JsCmd = {
 
-    val newRecord = alarm.isDone(status).doneTime(new Date).saveTheRecord()
+    val machineIDToCounter = MachineCounter.toHashMap
+    val countQty = machineIDToCounter.get(alarm.machineID.get).getOrElse(0L)
+    val nextCount = countQty + alarm.countdownQty.get
+    val newReplacedCounter = alarm.replacedCounter.get + 1
+
+    val newRecord = 
+      alarm.isDone(true)
+           .doneTime(new Date)
+           .lastReplaceCount(countQty)
+           .replacedCounter(newReplacedCounter)
+           .saveTheRecord()
 
     newRecord match {
-      case Full(record) if status => JsRaw(s"""updateUI('${alarm.id}', true)""")
-      case Full(record) if !status => JsRaw(s"""updateUI('${alarm.id}', false)""")
-      case _ =>
-        S.error("無法存檔")
-        JsRaw(s"""updateUI('${alarm.id}', ${!status})""")
+      case Full(record) => JsRaw(s"""updateUI('${alarm.id}', $nextCount, $newReplacedCounter)""")
+      case _ => S.error("無法存檔"); Noop
     }
   }
 
   def postIt = {
     val dateFormatter = new SimpleDateFormat("yyyy-MM-dd")
+    val machineIDToCounter = MachineCounter.toHashMap
 
     def rowItem(alarm: Alarm) = {
+      
+      val countQty = machineIDToCounter.get(alarm.machineID.get).getOrElse(0L)
+
       ".item [id]" #> s"row-${alarm.id}" &
       ".machineID *" #> alarm.machineID &
-      ".workerName *" #> alarm.name &
-      ".countQty *" #> alarm.countQty &
+      ".countQty *" #> countQty &
       ".countdownQty *" #> alarm.countdownQty &
       ".desc *" #> alarm.description &
       ".machineID [id]"    #> s"machineID-${alarm.id}" &
@@ -88,20 +113,48 @@ class AlarmList {
   }
 
   def render = {
+
     val dateFormatter = new SimpleDateFormat("yyyy-MM-dd")
+    val machineIDToCounter = MachineCounter.toHashMap
+
     ".alarmRow" #> alarms.map { alarm =>
+
+      val countQty = machineIDToCounter.get(alarm.machineID.get).getOrElse(0L)
+      val wanQty = countQty / 10000.0
+      val nextCount = alarm.lastReplaceCount.get + alarm.countdownQty.get
+
+      val doneCheckBox = alarm.isDone.get match {
+        case true  =>
+          ".doneCheckboxHolder *" #> <span>Ｖ</span>
+        case false =>
+          ".doneCheckbox [onclick]" #> SHtml.onEventIf(
+            s"是否確【${alarm.machineID}】的【${alarm.description}】認標記成已完成", 
+            markAsDone(alarm, _)
+          )
+
+      }
 
       ".alarmRow [id]" #> s"row-${alarm.id}" &
       ".machineID *" #> alarm.machineID &
       ".description *" #> alarm.description &
       ".countdownQty *" #> alarm.countdownQty &
-      ".countQty *" #> alarm.countQty &
-      ".workerID *" #> alarm.workerID &
-      ".workerName *" #> alarm.name &
+      ".countQtyWan *" #> s"%.1f".format(wanQty) &
+      ".nextCount *" #> nextCount &
+      ".nextCount [id]" #> s"nextCount-${alarm.id}" &
+      ".doneCheckboxHolder [id]" #> s"doneCheckboxHolder-${alarm.id}" &
+      ".countQty *" #> countQty &
       ".editLink [href]" #> s"/management/alarms/edit/${alarm.id}" &
-      ".doneCheckbox" #> SHtml.ajaxCheckbox(alarm.isDone.get, markAsDone(alarm)) &
-      ".deleteLink [onclick]" #> SHtml.onEventIf(s"確定要刪除【${alarm.machineID} / ${alarm.description}】嗎？", deleteAlarm(alarm)_)
+      ".replacedCounter *" #> alarm.replacedCounter &
+      ".replacedCounter [id]" #> s"replacedCounter-${alarm.id}" &
+      ".deleteLink [onclick]" #> SHtml.onEventIf(s"確定要刪除【${alarm.machineID} / ${alarm.description}】嗎？", deleteAlarm(alarm)_) &
+      doneCheckBox
     }
+  }
+
+  def addLink = {
+    val Array(_, _, step) = S.uri.drop(1).split("/")
+
+    "#addLink [href]" #> s"/management/alarms/$step/add"
   }
 }
 

@@ -9,34 +9,6 @@
       </div>
 
       <form class="ui form segment" id="addWorkerForm" data-lift="AlarmAdd?form=ajax&class=ui form segment">
-        <div class="two fields">
-          <div class="field">
-            <label>工號</label>
-            <div class="ui input">
-              <input type="text" name="workerID" />
-            </div>
-          </div>
-          <div class="field">
-            <label>姓名</label>
-            <div class="ui input">
-              <input type="text" name="name" disabled id="name"/ >
-            </div>
-          </div>
-        </div>
-        <div class="two fields">
-          <div class="field">
-            <label>起算日期</label>
-            <div class="ui input">
-              <input type="text" name="startDate" id="startDate"/>
-            </div>
-          </div>
-          <div class="field">
-            <label>目標良品數</label>
-            <div class="ui input">
-              <input type="text" name="countdownQty" />
-            </div>
-          </div>
-        </div>
         <div class="field">
           <label>機台</label>
           <div class="ui input">
@@ -46,23 +18,24 @@
           </div>
         </div>
         <div class="field">
+          <label>更換零件循環累計良品數（單位：個）</label>
+          <div class="ui input">
+            <input type="text" name="countdownQty" />
+          </div>
+        </div>
+        <div class="field">
           <label>描述</label>
           <div class="ui input">
             <textarea type="text" name="description" cols="20" id="description"></textarea>
           </div>
         </div>
-     
-       
         <input class="ui right floated blue submit button" type="submit" value="新增維修行事曆" id="submitButton"/>
-
         <div class="ui modal">
           <i class="close icon"></i>
           <div class="header">儲存維修行事曆？</div>
           <div class="content">
             <div class="description inverse segment">
-              <div class="ui header">機台：<span id="dialogMachineID"></span></div>
-              <div class="ui header">起算日期：<span id="dialogStartDate"></span></div>
-              <div class="ui header">目標良品數：<span id="dialogCountdownDays"></span></div>
+              <div class="ui header">更換零件循環累計良品數：<span id="dialogCountdownDays"></span></div>
               <div class="ui header">說明：</div>
               <pre id="dialogDescription"></pre>
             </div>
@@ -82,20 +55,6 @@
   <script>
     $(function() {
       var validations = {
-        "workerID": {
-          "identifier": "workerID",
-          "rules": [{
-            "type": "empty",
-            "prompt": "請輸入員工工號"
-          }]
-        },
-        "startDate": {
-          "identifier": "startDate",
-          "rules": [{
-            "type": "empty",
-            "prompt": "請選擇起算日期"
-          }]
-        },
         "countdownQty": {
           "identifier": "countdownQty",
           "rules": [{
@@ -107,13 +66,12 @@
           "identifier": "description",
           "rules": [{
             "type": "empty",
-            "prompt": "請輸入倒數日期"
+            "prompt": "請輸入描述"
           }]
         }
       }
 
       $("#machineID").select2();
-      $('#startDate').datepicker({dateFormat: "yy-mm-dd"});
       $('.ui.radio.checkbox').checkbox();
       $(".form").form(validations, {on: "blur", inline: true, onSuccess : function(){
         $("#submitButton").click();
@@ -122,10 +80,9 @@
 
     })
 
-    function showModalDialog(machineID, startDate, countdownQty) {
+    function showModalDialog(machineID, countdownQty) {
       var description = $('#description').val();
       $('#dialogMachineID').text(machineID)
-      $('#dialogStartDate').text(startDate)
       $('#dialogCountdownDays').text(countdownQty)
       $('#dialogDescription').text(description)
       $('.ui.modal').modal('show');
