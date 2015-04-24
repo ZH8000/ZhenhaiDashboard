@@ -40,7 +40,7 @@ class Alarm extends MongoRecord[Alarm] with ObjectIdPk[Alarm] {
   def meta = Alarm
 
   val step = new StringField(this, 5)
-  val countdownQty = new IntField(this)
+  val countdownQty = new LongField(this)
   val machineID = new StringField(this, 10)
   val description = new StringField(this, 60)
 
