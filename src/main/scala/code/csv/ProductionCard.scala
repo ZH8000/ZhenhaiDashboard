@@ -9,43 +9,31 @@ import java.text.SimpleDateFormat
 
 object ProductionCard {
 
-  def toDateString(dateFormatter: SimpleDateFormat, timestamp: Long) = {
-    timestamp match {
-      case -1 => "尚無資料"
-      case _  => dateFormatter.format(new Date(timestamp * 1000L))
-    }
-  }
-
-  def getWorker(mongoID: String) = {
-    Worker.find(mongoID).map(worker => s"[${worker.workerID}] ${worker.name}").getOrElse("查無此人")
-  }
-
   def apply(lotNo: String) = {
     val orderStatus = OrderStatus.find("lotNo", lotNo)
-
 
     orderStatus match {
       case Full(record) =>
         val dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm")
         val requireCount = (record.inputCount.get / 1.04).toLong
 
-        val step1DoneTime = toDateString(dateFormatter, record.step1DoneTime.get)
-        val step2DoneTime = toDateString(dateFormatter, record.step2DoneTime.get)
-        val step3DoneTime = toDateString(dateFormatter, record.step3DoneTime.get)
-        val step4DoneTime = toDateString(dateFormatter, record.step4DoneTime.get)
-        val step5DoneTime = toDateString(dateFormatter, record.step5DoneTime.get)
+        val step1DoneTime = record.step1DoneTimeString
+        val step2DoneTime = record.step2DoneTimeString
+        val step3DoneTime = record.step3DoneTimeString
+        val step4DoneTime = record.step4DoneTimeString
+        val step5DoneTime = record.step5DoneTimeString
 
-        val step1StartTime = toDateString(dateFormatter, record.step1StartTime.get)
-        val step2StartTime = toDateString(dateFormatter, record.step2StartTime.get)
-        val step3StartTime = toDateString(dateFormatter, record.step3StartTime.get)
-        val step4StartTime = toDateString(dateFormatter, record.step4StartTime.get)
-        val step5StartTime = toDateString(dateFormatter, record.step5StartTime.get)
+        val step1StartTime = record.step1StartTimeString
+        val step2StartTime = record.step2StartTimeString
+        val step3StartTime = record.step3StartTimeString
+        val step4StartTime = record.step4StartTimeString
+        val step5StartTime = record.step5StartTimeString
 
-        val step1Worker = getWorker(record.step1workerID.get)
-        val step2Worker = getWorker(record.step2workerID.get)
-        val step3Worker = getWorker(record.step3workerID.get)
-        val step4Worker = getWorker(record.step4workerID.get)
-        val step5Worker = getWorker(record.step5workerID.get)
+        val step1Worker = record.step1WorkerName
+        val step2Worker = record.step2WorkerName
+        val step3Worker = record.step3WorkerName
+        val step4Worker = record.step4WorkerName
+        val step5Worker = record.step5WorkerName
 
          """"製令編號","料號","客戶","規格","投入數","需求數"""" + "\n" +
         s""""${record.lotNo}","${record.partNo}","${record.customer}","${record.product}",${record.inputCount},${requireCount}""" + "\n" +

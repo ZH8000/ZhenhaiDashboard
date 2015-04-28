@@ -10,11 +10,18 @@
             <lift:notice_msg class="ui green sys message"></lift:notice_msg>
           </div>
 
-          <div class="dataBlock ui six column grid">
-            <div class="cardDate column">
-              <a class="ui link primary button" href="#">AAAAA</a>
+          <form class="ui segment form" data-lift="ProductionCard.search?form=post">
+            <h4 class="ui dividing header">生產管理卡</h4>
+            <div class="field">
+              <label>製令編號</label>
+              <div class="ui icon input">
+                <input class="prompt" placeholder="製令編號" type="text" id="lotNo">
+                <i class="search icon"></i>
+              </div>
             </div>
-	  </div>
+            <input type="submit" class="ui right floated primary submit button" value="查詢"/>
+          </form>
+
         </div>
       </div>
     </div>
