@@ -19,6 +19,8 @@ class OrderStatus extends MongoRecord[OrderStatus] with ObjectIdPk[OrderStatus] 
   val partNo = new StringField(this, 100)
   val product = new StringField(this, 20)
   val inputCount = new LongField(this)
+  val shiftDate = new StringField(this, 10)
+  val insertDate = new StringField(this, 10)
 
   val step1workerID = new StringField(this, 100)
   val step2workerID = new StringField(this, 100)
@@ -59,6 +61,7 @@ class OrderStatus extends MongoRecord[OrderStatus] with ObjectIdPk[OrderStatus] 
     case 4 => step4.get >= (inputCount.get / 1.04).toLong
     case 5 => step5.get >= (inputCount.get / 1.04).toLong
   }
+
 
 }
 

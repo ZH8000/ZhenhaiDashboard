@@ -262,6 +262,10 @@ class Boot
       >> needLogin
       >> hasPermission(PermissionContent.ReportOrderStatus),
     Menu("OrderStatusDetail") / "orderStatus" / *
+      >> getTemplate("orderStatus/dateCard")
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportOrderStatus),
+    Menu("OrderStatusDetail") / "orderStatus" / * / *
       >> getTemplate("orderStatus/detail")
       >> needLogin
       >> hasPermission(PermissionContent.ReportOrderStatus),

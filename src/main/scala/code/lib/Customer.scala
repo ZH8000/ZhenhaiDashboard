@@ -137,4 +137,7 @@ object Customer {
     "0310" -> "邁思普奇城",
     "0311" -> "圓方"
   )
+
+  lazy val customerNameToIDs = Customer.customers.map { case(id, name) => (name, id) }.toMap
+
 }
