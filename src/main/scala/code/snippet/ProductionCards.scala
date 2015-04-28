@@ -7,9 +7,11 @@ import net.liftweb.util.Helpers._
 import net.liftweb.util._
 import java.text.SimpleDateFormat
 import scala.xml.NodeSeq
+import net.liftweb.http.SHtml
 
 class ProductionCard {
 
+  private var searchBox: String = _
 
   def showEmptyBox() = {
     S.error("目前無生產管理卡資料")
@@ -26,6 +28,16 @@ class ProductionCard {
           "a *"      #> date.toString
         }
     }
+  }
+
+  def process(value: String) {
+    println(searchBox)
+    S.redirectTo(s"/productionCard/$searchBox")
+  }
+
+  def search = {
+    "#lotNo" #> SHtml.onSubmit(searchBox = _) &
+    "type=submit" #> SHtml.onSubmit(process _)
   }
 
   def render = {
