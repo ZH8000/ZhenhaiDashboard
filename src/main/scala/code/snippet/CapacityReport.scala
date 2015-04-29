@@ -1,6 +1,8 @@
 package code.snippet
 
 import code.lib._
+import code.model._
+import com.mongodb.casbah.Imports._
 
 import net.liftweb.util.Helpers._
 import net.liftweb.http.S
@@ -125,6 +127,13 @@ class CapacityReport {
     "#csvURL [href]" #> s"/api/csv${S.uri}" &
     showStepsSelector
   }
+
+  def summary = {
+    val Array(_, step, capacity, year, month, week, date, machineID) = S.uri.drop(1).split("/")
+    EventSummaryTable(year.toInt, month.toInt, date.toInt, machineID)
+  }
+
+
 }
 
 

@@ -5,7 +5,6 @@ import code.lib._
 import net.liftweb.util.Helpers._
 import net.liftweb.http.S
 
-
 class DailyReport {
 
   def stepTitle(step: String) = MachineInfo.machineTypeName.get(step.toInt).getOrElse("Unknown")
@@ -79,6 +78,9 @@ class DailyReport {
     showStepsSelector
   }
 
+  def summary = {
+    val Array(_, year, month, step, date, machineID) = S.uri.drop(1).split("/")
+    EventSummaryTable(year.toInt, month.toInt, date.toInt, machineID)
+  }
+
 }
-
-

@@ -124,6 +124,12 @@ class TotalReport {
     showStepsSelector
   }
 
+  def summary = {
+    val Array(_, step, productName, year, month, week, date, machineID) = S.uri.drop(1).split("/")
+    EventSummaryTable(year.toInt, month.toInt, date.toInt, machineID)
+  }
+
+
 }
 
 

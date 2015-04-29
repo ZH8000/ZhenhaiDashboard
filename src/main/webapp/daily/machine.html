@@ -51,11 +51,33 @@
           <div class="column"><svg class="pieChart"></svg></div>
         </div>
         <div class="hidden grid data">
+          <div data-lift="LazyLoad?template=loading">
+            <div data-lift="DailyReport.summary">
+              <h3 class="ui dividing header">統計資料</h3>
+              <div style="float: right; padding-bottom: 1em;">
+                生產均線：<span class="levelA">LevelA</span> / <span class="levelB">LevelB</span> / <span class="levelC">LevelC</span>
+              </div>
+              <table class="ui celled table segment">
+                <thead>
+                  <tr>
+                    <th>事件</th>
+                    <th>數量</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>良品數</td><td><span class="countQty">12345</span> <span class="ui label">Level</span></td></tr>
+                  <tr class="eventRow"><td class="eventName">EventName</td><td class="eventCount">67890</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <h3 class="ui dividing header">詳細資料</h3>
           <table class="ui celled table segment">
             <thead>
               <tr>
                 <th>時間</th>
-                <th>量品數量</th>
+                <th>良品數量</th>
                 <th>事件數量</th>
                 <th>事件類別</th>
               </tr>

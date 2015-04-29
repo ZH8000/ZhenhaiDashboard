@@ -20,8 +20,6 @@ object DailyJSON extends JsonReport {
     val data = MongoDB.zhenhaiDB("daily").find("shiftDate" $gte startDate $lt endDate)
     val dataByStep = data.toList.groupBy(entry => entry("machineType").toString.toInt).mapValues(getSumQty)
 
-    println("=========>" + data)
-
     val orderedKey = List(1, 2, 3, 4, 5)
 
     val dataSet = orderedKey.map { case step => 
