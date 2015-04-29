@@ -32,13 +32,13 @@ class ProductionCard {
     }
   }
 
-  def process(value: String) {
+  def process() {
+    val searchBox = S.param("lotNo").getOrElse("")
     S.redirectTo(s"/productionCard/$searchBox")
   }
 
   def search = {
-    "#lotNo" #> SHtml.onSubmit(searchBox = _) &
-    "type=submit" #> SHtml.onSubmit(process _)
+    "type=submit" #> SHtml.onSubmitUnit(process)
   }
 
   def renderTable(orderStatus: code.model.OrderStatus) = {

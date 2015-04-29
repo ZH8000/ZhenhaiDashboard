@@ -62,8 +62,11 @@ class OrderStatus {
     orderStatus.isEmpty match {
       case true  => showEmptyBox()
       case false =>
+
+        val customerName = getCustomerName(customer)
+
         "#csvURL [href]" #> s"/api/csv/orderStatus/$date" &
-        ".stepCustomer *" #> getCustomerName(customer) &
+        ".stepCustomer *" #> customerName &
         ".stepCustomer [href]" #> s"/orderStatus/$customer" &
         ".stepMonth *" #> date &
         ".stepMonth [href]" #> s"/orderStatus/$customer/$date" &
@@ -79,7 +82,7 @@ class OrderStatus {
 
           ".lotNo *" #> record.lotNo &
           ".product *" #> record.product &
-          ".customer *" #> record.customer &
+          ".customer *" #> customerName &
           ".inputCount *" #> record.inputCount &
           ".requireCount *" #> requireCount.toLong &
           ".step1" #> (
