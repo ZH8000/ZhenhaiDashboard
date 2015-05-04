@@ -23,6 +23,7 @@ class TopReason extends MongoRecord[TopReason] with ObjectIdPk[TopReason] {
   val mach_id = new StringField(this, 15)
   val mach_model = new StringField(this, 20)
   val event_qty = new LongField(this)
+  val machine_type = new IntField(this, -1)
 
 }
 

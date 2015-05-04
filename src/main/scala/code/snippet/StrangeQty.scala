@@ -19,7 +19,7 @@ class StrangeQty {
   val dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 
   def showEmptyBox() = {
-     S.error("查無機台異常")
+     S.error("查無數量異常")
      ".dataBlock" #> NodeSeq.Empty
   }
 
@@ -27,21 +27,15 @@ class StrangeQty {
   def render = {
     
     strangeQtyList.isEmpty match {
-      case false => showEmptyBox()
-      case true =>
+      case true => showEmptyBox()
+      case false =>
         ".row" #> strangeQtyList.map { item =>
-
-          val errorDesc = if (item.count_qty.get > 0) {
-	    ""
-          } else {
-            MachineInfo.getErrorDesc(item.mach_id.get, item.defact_id.get)
-          }
 
           ".timestamp *" #> dateFormatter.format(new Date(item.emb_date.get * 1000)) &
           ".machineID *" #> item.mach_id &
           ".countQty *"  #> item.count_qty &
-          ".badQty *" #> item.event_qty &
-          ".defactID *" #> errorDesc
+          ".badQty *"    #> item.event_qty &
+          ".defactID *"  #> item.originEventID
         }
     }
   }
