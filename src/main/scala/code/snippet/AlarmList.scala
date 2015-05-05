@@ -112,6 +112,21 @@ class AlarmList {
     }
   }
 
+  def breadcrumb = {
+   
+    val Array(_, _, step) = S.uri.split("/").drop(1)
+    val machineTypeTitle = step match {
+      case "step1" => "加締"
+      case "step2" => "組立"
+      case "step3" => "老化"
+      case "step4" => "選別"
+      case "step5" => "加工"
+      case _ => "Unknown"
+    }
+
+    "#machineTypeTitle *" #> machineTypeTitle
+  }
+
   def render = {
 
     val dateFormatter = new SimpleDateFormat("yyyy-MM-dd")
@@ -157,41 +172,6 @@ class AlarmList {
       }
 
     }
-
-    /*
-    ".alarmRow" #> alarms.map { alarm =>
-
-      val countQty = machineIDToCounter.get(alarm.machineID.get).getOrElse(0L)
-      val wanQty = countQty / 10000.0
-      val nextCount = alarm.lastReplaceCount.get + alarm.countdownQty.get
-
-      val doneCheckBox = alarm.isDone.get match {
-        case true  =>
-          ".doneCheckboxHolder *" #> <span>Ｖ</span>
-        case false =>
-          ".doneCheckbox [onclick]" #> SHtml.onEventIf(
-            s"是否確【${alarm.machineID}】的【${alarm.description}】認標記成已完成", 
-            markAsDone(alarm, _)
-          )
-
-      }
-
-      ".alarmRow [id]" #> s"row-${alarm.id}" &
-      ".machineID *" #> alarm.machineID &
-      ".description *" #> alarm.description &
-      ".countdownQty *" #> alarm.countdownQty &
-      ".countQtyWan *" #> s"%.1f".format(wanQty) &
-      ".nextCount *" #> nextCount &
-      ".nextCount [id]" #> s"nextCount-${alarm.id}" &
-      ".doneCheckboxHolder [id]" #> s"doneCheckboxHolder-${alarm.id}" &
-      ".countQty *" #> countQty &
-      ".editLink [href]" #> s"/management/alarms/edit/${alarm.id}" &
-      ".replacedCounter *" #> alarm.replacedCounter &
-      ".replacedCounter [id]" #> s"replacedCounter-${alarm.id}" &
-      ".deleteLink [onclick]" #> SHtml.onEventIf(s"確定要刪除【${alarm.machineID} / ${alarm.description}】嗎？", deleteAlarm(alarm)_) &
-      doneCheckBox
-    }
-    */
   }
 
   def addLink = {
