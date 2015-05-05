@@ -117,6 +117,48 @@ class AlarmList {
     val dateFormatter = new SimpleDateFormat("yyyy-MM-dd")
     val machineIDToCounter = MachineCounter.toHashMap
 
+    val machineIDs = alarms.map(_.machineID.get).distinct.sortWith(_ < _)
+    val idToAlarmMapping = alarms.map(alarm => (alarm.machineID.get -> alarm)).toMap
+
+    ".machineRow" #> machineIDs.map { machineID =>
+      val countQty = machineIDToCounter.get(machineID).getOrElse(0L)
+      val wanQty = countQty / 10000.0
+
+      ".countQty *" #> countQty &
+      ".machineID *" #> machineID &
+      ".countQtyWan *" #> s"%.1f".format(wanQty) &
+      ".alarmRow" #> alarms.sortWith(_.countdownQty.get < _.countdownQty.get).map { alarm =>
+
+        val nextCount = alarm.lastReplaceCount.get + alarm.countdownQty.get
+
+        val doneCheckBox = alarm.isDone.get match {
+          case true  =>
+            ".doneCheckboxHolder *" #> <span>Ｖ</span>
+          case false =>
+            ".doneCheckbox [onclick]" #> SHtml.onEventIf(
+              s"是否確【${alarm.machineID}】的【${alarm.description}】認標記成已完成", 
+              markAsDone(alarm, _)
+            )
+
+        }
+
+        ".alarmRow [id]" #> s"row-${alarm.id}" &
+        ".description *" #> alarm.description &
+        ".countdownQty *" #> alarm.countdownQty &
+        ".nextCount *" #> nextCount &
+        ".nextCount [id]" #> s"nextCount-${alarm.id}" &
+        ".doneCheckboxHolder [id]" #> s"doneCheckboxHolder-${alarm.id}" &
+        ".countQty *" #> countQty &
+        ".editLink [href]" #> s"/management/alarms/edit/${alarm.id}" &
+        ".replacedCounter *" #> alarm.replacedCounter &
+        ".replacedCounter [id]" #> s"replacedCounter-${alarm.id}" &
+        ".deleteLink [onclick]" #> SHtml.onEventIf(s"確定要刪除【${alarm.machineID} / ${alarm.description}】嗎？", deleteAlarm(alarm)_) &
+        doneCheckBox
+      }
+
+    }
+
+    /*
     ".alarmRow" #> alarms.map { alarm =>
 
       val countQty = machineIDToCounter.get(alarm.machineID.get).getOrElse(0L)
@@ -149,6 +191,7 @@ class AlarmList {
       ".deleteLink [onclick]" #> SHtml.onEventIf(s"確定要刪除【${alarm.machineID} / ${alarm.description}】嗎？", deleteAlarm(alarm)_) &
       doneCheckBox
     }
+    */
   }
 
   def addLink = {

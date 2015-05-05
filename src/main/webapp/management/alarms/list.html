@@ -1,5 +1,5 @@
 <div data-lift="Surround?with=default;at=content">
-  <div class="ui page grid">
+  <div class="ui grid">
 
     <div class="column" data-lift="AlarmList.addLink">
 
@@ -17,39 +17,56 @@
          <table class="ui celled table" data-lift="AlarmList">
            <thead>
              <tr>
-               <th>機台</th>
-               <th>更換循環</th>
-               <th>累計良品數（個）</th>
-               <th>累計良品數（萬）</th>
-               <th>下次更換</th>
-               <th>描述</th>
-               <th>已完成</th>
-               <th>已更換次數</th>
-               <th>動作</th>
+               <th class="collapsing">機台</th>
+               <th class="collapsing">良品數（個）</th>
+               <th class="collapsing">良品數（萬）</th>
+               <th></th>
               </tr>
-              <tr id="" class="alarmRow">
-                <td class="machineID"></td>
-                <td class="countdownQty"></td>
-                <td class="countQty"></td>
-                <td class="countQtyWan"></td>
-                <td class="nextCount"></td>
-                <td><pre class="description"></pre></td>
-                <td class="doneCheckboxHolder">
-                  <input type="button" class="doneCheckbox ui tiny primary button" value="標記為已完成"/> 
-                </td>
-                <td class="replacedCounter"></td>
- 
+            </thead>
+            <tbody>
+              <tr id="" class="machineRow">
+                <td class="collapsing machineID"></td>
+                <td class="collapsing countQty"></td>
+                <td class="collapsing countQtyWan"></td>
                 <td>
-                  <div class="ui small buttons">
-                    <a href="/management/alarms/edit/" class="editLink ui icon button"><i class="ui edit icon"></i> 編輯</a>
-                    <div class="or"></div>
-                    <a href="javascript: void(0)" class="ui icon button deleteLink"><i class="ui trash icon"></i> 刪除</a>
+                  <div>
+                  <table class="ui celled striped table">
+                    <thead>
+                      <tr>
+                        <th>更換循環</th>
+                        <th>下次更換</th>
+                        <th>描述</th>
+                        <th>已完成</th>
+                        <th>已更換次數</th>
+                        <th>動作</th>
+                      </tr>
+                    </thead>
+                      <tbody>
+                        <tr id="" class="alarmRow">
+                          <td class="countdownQty"></td>
+                          <td class="nextCount"></td>
+                          <td><pre class="description"></pre></td>
+                          <td class="doneCheckboxHolder">
+                            <input type="button" class="doneCheckbox ui tiny primary button" value="標記為已完成"/> 
+                          </td>
+                          <td class="replacedCounter"></td>
+ 
+                          <td>
+                            <div class="ui small buttons">
+                              <a href="/management/alarms/edit/" class="editLink ui icon button"><i class="ui edit icon"></i> 編輯</a>
+                              <div class="or"></div>
+                              <a href="javascript: void(0)" class="ui icon button deleteLink"><i class="ui trash icon"></i> 刪除</a>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+
+                  </table>
                   </div>
                 </td>
               </tr>
+            </tbody>
            </thead>
-           <tbody>
-           </tbody>
          </table>
        </div>
        <script>
