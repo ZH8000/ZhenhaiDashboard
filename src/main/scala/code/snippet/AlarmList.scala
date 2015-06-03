@@ -71,6 +71,7 @@ class AlarmList {
            .doneTime(new Date)
            .lastReplaceCount(countQty)
            .replacedCounter(newReplacedCounter)
+           .doneUser(User.CurrentUser.map(_.username.get).getOrElse("Unknown"))
            .saveTheRecord()
 
     newRecord match {
@@ -133,7 +134,6 @@ class AlarmList {
     val machineIDToCounter = MachineCounter.toHashMap
 
     val machineIDs = alarms.map(_.machineID.get).distinct.sortWith(_ < _)
-    val idToAlarmMapping = alarms.map(alarm => (alarm.machineID.get -> alarm)).toMap
 
     ".machineRow" #> machineIDs.map { machineID =>
       val countQty = machineIDToCounter.get(machineID).getOrElse(0L)
@@ -142,9 +142,15 @@ class AlarmList {
       ".countQty *" #> countQty &
       ".machineID *" #> machineID &
       ".countQtyWan *" #> s"%.1f".format(wanQty) &
-      ".alarmRow" #> alarms.sortWith(_.countdownQty.get < _.countdownQty.get).map { alarm =>
+      ".alarmRow" #> alarms.view
+                           .filter(_.machineID.get == machineID)
+                           .sortWith(_.countdownQty.get < _.countdownQty.get)
+                           .map { alarm =>
 
-        val nextCount = alarm.lastReplaceCount.get + alarm.countdownQty.get
+        val nextCount = alarm.lastReplaceCount.get match {
+          case 0     => countQty + alarm.countdownQty.get
+          case count => count + alarm.countdownQty.get
+        }
 
         val doneCheckBox = alarm.isDone.get match {
           case true  =>

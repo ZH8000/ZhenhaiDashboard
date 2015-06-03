@@ -33,6 +33,7 @@ class TodayOrder {
           val step5Status = ProductionStatus.getStatus(orderStatusHolder, 5, record.step5Status.get)
 
           ".lotNo *" #> record.lotNo &
+          ".partNo *" #> record.partNo &
           ".customer *" #> record.customer &
           ".product *" #> record.product &
           ".status *" #> record.status &

@@ -56,6 +56,7 @@ class AlarmEdit(alarm: Alarm) {
            .step(step)
            .countdownQty(countdownQty)
            .description(description)
+           .lastReplaceCount(MachineCounter.getCount(machineID))
     }
 
     alarmRecord match {

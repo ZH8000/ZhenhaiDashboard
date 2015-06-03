@@ -46,8 +46,7 @@ class Alarm extends MongoRecord[Alarm] with ObjectIdPk[Alarm] {
 
   val isDone = new BooleanField(this, false)
   val doneTime = new DateField(this)
-  val doneWorkerID = new StringField(this, 20)
-  val doneWorkerMongoID = new StringField(this, 32)
+  val doneUser = new StringField(this, 50)
   val replacedCounter = new IntField(this, 0)
   val lastReplaceCount = new LongField(this, 0)
 
