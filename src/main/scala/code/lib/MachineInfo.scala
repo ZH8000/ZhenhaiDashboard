@@ -77,7 +77,7 @@ object MachineInfo {
     208 -> "極性不良"
   )
 
-  val machineList = List(
+  val machineInfoList = List(
     MachineInfo("192.168.10.1",   "E01",    1, "TSW-100T",    None),
     MachineInfo("192.168.10.2",   "G01",    2, "FTO-2200A",   None),
     MachineInfo("192.168.10.3",   "E03",    1, "TSW-100T",    None),
