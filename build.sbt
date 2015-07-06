@@ -19,7 +19,8 @@ libraryDependencies ++= Seq(
   "net.liftweb" %% "lift-mongodb-record" % "2.6-RC2",
   "org.mongodb" %% "casbah" % "2.7.3",
   "com.itextpdf" % "itextpdf" % "5.5.3",
-  "com.itextpdf" % "itext-asian" % "5.2.0"
+  "com.itextpdf" % "itext-asian" % "5.2.0",
+  "net.sourceforge.jexcelapi" % "jxl" % "2.6.12"
 )
 
 port in container.Configuration := 8081

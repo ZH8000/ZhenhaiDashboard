@@ -312,6 +312,8 @@ class Boot
     LiftRules.setSiteMap(siteMap)
     LiftRules.dispatch.append(ensureLogin guard JsonRestAPI)
     LiftRules.dispatch.append(ensureLogin guard CsvRestAPI)
+    LiftRules.dispatch.append(ensureLogin guard ExcelRestAPI)
+
     LiftRules.uriNotFound.prepend({
       case (req,failure) => NotFoundAsResponse(errorPageResponse(req, 404))
     })

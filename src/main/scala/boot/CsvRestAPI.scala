@@ -1,6 +1,7 @@
 package bootstrap.liftweb
 
 import code.csv._
+import code.lib._
 
 import net.liftweb.http.rest.RestHelper
 import net.liftweb.http.PlainTextResponse
