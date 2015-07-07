@@ -14,7 +14,7 @@ class MonthlySummaryExcel(year: Int, month: Int, capacityRange: String, outputSt
   lazy val getAllProductPrefix = {
     zhenhaiDB("product").find(DBObject("capacityRange" -> capacityRange))
                         .map(record => record("product").toString.split("x")(0))
-                        .toSet.toList.sortWith(_ < _)
+                        .toSet.filterNot(_.contains(".")).toList.sortWith(_ < _)
   }
 
   def getDaily(date: Int, machineType: Int) = {

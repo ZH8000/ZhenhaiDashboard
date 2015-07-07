@@ -57,6 +57,11 @@ class Boot
       >> hasPermission(PermissionContent.ManagementAccount),
     Menu("Dashboard") / "dashboard" >> needLogin,
     Menu("ViewDetail") / "viewDetail" >> needLogin,
+
+    Menu("ViewDetail") / "excel" / "monthly" / "index" >> needLogin,
+    Menu("ExcelMonthlyRange") / "excel" / "monthly" / * / * >> getTemplate("excel/monthly/capacityRange") >> needLogin,
+    Menu("ExcelMonthlyDetail") / "excel" / "monthly" / * / * / * >> getTemplate("excel/monthly/detail") >> needLogin,
+
     Menu("Alert") / "alert" / "index" >> needLogin,
     Menu("Alert") / "alert" / "strangeQty" >> needLogin,
     Menu("Alert") / "alert" / "alertDate" >> needLogin,

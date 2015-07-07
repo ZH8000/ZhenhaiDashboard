@@ -7,6 +7,36 @@ import net.liftweb.util._
 import java.util.Date
 import java.text.SimpleDateFormat
 
+import net.liftweb.http.S
+
+class MonthlyExcel {
+  import java.net.URLDecoder
+  def detail = {
+    val Array(_, _, yearString, monthString, capacityRange) = S.uri.drop(1).split("/")
+    val year = f"${yearString.toInt}%02d"
+    val month = f"${monthString.toInt}%02d"
+
+    "#currentYearMonth *" #> f"$year-$month" &
+    "#currentYearMonth [href]" #> s"/excel/monthly/$year/$month" &
+    "#capacityRange *" #> f"${URLDecoder.decode(capacityRange, "utf-8")} Φ" &
+    "#capacityRange [href]" #> s"/excel/monthly/$year/$month/$capacityRange" &
+    "#downloadExcel [href]" #> s"/api/excel/monthly/$year/$month/$capacityRange"
+  }
+
+  def month = {
+    val Array(_, _, yearString, monthString) = S.uri.drop(1).split("/")
+    val year = f"${yearString.toInt}%02d"
+    val month = f"${monthString.toInt}%02d"
+
+    "#currentYearMonth *" #> f"$year-$month" &
+    "#currentYearMonth [href]" #> s"/excel/monthly/$year/$month" &
+    "#smallCapacityButton [href]" #> s"/excel/monthly/$year/$month/5 - 8" &
+    "#middleCapacityButton [href]" #> s"/excel/monthly/$year/$month/10 - 12.5" &
+    "#largeCapacityButton [href]" #> s"/excel/monthly/$year/$month/16 - 18"
+
+  }
+}
+
 class Dashboard {
 
 

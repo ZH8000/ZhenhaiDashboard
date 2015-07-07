@@ -1,7 +1,7 @@
 <div data-lift="Surround?with=default;at=content">
   <div class="ui one column grid" data-lift="Dashboard.reportLink">
     <div class="column">
-      <div class="center aligned two column ui stackable page grid">
+      <div class="center aligned four column ui stackable page grid">
         <div class="column">
           <a href="/total" class="ui icon huge teal button">
             <i class="huge cubes icon"></i>
@@ -36,8 +36,20 @@
             請選擇月份：<input type="text" id="monthPicker" size="10"/>
           </div>
         </div>
-      </div>
+        <div class="column">
+          <a href="/excel/monthly/" class="ui icon huge teal button" id="monthlyExcelReportButton">
+            <i class="huge tasks icon"></i>
+            <div style="margin-top: 0.5em">重點統計</div>
+          </a>
+        </div>
+        <div class="column">
+        </div>
+        <div class="column">
+        </div>
+        <div class="column">
+        </div>
 
+      </div>
     </div>
   </div>
 
@@ -48,7 +60,7 @@
     <input type="hidden" id="minMonth" value=""/>
 
     <script>
-      setupMonthChooser($("#maxYear").val(), $("#maxMonth").val(), $("#minYear").val(), $("#minMonth").val());
+      setupMonthChooser($("#maxYear").val(), $("#maxMonth").val(), $("#minYear").val(), $("#minMonth").val(), "/daily");
 
     </script>
   </div>

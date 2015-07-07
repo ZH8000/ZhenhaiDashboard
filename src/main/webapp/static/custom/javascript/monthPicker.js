@@ -1,4 +1,4 @@
-function setupMonthChooser(maxYear, maxMonth, minYear, minMonth) {
+function setupMonthChooser(maxYear, maxMonth, minYear, minMonth, urlPrefix) {
 
   $('#monthPicker').monthpicker({
     pattern: 'yyyy-mm',
@@ -37,7 +37,7 @@ function setupMonthChooser(maxYear, maxMonth, minYear, minMonth) {
     var columns = $("#monthPicker").val().split("-");
     var year = +(columns[0]);
     var month = +(columns[1]);
-    window.location = "/daily/" + year + "/" + month
+    window.location = urlPrefix + "/" + year + "/" + month
   });
 
   function disableMonths() {
