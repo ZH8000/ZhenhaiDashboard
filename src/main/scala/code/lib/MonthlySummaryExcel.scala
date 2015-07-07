@@ -80,8 +80,12 @@ class MonthlySummaryExcel(year: Int, month: Int, capacityRange: String, outputSt
     sheet.mergeCells(2, 0, maxDate, 0)
 
     for (date <- 1 to maxDate) {
+      val fullDate = f"$year-$month%02d-$date%02d"
       val dateTitleCell = new Label(1 + date, 1, date.toString, greyBackgroundFormat)
-      val targetCell = new Blank(1 + date, 2, greenBackgroundFormat)
+      val targetCell = MonthlySummaryExcelSaved.get(fullDate, 10, capacityRange) match {
+        case None => new Blank(1 + date, 2, greenBackgroundFormat)
+        case Some(value) => new Number(1 + date, 2, value, greenBackgroundFormat)
+      }
       sheet.addCell(dateTitleCell)
       sheet.addCell(targetCell)
     }
@@ -108,9 +112,9 @@ class MonthlySummaryExcel(year: Int, month: Int, capacityRange: String, outputSt
  
     for {
       productPrefix   <- allProductPrefixWithTotal
-      machineTypeInfo <- List("卷取" -> 1, "含浸" -> -1, "組立" -> 2, "手動老化" -> -1, "自動老化" -> 3, "繳庫" -> -1, "出貨" -> -1)
+      machineTypeInfo <- List("卷取", "含浸", "組立", "手動老化", "自動老化", "繳庫", "出貨")
     } {
-      val titleCell = new Label(1, rowCount, machineTypeInfo._1, centeredTitleFormat)
+      val titleCell = new Label(1, rowCount, machineTypeInfo, centeredTitleFormat)
       sheet.addCell(titleCell)
       rowCount += 1
     }
@@ -127,21 +131,33 @@ class MonthlySummaryExcel(year: Int, month: Int, capacityRange: String, outputSt
     rowCount = 3
     var columnCount = 2
 
-    for {
-      productPrefix   <- allProductPrefix
-      machineTypeInfo <- List("卷取" -> 1, "含浸" -> -1, "組立" -> 2, "手動老化" -> -1, "自動老化" -> 3, "繳庫" -> -1, "出貨" -> -1)
-      date            <- dateRange
-    } {
-
-      val (title, machineType) = machineTypeInfo
-      val countHolder = for {
+    def getCountHolder(machineType: Int, date: Int, productPrefix: String): Option[Long] = {
+      for {
          dateToProductCount <- machineTypeMapping.get(machineType)
          productCount       <- dateToProductCount.get(date)
          count              <- productCount.get(productPrefix)
       } yield count
+    }
+
+    def getCountHolderFromCustomData(machineType: Int, date: Int, productPrefix: String): Option[Long] = {
+      MonthlySummaryExcelSaved.get(f"$year-$month%02d-$date%02d", machineType, productPrefix)
+    }
+
+    for {
+      productPrefix   <- allProductPrefix
+      machineTypeInfo <- List("卷取" -> 1, "含浸" -> 6, "組立" -> 2, "手動老化" -> 7, "自動老化" -> 3, "繳庫" -> 8, "出貨" -> 9)
+      date            <- dateRange
+    } {
+
+      val (title, machineType) = machineTypeInfo
+      val countHolder = if (machineType <= 5) {
+        getCountHolder(machineType, date, productPrefix) 
+      } else {
+        getCountHolderFromCustomData(machineType, date, productPrefix)
+      }
 
       val countCellHolder = countHolder match {
-        case None if machineType == -1 => Some(new Blank(columnCount, rowCount, centeredNumberFormat))
+        case None if machineType >= 6 => Some(new Blank(columnCount, rowCount, centeredNumberFormat))
         case None => Some(new Number(columnCount, rowCount, 0, centeredNumberFormat))
         case Some(count) => Some(new Number(columnCount, rowCount, count, centeredNumberFormat))
       }
