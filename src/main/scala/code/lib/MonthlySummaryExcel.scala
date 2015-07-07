@@ -6,16 +6,24 @@ import java.util.Calendar
 import java.util.GregorianCalendar
 import java.io.OutputStream
 
+object MonthlySummaryExcel {
+
+  private lazy val zhenhaiDB = MongoDB.zhenhaiDB
+
+  def getAllProductPrefix(capacityRange: String) = {
+    zhenhaiDB("product").find(DBObject("capacityRange" -> capacityRange))
+                        .map(record => record("product").toString.split("x")(0))
+                        .toSet.filterNot(_.contains(".")).toList.sortWith(_ < _)
+
+  }
+}
+
 class MonthlySummaryExcel(year: Int, month: Int, capacityRange: String, outputStream: OutputStream) {
   
   val zhenhaiDB = MongoDB.zhenhaiDB
   val maxDate = new GregorianCalendar(year, month-1, 1).getActualMaximum(Calendar.DAY_OF_MONTH)
 
-  lazy val getAllProductPrefix = {
-    zhenhaiDB("product").find(DBObject("capacityRange" -> capacityRange))
-                        .map(record => record("product").toString.split("x")(0))
-                        .toSet.filterNot(_.contains(".")).toList.sortWith(_ < _)
-  }
+  lazy val allProductPrefix = MonthlySummaryExcel.getAllProductPrefix(capacityRange)
 
   def getDaily(date: Int, machineType: Int) = {
     val dataList = zhenhaiDB(f"shift-$year-$month%02d-$date%02d").find(DBObject("capacityRange" -> capacityRange, "machineType" -> machineType))
@@ -88,7 +96,7 @@ class MonthlySummaryExcel(year: Int, month: Int, capacityRange: String, outputSt
     sheet.addCell(targetTitle)
 
     var rowCount: Int = 3
-    val allProductPrefixWithTotal = getAllProductPrefix ++ List("合計")
+    val allProductPrefixWithTotal = allProductPrefix ++ List("合計")
 
     allProductPrefixWithTotal.zipWithIndex.foreach { case(productPrefix, index) =>
       val startRow = (index * 7) + rowCount
@@ -120,7 +128,7 @@ class MonthlySummaryExcel(year: Int, month: Int, capacityRange: String, outputSt
     var columnCount = 2
 
     for {
-      productPrefix   <- getAllProductPrefix
+      productPrefix   <- allProductPrefix
       machineTypeInfo <- List("卷取" -> 1, "含浸" -> -1, "組立" -> 2, "手動老化" -> -1, "自動老化" -> 3, "繳庫" -> -1, "出貨" -> -1)
       date            <- dateRange
     } {
@@ -153,9 +161,9 @@ class MonthlySummaryExcel(year: Int, month: Int, capacityRange: String, outputSt
       date <- 1 to maxDate
     } {
       
-      val currentRow = getAllProductPrefix.size * 7 + 3 + rowOffset
+      val currentRow = allProductPrefix.size * 7 + 3 + rowOffset
       val dateColumnLabel = CellReferenceHelper.getColumnReference(date + 1)
-      val sumCells = (0 until getAllProductPrefix.size).map(i => s"${dateColumnLabel}${i * 7 + 4 + rowOffset}").mkString("+")
+      val sumCells = (0 until allProductPrefix.size).map(i => s"${dateColumnLabel}${i * 7 + 4 + rowOffset}").mkString("+")
       val formula = new Formula(date + 1, currentRow, sumCells, centeredNumberFormat)
       sheet.addCell(formula)
     }
