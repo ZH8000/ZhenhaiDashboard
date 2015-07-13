@@ -53,6 +53,7 @@ class Dashboard {
 
     "#monthlyReportButton [href]" #> s"/monthly/$currentYear" &
     "#dailyReportButton [href]" #> s"/daily/$currentYear/$currentMonth" &
+    "#monthlyExcelReportButton [href]" #> s"/excel/monthly/$currentYear/$currentMonth" &
     "#dailyMorningReportButton [href]" #> s"/excel/morning/$currentYear/$currentMonth"
   }
 
