@@ -8,7 +8,26 @@ import java.io.OutputStream
 import jxl._
 import jxl.write._
 
-class DailyMorningExcel(year: Int, month: Int) {
+object DailyMorningExcel {
+  def getAllProducts = {
+    val zhenhaiDB = MongoDB.zhenhaiDB
+    val productLists = 
+      zhenhaiDB("product").distinct("product")
+                          .filter(p => p.toString.contains("x") && !p.toString.contains("."))
+                          .filter(p => p.toString.split("x")(0).toDouble <= 18)
+                          .map(_.toString)
+
+    productLists.toList.sortWith { case (product1, product2) =>
+      val Array(radius1, height1) = product1.split("x").map(_.toInt)
+      val Array(radius2, height2) = product2.split("x").map(_.toInt)
+
+      radius1 * 1000 + height1 < radius2 * 1000 + height2
+    }
+
+  }
+}
+
+class DailyMorningExcel(year: Int, month: Int, outputStream: OutputStream) {
   
   val zhenhaiDB = MongoDB.zhenhaiDB
   val maxDate = new GregorianCalendar(year, month-1, 1).getActualMaximum(Calendar.DAY_OF_MONTH)
@@ -122,21 +141,8 @@ class DailyMorningExcel(year: Int, month: Int) {
     greenBackgroundFormat
   }
 
-  lazy val allProducts = {
-    val productLists = 
-      zhenhaiDB("product").distinct("product")
-                          .filter(p => p.toString.contains("x") && !p.toString.contains("."))
-                          .filter(p => p.toString.split("x")(0).toDouble <= 18)
-                          .map(_.toString)
-
-    productLists.toList.sortWith { case (product1, product2) =>
-      val Array(radius1, height1) = product1.split("x").map(_.toInt)
-      val Array(radius2, height2) = product2.split("x").map(_.toInt)
-
-      radius1 * 1000 + height1 < radius2 * 1000 + height2
-    }
-  }
-
+  lazy val allProducts = DailyMorningExcel.getAllProducts
+  
   private lazy val columnAfterAllProducts = {
     ((allProducts.size) * 3) + 4
   }
@@ -452,7 +458,7 @@ class DailyMorningExcel(year: Int, month: Int) {
 
   def outputExcel() {
 
-    val workbook = Workbook.createWorkbook(new java.io.File("/home/brianhsu/test.xls"))
+    val workbook = Workbook.createWorkbook(outputStream)
     val sheet = workbook.createSheet("abc", 0)
     val sheetSettings = sheet.getSettings
     sheetSettings.setDefaultRowHeight(400)

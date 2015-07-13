@@ -11,6 +11,11 @@ import java.io._
 
 object ExcelRestAPI extends RestHelper {
 
+  def gnerateMorningExcel(year: Int, month: Int)(outputStream: OutputStream) = {
+    val excelGenerater = new DailyMorningExcel(year, month, outputStream)
+    excelGenerater.outputExcel()
+  }
+
   def gnerateMonthlyExcel(year: Int, month: Int, capacityRange: String)(outputStream: OutputStream) = {
     val excelGenerater = new MonthlySummaryExcel(year, month, capacityRange, outputStream)
     excelGenerater.outputExcel()
@@ -19,6 +24,11 @@ object ExcelRestAPI extends RestHelper {
   serve("api" / "excel" / "monthly" prefix {
     case AsInt(year) :: AsInt(month) :: capacityRange :: Nil Get req => 
       OutputStreamResponse(gnerateMonthlyExcel(year, month, capacityRange)_, List("Content-Type" -> "application/vnd.ms-excel"))
+  })
+
+  serve("api" / "excel" / "morning" prefix {
+    case AsInt(year) :: AsInt(month) :: Nil Get req => 
+      OutputStreamResponse(gnerateMorningExcel(year, month)_, List("Content-Type" -> "application/vnd.ms-excel"))
   })
 
 }

@@ -61,6 +61,7 @@ class Boot
     Menu("ViewDetail") / "excel" / "monthly" / "index" >> needLogin,
     Menu("ExcelMonthlyRange") / "excel" / "monthly" / * / * >> getTemplate("excel/monthly/capacityRange") >> needLogin,
     Menu("ExcelMonthlyDetail") / "excel" / "monthly" / * / * / * >> getTemplate("excel/monthly/detail") >> needLogin,
+    Menu("DailyMorning") / "excel" / "morning" / * / * >> getTemplate("excel/morning/detail") >> needLogin,
 
     Menu("Alert") / "alert" / "index" >> needLogin,
     Menu("Alert") / "alert" / "strangeQty" >> needLogin,

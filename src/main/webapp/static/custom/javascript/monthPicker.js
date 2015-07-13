@@ -1,6 +1,6 @@
-function setupMonthChooser(maxYear, maxMonth, minYear, minMonth, urlPrefix) {
+function setupMonthChooser(selector, maxYear, maxMonth, minYear, minMonth, urlPrefix) {
 
-  $('#monthPicker').monthpicker({
+  $(selector).monthpicker({
     pattern: 'yyyy-mm',
     startYear: minYear,
     finalYear: maxYear,
@@ -8,10 +8,10 @@ function setupMonthChooser(maxYear, maxMonth, minYear, minMonth, urlPrefix) {
     monthNames: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
   });
 
-  $('#monthPicker').monthpicker().bind('monthpicker-change-year', function (e, year) {
+  $(selector).monthpicker().bind('monthpicker-change-year', function (e, year) {
 
     // Enable all months
-    $('#monthPicker').monthpicker('disableMonths', []);
+    $(selector).monthpicker('disableMonths', []);
 
     // Disable month before our first log
     if (year == minYear) {
@@ -19,7 +19,7 @@ function setupMonthChooser(maxYear, maxMonth, minYear, minMonth, urlPrefix) {
       for (var i = 1; i < minMonth; i++) {
         disableMonths.push(i);
       }
-      $('#monthPicker').monthpicker('disableMonths', disableMonths);
+      $(selector).monthpicker('disableMonths', disableMonths);
     }
 
     // Disable month after our last log
@@ -28,13 +28,13 @@ function setupMonthChooser(maxYear, maxMonth, minYear, minMonth, urlPrefix) {
       for (var i = (+maxMonth + 1); i <= 12; i++) {
         disableMonths.push(i);
       }
-      $('#monthPicker').monthpicker('disableMonths', disableMonths);
+      $(selector).monthpicker('disableMonths', disableMonths);
     }
   });
 
   
-  $('#monthPicker').bind('monthpicker-click-month', function(e, month) {
-    var columns = $("#monthPicker").val().split("-");
+  $(selector).bind('monthpicker-click-month', function(e, month) {
+    var columns = $(selector).val().split("-");
     var year = +(columns[0]);
     var month = +(columns[1]);
     window.location = urlPrefix + "/" + year + "/" + month
@@ -54,7 +54,7 @@ function setupMonthChooser(maxYear, maxMonth, minYear, minMonth, urlPrefix) {
       }
     }
 
-    $('#monthPicker').monthpicker('disableMonths', disableMonths);
+    $(selector).monthpicker('disableMonths', disableMonths);
   }
 
   disableMonths();
