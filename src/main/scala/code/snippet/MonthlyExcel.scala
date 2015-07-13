@@ -11,6 +11,8 @@ import net.liftweb.http.js.JsCmd
 
 import java.util.Date
 import java.text.SimpleDateFormat
+import java.util.GregorianCalendar
+import java.util.Calendar
 
 import net.liftweb.http.S
 
@@ -31,6 +33,7 @@ class MorningExcel {
     val Array(_, _, yearString, monthString) = S.uri.drop(1).split("/")
     val year = yearString.toInt
     val month = monthString.toInt
+    val maxDate = new GregorianCalendar(year, month-1, 1).getActualMaximum(Calendar.DAY_OF_MONTH)
     val allProducts = DailyMorningExcel.getAllProducts
 
     def updateValue(fullDate: String, product: String, name: String)(value: String): JsCmd = {
@@ -40,7 +43,7 @@ class MorningExcel {
     }
 
 
-    val onlyMonth = f"$year-$month"
+    val onlyMonth = f"$year-$month%02d"
 
     val handIn = DailySummaryExcelSaved.get(onlyMonth, "all", "handIn").map(_.toString)
     val handOut = DailySummaryExcelSaved.get(onlyMonth, "all", "handOut").map(_.toString)
@@ -64,9 +67,9 @@ class MorningExcel {
       ".machineCount" #> SHtml.ajaxText(machineCount.map(_.toString).getOrElse(""), false, updateValue(onlyMonth, product, "machineCount")_) &
       ".machineCapacity" #> SHtml.ajaxText(machineCapacity.map(_.toString).getOrElse(""), false, updateValue(onlyMonth, product, "machineCapacity")_)
     } &
-    ".row" #> (1 to 31).map { case date =>
+    ".row" #> (1 to maxDate).map { case date =>
 
-      val fullDate = f"$year-$month-$date%02d"
+      val fullDate = f"$year-$month%02d-$date%02d"
       val plannedForDate = DailySummaryExcelSaved.get(fullDate, "all", "planned")
 
       val handIn = DailySummaryExcelSaved.get(fullDate, "all", "handIn").map(_.toString)
@@ -129,6 +132,8 @@ class MonthlyExcel {
     val capacityRange = URLDecoder.decode(capacityRangeURL, "UTF-8")
     val year = f"${yearString.toInt}%02d"
     val month = f"${monthString.toInt}%02d"
+    val maxDate = new GregorianCalendar(year.toInt, month.toInt-1, 1).getActualMaximum(Calendar.DAY_OF_MONTH)
+
     lazy val allProductPrefix = MonthlySummaryExcel.getAllProductPrefix(URLDecoder.decode(capacityRange, "UTF-8"))
 
     val titleRow = <tr class="row">
@@ -166,7 +171,7 @@ class MonthlyExcel {
 
     ".productTitleRow" #> allProductPrefix.map { product => ".product *" #> product } &
     ".titleRow" #> allProductPrefix.map { product => titleBinding(product)(titleRow) } &
-    ".row" #> (1 to 31).map { date =>
+    ".row" #> (1 to maxDate).map { date =>
       val fullDate = f"$year-$month-$date%02d"
       val targetSavedExcel = MonthlySummaryExcelSaved.get(fullDate, 10, capacityRange)
 

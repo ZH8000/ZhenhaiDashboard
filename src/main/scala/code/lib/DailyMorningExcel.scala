@@ -31,6 +31,7 @@ class DailyMorningExcel(year: Int, month: Int, outputStream: OutputStream) {
   
   val zhenhaiDB = MongoDB.zhenhaiDB
   val maxDate = new GregorianCalendar(year, month-1, 1).getActualMaximum(Calendar.DAY_OF_MONTH)
+  val onlyMonth = f"$year-$month%02d"
 
   private lazy val defaultFont = new WritableFont(WritableFont.ARIAL, 12)
   private lazy val centeredTitleFormat = {
@@ -155,7 +156,10 @@ class DailyMorningExcel(year: Int, month: Int, outputStream: OutputStream) {
 
   def createHandInColumn(sheet: WritableSheet) {
     val titleCell = new Label(columnAfterAllProducts, 1, "繳庫量", centeredTitleFormat)
-    val belowCell = new Blank(columnAfterAllProducts, 3, centeredNumberFormat)
+    val belowCell = DailySummaryExcelSaved.get(onlyMonth, "all", "handIn") match {
+      case None => new Blank(columnAfterAllProducts, 3, centeredNumberFormat)
+      case Some(value) => new Number(columnAfterAllProducts, 3, value, centeredNumberFormat)
+    }
 
     sheet.addCell(titleCell)
     sheet.addCell(belowCell)
@@ -164,8 +168,13 @@ class DailyMorningExcel(year: Int, month: Int, outputStream: OutputStream) {
     val rowOffset = 4
     (1 to maxDate).foreach { date =>
       val row = date + rowOffset
-      val blankCell = new Blank(columnAfterAllProducts, row, centeredNumberFormat)
-      sheet.addCell(blankCell)
+      val fullDate = f"$year-$month%02d-$date%02d"
+      val valueCell = DailySummaryExcelSaved.get(fullDate, "all", "handIn") match {
+        case None => new Blank(columnAfterAllProducts, row, centeredNumberFormat)
+        case Some(value) => new Number(columnAfterAllProducts, row, value, centeredNumberFormat)
+      }
+
+      sheet.addCell(valueCell)
     }
 
   }
@@ -219,7 +228,10 @@ class DailyMorningExcel(year: Int, month: Int, outputStream: OutputStream) {
   def createHandOutColumn(sheet: WritableSheet) {
     val columnIndex = columnAfterAllProducts + 3
     val titleCell = new Label(columnIndex, 1, "每日出庫數", centeredTitleFormat)
-    val belowCell = new Blank(columnIndex, 3, centeredNumberFormat)
+    val belowCell = DailySummaryExcelSaved.get(onlyMonth, "all", "handOut") match {
+      case None => new Blank(columnIndex, 3, centeredNumberFormat)
+      case Some(value) => new Number(columnIndex, 3, value, centeredNumberFormat)
+    }
 
     sheet.addCell(titleCell)
     sheet.addCell(belowCell)
@@ -228,15 +240,23 @@ class DailyMorningExcel(year: Int, month: Int, outputStream: OutputStream) {
     val rowOffset = 4
 
     (1 to maxDate).foreach { date =>
-      val blankCell = new Blank(columnIndex, date + rowOffset, centeredNumberFormat)
-      sheet.addCell(blankCell)
+      val fullDate = f"$year-$month%02d-$date%02d"
+      val valueCell = DailySummaryExcelSaved.get(fullDate, "all", "handOut") match {
+        case None => new Blank(columnIndex, date + rowOffset, centeredNumberFormat)
+        case Some(value) => new Number(columnIndex, date + rowOffset, value, centeredNumberFormat)
+      }
+
+      sheet.addCell(valueCell)
     }
   }
 
   def create102StorageColumn(sheet: WritableSheet) {
     val columnIndex = columnAfterAllProducts + 4
     val titleCell = new Label(columnIndex, 1, "102 倉庫存量", centeredTitleFormat)
-    val belowCell = new Blank(columnIndex, 4, centeredNumberFormat)
+    val belowCell = DailySummaryExcelSaved.get(onlyMonth, "all", "storage102") match {
+      case None => new Blank(columnIndex, 4, centeredNumberFormat)
+      case Some(value) => new Number(columnIndex, 4, value, centeredNumberFormat)
+    }
 
     sheet.addCell(titleCell)
     sheet.addCell(belowCell)
@@ -245,15 +265,23 @@ class DailyMorningExcel(year: Int, month: Int, outputStream: OutputStream) {
     val rowOffset = 4
 
     (1 to maxDate).foreach { date =>
-      val blankCell = new Blank(columnIndex, date + rowOffset, centeredNumberFormat)
-      sheet.addCell(blankCell)
+      val fullDate = f"$year-$month%02d-$date%02d"
+      val valueCell = DailySummaryExcelSaved.get(fullDate, "all", "storage102") match {
+        case None => new Blank(columnIndex, date + rowOffset, centeredNumberFormat)
+        case Some(value) => new Number(columnIndex, date + rowOffset, value, centeredNumberFormat)
+      }
+
+      sheet.addCell(valueCell)
     }
   }
 
   def create118StorageColumn(sheet: WritableSheet) {
     val columnIndex = columnAfterAllProducts + 5
     val titleCell = new Label(columnIndex, 1, "118 倉庫存量", centeredTitleFormat)
-    val belowCell = new Blank(columnIndex, 4, centeredNumberFormat)
+    val belowCell = DailySummaryExcelSaved.get(onlyMonth, "all", "storage118") match {
+      case None => new Blank(columnIndex, 4, centeredNumberFormat)
+      case Some(value) => new Number(columnIndex, 4, value, centeredNumberFormat)
+    }
 
     sheet.addCell(titleCell)
     sheet.addCell(belowCell)
@@ -262,15 +290,22 @@ class DailyMorningExcel(year: Int, month: Int, outputStream: OutputStream) {
     val rowOffset = 4
 
     (1 to maxDate).foreach { date =>
-      val blankCell = new Blank(columnIndex, date + rowOffset, centeredNumberFormat)
-      sheet.addCell(blankCell)
+      val fullDate = f"$year-$month%02d-$date%02d"
+      val valueCell = DailySummaryExcelSaved.get(fullDate, "all", "storage118") match {
+        case None => new Blank(columnIndex, date + rowOffset, centeredNumberFormat)
+        case Some(value) => new Number(columnIndex, date + rowOffset, value, centeredNumberFormat)
+      }
+      sheet.addCell(valueCell)
     }
   }
 
   def createStockColumn(sheet: WritableSheet) {
     val columnIndex = columnAfterAllProducts + 6
     val titleCell = new Label(columnIndex, 1, "現場堆貨量", centeredTitleFormat)
-    val belowCell = new Blank(columnIndex, 3, centeredNumberFormat)
+    val belowCell = DailySummaryExcelSaved.get(onlyMonth, "all", "stock") match {
+      case None => new Blank(columnIndex, 3, centeredNumberFormat)
+      case Some(value) => new Number(columnIndex, 3, value, centeredNumberFormat)
+    }
 
     sheet.addCell(titleCell)
     sheet.addCell(belowCell)
@@ -280,15 +315,23 @@ class DailyMorningExcel(year: Int, month: Int, outputStream: OutputStream) {
     val rowOffset = 4
 
     (1 to maxDate).foreach { date =>
-      val blankCell = new Blank(columnIndex, date + rowOffset, centeredNumberFormat)
-      sheet.addCell(blankCell)
+      val fullDate = f"$year-$month%02d-$date%02d"
+      val valueCell = DailySummaryExcelSaved.get(fullDate, "all", "stock") match {
+        case None => new Blank(columnIndex, date + rowOffset, centeredNumberFormat)
+        case Some(value) => new Number(columnIndex, date + rowOffset, value, centeredNumberFormat)
+      }
+
+      sheet.addCell(valueCell)
     }
   }
 
   def createYieldRateColumn(sheet: WritableSheet) {
     val columnIndex = columnAfterAllProducts + 7
     val titleCell = new Label(columnIndex, 1, "步留率\n≧98.50％", centeredTitleFormat)
-    val belowCell = new Blank(columnIndex, 3, centeredNumberFormat)
+    val belowCell = DailySummaryExcelSaved.get(onlyMonth, "all", "yieldRate") match {
+      case None => new Blank(columnIndex, 3, centeredNumberFormat)
+      case Some(value) => new Number(columnIndex, 3, value / 100.0, centeredPercentFormat)
+    }
 
     sheet.addCell(titleCell)
     sheet.addCell(belowCell)
@@ -298,8 +341,14 @@ class DailyMorningExcel(year: Int, month: Int, outputStream: OutputStream) {
     val rowOffset = 4
 
     (1 to maxDate).foreach { date =>
-      val blankCell = new Blank(columnIndex, date + rowOffset, centeredPercentFormat)
-      sheet.addCell(blankCell)
+      val fullDate = f"$year-$month%02d-$date%02d"
+      val valueCell = DailySummaryExcelSaved.get(fullDate, "all", "yieldRate") match {
+        case None => new Blank(columnIndex, date + rowOffset, centeredPercentFormat)
+        case Some(value) => new Number(columnIndex, date + rowOffset, value / 100.0, centeredPercentFormat)
+      }
+
+
+      sheet.addCell(valueCell)
     }
   }
 
@@ -331,7 +380,7 @@ class DailyMorningExcel(year: Int, month: Int, outputStream: OutputStream) {
   def createLeftPinnedColumnHeader(sheet: WritableSheet) {
     val planned = new Label(1, 1, "計劃生產量", centeredTitleFormat)
     val produced = new Label(2, 1, "實際組立量", centeredTitleFormat)
-    val diff = new Label(3, 1, "實際組立量", centeredTitleFormat)
+    val diff = new Label(3, 1, "差異量", centeredTitleFormat)
 
     sheet.addCell(planned)
     sheet.addCell(produced)
@@ -349,9 +398,16 @@ class DailyMorningExcel(year: Int, month: Int, outputStream: OutputStream) {
       val columnIndex = index * 3 + offsetForPinnedColumn
       val productTitle = new Label(columnIndex, 1, product, leftBorderTitleFormat)
       val machineCountTitle = new Label(columnIndex+1, 1, "機台數量", centeredTitleFormat)
-      val machineCount = new Blank(columnIndex+2, 1, rightBorderTitleFormat)
 
-      val capacity = new Blank(columnIndex, 2, bothBorderTitleFormat)
+      val machineCount = DailySummaryExcelSaved.get(onlyMonth, product, "machineCount") match {
+        case Some(value) => new Number(columnIndex + 2, 1, value, rightBorderTitleFormat)
+        case None => new Blank(columnIndex + 2, 1, rightBorderTitleFormat)
+      }
+
+      val capacity = DailySummaryExcelSaved.get(onlyMonth, product, "machineCapacity") match {
+        case Some(value) => new Number(columnIndex, 2, value, bothBorderTitleFormat)
+        case None => new Blank(columnIndex, 2, bothBorderTitleFormat)
+      }
 
       val planned = new Label(columnIndex, 3, "排程量", leftBorderTitleFormat)
       val produced = new Label(columnIndex+1, 3, "製造量", centeredTitleFormat)
@@ -399,7 +455,11 @@ class DailyMorningExcel(year: Int, month: Int, outputStream: OutputStream) {
       val count = dateToCount.get(fullDate).getOrElse(0L)
       val column = index * 3 + columnOffset
       val countCell = new Number(column + 1, date + rowOffset, count, centeredGreenNumberFormat)
-      val plannedCell = new Blank(column, date + rowOffset, centeredYellowNumberFormat)
+
+      val plannedCell = DailySummaryExcelSaved.get(fullDate, product, "planned") match {
+        case Some(value) => new Number(column, date + rowOffset, value, centeredYellowNumberFormat)
+        case None => new Blank(column, date + rowOffset, centeredYellowNumberFormat)
+      }
 
       val leftCellLoc = CellReferenceHelper.getCellReference(column, date + rowOffset)
       val rightCellLoc = CellReferenceHelper.getCellReference(column + 1, date + rowOffset)
