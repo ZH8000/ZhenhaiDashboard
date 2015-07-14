@@ -71,6 +71,17 @@
     </div>
   </div>
   <script>
-   $('#dataTable').floatThead({scrollingTop: 50});
+    $(document).ready(function() {
+      var table = $('#dataTable').DataTable( {
+        scrollY: "450px",
+        scrollX: true,
+        paging: false,
+        searching: false,
+        ordering: false,
+        info: false
+      });
+ 
+      new $.fn.dataTable.FixedColumns(table, {leftColumns: 1});
+    });
   </script>
 </div>
