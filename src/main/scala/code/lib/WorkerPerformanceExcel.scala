@@ -66,18 +66,40 @@ class WorkerPerformanceExcel(year: Int, month: Int, outputStream: OutputStream) 
     greenBackgroundFormat
   }
 
+  case class Performance(standard: Long, standardPerformance: Long, countQty: Long)
+
   def getWorkerPerformance(workerMongoID: String) = {
     var dateToCount: Map[String, Long] = Map.empty
+    var dateToPerformance: Map[String, Performance] = Map.empty
     val data = zhenhaiDB("workerPerformance").find(MongoDBObject("month" -> "2015-07", "workerMongoID" -> workerMongoID))
 
     data.foreach { data =>
       val shiftDate = data.get("shiftDate").toString
+      val machineID = data.get("machineID").toString
+      val productCode = data.get("productCode").toString
+      val countQty = data.get("countQty").toString.toLong
+      val machinePerformance = MachinePerformance.find(machineID, productCode)
+      val managementCount = machinePerformance.map(_.managementCount.get).getOrElse(0L)
+      val performanceCount = machinePerformance.map(_.performanceCount.get).getOrElse(0L)
+
+      val newData = dateToPerformance.get(shiftDate) match {
+        case None => Performance(managementCount, performanceCount, countQty)
+        case Some(oldData) => 
+          Performance(
+            oldData.standard + managementCount, 
+            oldData.standardPerformance + performanceCount, 
+            oldData.countQty + countQty
+          )
+      }
+
+      dateToPerformance = dateToPerformance.updated(shiftDate, newData)
+
       val oldCount = dateToCount.get(shiftDate).getOrElse(0L)
       val newCount = oldCount + data.get("countQty").toString.toLong
       dateToCount = dateToCount.updated(shiftDate, newCount)
     }
 
-    dateToCount.toList.sortWith(_._1 < _._1)
+    dateToPerformance.toList.sortWith(_._1 < _._1)
   }
 
   def createMatrix(sheet: WritableSheet) {
@@ -88,14 +110,14 @@ class WorkerPerformanceExcel(year: Int, month: Int, outputStream: OutputStream) 
       val performanceOfDates = getWorkerPerformance(worker.id.get.toString)
       val startRow = rowCount
 
-      performanceOfDates.foreach { case(date, countQty) =>
+      performanceOfDates.foreach { case(date, performance) =>
         
         val workerIDCell = new Label(0, rowCount, worker.workerID.get, centeredTitleFormat)
         val workerNameCell = new Label(1, rowCount, worker.name.get, centeredTitleFormat)
         val dateCell = new Label(2, rowCount, date, centeredTitleFormat)
-        val standardCell = new Blank(3, rowCount, centeredNumberFormat)
-        val standardPerformanceCell = new Blank(4, rowCount, centeredNumberFormat)
-        val countQtyCell = new Number(5, rowCount, countQty, centeredNumberFormat)
+        val standardCell = new Number(3, rowCount, performance.standard, centeredNumberFormat)
+        val standardPerformanceCell = new Number(4, rowCount, performance.standardPerformance, centeredNumberFormat)
+        val countQtyCell = new Number(5, rowCount, performance.countQty, centeredNumberFormat)
 
         val standardLoc = CellReferenceHelper.getCellReference(3, rowCount)
         val standardPerformanceLoc = CellReferenceHelper.getCellReference(4, rowCount)
