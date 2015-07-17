@@ -55,6 +55,17 @@
             請選擇月份：<input type="text" id="morningMonthPicker" size="10"/>
           </div>
         </div>
+        <!--
+        <div class="column">
+          <a href="#" class="ui icon huge teal button" id="workerPerformanceReportButton">
+            <i class="huge tasks icon"></i>
+            <div style="margin-top: 0.5em">人員效率</div>
+          </a>
+          <div style="margin-top: 1em">
+            請選擇月份：<input type="text" id="workerPeformanceMonthPicker" size="10"/>
+          </div>
+        </div>
+        -->
         <div class="column"></div>
         <div class="column"></div>
         <div class="column"></div>
@@ -72,7 +83,7 @@
     <script>
       setupMonthChooser("#monthPicker", $("#maxYear").val(), $("#maxMonth").val(), $("#minYear").val(), $("#minMonth").val(), "/daily");
       setupMonthChooser("#monthlyMonthPicker", $("#maxYear").val(), $("#maxMonth").val(), $("#minYear").val(), $("#minMonth").val(), "/excel/monthly");
-//      setupMonthChooser("#morningMonthPicker", $("#maxYear").val(), $("#maxMonth").val(), $("#minYear").val(), $("#minMonth").val(), "/excel/morning");
+      setupMonthChooser("#morningMonthPicker", $("#maxYear").val(), $("#maxMonth").val(), $("#minYear").val(), $("#minMonth").val(), "/excel/morning");
 
 
     </script>
