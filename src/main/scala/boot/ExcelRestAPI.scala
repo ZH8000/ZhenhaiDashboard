@@ -21,6 +21,17 @@ object ExcelRestAPI extends RestHelper {
     excelGenerater.outputExcel()
   }
 
+  def gneratePerformanceExcel(year: Int, month: Int)(outputStream: OutputStream) = {
+    val excelGenerater = new WorkerPerformanceExcel(year, month, outputStream)
+    excelGenerater.outputExcel()
+  }
+
+
+  serve("api" / "excel" / "workerPerformance" prefix {
+    case AsInt(year) :: AsInt(month) :: Nil Get req => 
+      OutputStreamResponse(gneratePerformanceExcel(year, month)_, List("Content-Type" -> "application/vnd.ms-excel"))
+  })
+
   serve("api" / "excel" / "monthly" prefix {
     case AsInt(year) :: AsInt(month) :: capacityRange :: Nil Get req => 
       OutputStreamResponse(gnerateMonthlyExcel(year, month, capacityRange)_, List("Content-Type" -> "application/vnd.ms-excel"))

@@ -144,7 +144,7 @@ class WorkerPerformanceExcel(year: Int, month: Int, outputStream: OutputStream) 
       val standardPerformanceFormula = s"SUM(E${startRow+1}:E${rowCount})"
       val standardPerformanceCell = new Formula(4, rowCount, standardPerformanceFormula, centeredNumberFormat)
       val countQtyFormula = s"SUM(F${startRow+1}:F${rowCount})"
-      val countQtyCell = new Formula(5, rowCount, standardPerformanceFormula, centeredNumberFormat)
+      val countQtyCell = new Formula(5, rowCount, countQtyFormula, centeredNumberFormat)
 
       sheet.addCell(titleCell)
       sheet.addCell(new Blank(1, rowCount, centeredTitleFormat))
@@ -186,7 +186,7 @@ class WorkerPerformanceExcel(year: Int, month: Int, outputStream: OutputStream) 
 
   def outputExcel() {
 
-    val workbook = Workbook.createWorkbook(new java.io.File("/home/brianhsu/test.xls"))
+    val workbook = Workbook.createWorkbook(outputStream)
     val sheet = workbook.createSheet("abc", 0)
     val sheetSettings = sheet.getSettings
     sheetSettings.setDefaultRowHeight(400)

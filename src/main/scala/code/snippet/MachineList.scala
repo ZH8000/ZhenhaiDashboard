@@ -5,7 +5,7 @@ import net.liftweb.util.Helpers._
 
 class MachineList {
   def render = {
-    "option" #> MachineInfo.machineList.map { machineID => 
+    "option" #> MachineInfo.machineList.sortWith(_ < _).map { machineID => 
       "option *" #> machineID 
     }
   }
