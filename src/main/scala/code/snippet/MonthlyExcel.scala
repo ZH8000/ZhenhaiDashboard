@@ -34,7 +34,7 @@ class WorkerPerformanceExcel {
     "#downloadExcel [href]" #> s"/api/excel/workerPerformance/$year/$month"
   }
 
-  def saveToDB() = {
+  def createNewRecord() = {
     val newRecord = for {
       machineID         <- machineIDBox.filterNot(_.isEmpty)    ?~ "請選擇機台編號"
       productCode       <- productCodeBox.filterNot(_.isEmpty)  ?~ "請輸入產品尺寸"
@@ -56,22 +56,66 @@ class WorkerPerformanceExcel {
         }
       case _ => S.error("輸入的資料有誤，請檢查後重新輸入")
     }
+
+  }
+
+  def saveToDB() = {
+    val oldRecord = for {
+      machineID   <- machineIDBox.filterNot(_.isEmpty)    ?~ "請選擇機台編號"
+      productCode <- productCodeBox.filterNot(_.isEmpty)  ?~ "請輸入產品尺寸"
+      record      <- MachinePerformance.find(machineID, productCode)
+    } yield record
+
+    oldRecord match {
+      case Full(record) => S.error("此機台編號與產品尺寸資料已存在，請使用下面表格編輯")
+      case Empty => createNewRecord()
+      case _ => S.error("無法取得資料庫資料，請稍候再試")
+    }
+   
+
   }
 
   def table = {
     
-    val dataList = MachinePerformance.findAll.toList
+    def machineIDThenProductCode(record1: MachinePerformance, record2: MachinePerformance) = {
+      if (record1.machineID == record2.machineID) {
+        record1.productCode.get < record2.productCode.get
+      } else {
+        record1.machineID.get < record2.machineID.get
+      }
+    }
+
+    val dataList = MachinePerformance.findAll.toList.sortWith(machineIDThenProductCode)
+
+    def updatePeformanceCount(data: MachinePerformance)(value: String): JsCmd = {
+      asLong(value).foreach { newValue =>
+        data.performanceCount(newValue).saveTheRecord match {
+          case Full(record) => S.notice(s"已更新 ${data.machineID} / ${data.productCode} 的日效率標準量為 $newValue")
+          case _ => S.error(s"無法更新 ${data.machineID} / ${data.productCode} 的資料，請稍候再試")
+        }
+      }
+    }
+
+    def updateManagementCount(data: MachinePerformance)(value: String): JsCmd = {
+      asLong(value).foreach { newValue =>
+        data.managementCount(newValue).saveTheRecord match {
+          case Full(record) => S.notice(s"已更新 ${data.machineID} / ${data.productCode} 的日管理標準量為 $newValue")
+          case _ => S.error(s"無法更新 ${data.machineID} / ${data.productCode} 的資料，請稍候再試")
+        }
+      }
+    }
 
     ".dataRow" #> dataList.map { data =>
       ".machineID *" #> data.machineID.get &
-      ".productCode *" #> data.productCode.get
+      ".productCode *" #> data.productCode.get &
+      ".managementCount" #> SHtml.ajaxText(data.managementCount.get.toString, false, updateManagementCount(data)_) &
+      ".performanceCount" #> SHtml.ajaxText(data.performanceCount.get.toString, false, updatePeformanceCount(data)_)
     }
 
   }
 
   def editor = {
 
-    "sss" #> "qqq"
     "#machineList" #> SHtml.onSubmit(x => machineIDBox = Full(x))  &
     ".productCode" #> SHtml.onSubmit(x => productCodeBox = Full(x)) &
     ".managementCount" #> SHtml.onSubmit(x => managementCountBox = asLong(x)) &

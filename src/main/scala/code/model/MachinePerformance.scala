@@ -15,6 +15,22 @@ object MachinePerformance extends MachinePerformance with MongoMetaRecord[Machin
   def find(machineID: String, productCode: String): Box[MachinePerformance] = {
     this.find(("machineID" -> machineID) ~ ("productCode" -> productCode))
   }
+
+  def update(machineID: String, productCode: String, managementCount: Long, performanceCount: Long) = {
+    find(machineID, productCode) match {
+      case Full(record) => 
+        record.managementCount(managementCount)
+              .performanceCount(performanceCount)
+
+      case _ =>
+
+        MachinePerformance.machineID(machineID)
+                          .productCode(productCode)
+                          .managementCount(managementCount)
+                          .performanceCount(performanceCount)
+    }
+
+  }
 }
 
 class MachinePerformance extends MongoRecord[MachinePerformance] with ObjectIdPk[MachinePerformance] {
