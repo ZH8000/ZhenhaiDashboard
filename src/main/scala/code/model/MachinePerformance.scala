@@ -9,6 +9,24 @@ import net.liftweb.record.field._
 import net.liftweb.common._
 import net.liftweb.json.JsonDSL._
 
+object WorkerPerformance extends WorkerPerformance with MongoMetaRecord[WorkerPerformance] {
+  override def collectionName = "workerPerformance"
+}
+
+class WorkerPerformance extends MongoRecord[WorkerPerformance] with ObjectIdPk[WorkerPerformance] {
+  def meta = WorkerPerformance
+
+  val workerMongoID = new StringField(this, 255)
+  val timestamp = new StringField(this, 10)
+  val shiftDate = new StringField(this, 10)
+  val productCode = new StringField(this, 20)
+  val month = new StringField(this, 10)
+  val machineID = new StringField(this, 10)
+  val lotNo = new StringField(this, 100)
+  val countQty = new LongField(this)
+
+}
+
 object MachinePerformance extends MachinePerformance with MongoMetaRecord[MachinePerformance] {
   override def collectionName = "machinePerformance"
 

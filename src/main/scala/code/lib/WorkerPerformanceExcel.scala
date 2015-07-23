@@ -102,6 +102,24 @@ class WorkerPerformanceExcel(year: Int, month: Int, outputStream: OutputStream) 
     dateToPerformance.toList.sortWith(_._1 < _._1)
   }
 
+  def getAveragePeformance(worker: Worker, date: String) = {
+
+    var average: List[Double] = Nil
+    val dataList = WorkerPerformance.findAll(MongoDBObject("workerMongoID" -> worker.id.get.toString, "shiftDate" -> date))
+    
+    for {
+      record <- dataList
+      performance <- MachinePerformance.find(record.machineID.get, record.productCode.get).map(_.managementCount.get).filterNot(_ == 0)
+    } {
+      average ::= record.countQty.get / performance.toDouble
+    }
+
+    println("average:" + average)
+
+    average.sum / dataList.size
+
+  }
+
   def createMatrix(sheet: WritableSheet) {
     var rowCount = 3
 
@@ -111,6 +129,7 @@ class WorkerPerformanceExcel(year: Int, month: Int, outputStream: OutputStream) 
       val startRow = rowCount
 
       performanceOfDates.foreach { case(date, performance) =>
+
         
         val workerIDCell = new Label(0, rowCount, worker.workerID.get, centeredTitleFormat)
         val workerNameCell = new Label(1, rowCount, worker.name.get, centeredTitleFormat)
@@ -125,6 +144,7 @@ class WorkerPerformanceExcel(year: Int, month: Int, outputStream: OutputStream) 
 
         val kadou = new Formula(8, rowCount, s"$countQtyLoc / $standardLoc", centeredPercentFormat)
         val performancePercent = new Formula(9, rowCount, s"$countQtyLoc / $standardPerformanceLoc", centeredPercentFormat)
+        val averagePerformance = new Number(10, rowCount, getAveragePeformance(worker, date), centeredPercentFormat)
 
         sheet.addCell(workerIDCell)
         sheet.addCell(workerNameCell)
@@ -134,6 +154,7 @@ class WorkerPerformanceExcel(year: Int, month: Int, outputStream: OutputStream) 
         sheet.addCell(countQtyCell)
         sheet.addCell(kadou)
         sheet.addCell(performancePercent)
+        sheet.addCell(averagePerformance)
 
         rowCount += 1
       }
