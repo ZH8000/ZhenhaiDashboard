@@ -78,6 +78,7 @@ class WorkerPerformanceExcel(year: Int, month: Int, outputStream: OutputStream) 
       val machineID = data.get("machineID").toString
       val productCode = data.get("productCode").toString
       val countQty = data.get("countQty").toString.toLong
+
       val machinePerformance = MachinePerformance.find(machineID, productCode)
       val managementCount = machinePerformance.map(_.managementCount.get).getOrElse(0L)
       val performanceCount = machinePerformance.map(_.performanceCount.get).getOrElse(0L)
@@ -114,10 +115,7 @@ class WorkerPerformanceExcel(year: Int, month: Int, outputStream: OutputStream) 
       average ::= record.countQty.get / performance.toDouble
     }
 
-    println("average:" + average)
-
     average.sum / dataList.size
-
   }
 
   def createMatrix(sheet: WritableSheet) {
@@ -137,11 +135,13 @@ class WorkerPerformanceExcel(year: Int, month: Int, outputStream: OutputStream) 
         val standardCell = new Number(3, rowCount, performance.standard, centeredNumberFormat)
         val standardPerformanceCell = new Number(4, rowCount, performance.standardPerformance, centeredNumberFormat)
         val countQtyCell = new Number(5, rowCount, performance.countQty, centeredNumberFormat)
+        val lockCount = 
+            zhenhaiDB("lock").find(MongoDBObject("shiftDate" -> date, "workerMongoID" -> worker.id.toString)).count
+        val lockTimeCell = new Number(7, rowCount, lockCount * 10, centeredNumberFormat)
 
         val standardLoc = CellReferenceHelper.getCellReference(3, rowCount)
         val standardPerformanceLoc = CellReferenceHelper.getCellReference(4, rowCount)
         val countQtyLoc = CellReferenceHelper.getCellReference(5, rowCount)
-
         val kadou = new Formula(8, rowCount, s"$countQtyLoc / $standardLoc", centeredPercentFormat)
         val performancePercent = new Formula(9, rowCount, s"$countQtyLoc / $standardPerformanceLoc", centeredPercentFormat)
         val averagePerformance = new Number(10, rowCount, getAveragePeformance(worker, date), centeredPercentFormat)
@@ -152,6 +152,8 @@ class WorkerPerformanceExcel(year: Int, month: Int, outputStream: OutputStream) 
         sheet.addCell(standardCell)
         sheet.addCell(standardPerformanceCell)
         sheet.addCell(countQtyCell)
+        sheet.addCell(lockTimeCell)
+
         sheet.addCell(kadou)
         sheet.addCell(performancePercent)
         sheet.addCell(averagePerformance)
