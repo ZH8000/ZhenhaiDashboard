@@ -1,5 +1,6 @@
 package code.lib
 
+import net.liftweb.common._
 import code.model._
 import com.mongodb.casbah.Imports._
 import java.util.Calendar
@@ -17,9 +18,12 @@ object WorkerPerformanceExcel {
 class WorkerPerformanceExcel(year: Int, month: Int, outputStream: OutputStream) {
   
   val zhenhaiDB = MongoDB.zhenhaiDB
+  val workerPerformanceTable = zhenhaiDB(f"workerPerformance-$year%4d-$month%02d")
+  val operationTimeTable = zhenhaiDB(f"operationTime-$year%4d-$month%02d")
+  val lockTable = zhenhaiDB(f"lock-$year%4d-$month%02d")
 
   lazy val workers = {
-    val workerMongoIDs = zhenhaiDB("workerPerformance").distinct("workerMongoID")
+    val workerMongoIDs = workerPerformanceTable.distinct("workerMongoID")
     workerMongoIDs.flatMap(x => Worker.findByMongoID(x.toString)).sortWith(_.workerID.get < _.workerID.get)
   }
 
@@ -66,56 +70,79 @@ class WorkerPerformanceExcel(year: Int, month: Int, outputStream: OutputStream) 
     greenBackgroundFormat
   }
 
-  case class Performance(standard: Long, standardPerformance: Long, countQty: Long)
+  case class Performance(shiftDate: String, countQty: Long)
 
-  def getWorkerPerformance(workerMongoID: String) = {
-    var dateToCount: Map[String, Long] = Map.empty
-    var dateToPerformance: Map[String, Performance] = Map.empty
-    val data = zhenhaiDB("workerPerformance").find(MongoDBObject("month" -> "2015-07", "workerMongoID" -> workerMongoID))
-
-    data.foreach { data =>
-      val shiftDate = data.get("shiftDate").toString
-      val machineID = data.get("machineID").toString
-      val productCode = data.get("productCode").toString
-      val countQty = data.get("countQty").toString.toLong
-
-      val machinePerformance = MachinePerformance.find(machineID, productCode)
-      val managementCount = machinePerformance.map(_.managementCount.get).getOrElse(0L)
-      val performanceCount = machinePerformance.map(_.performanceCount.get).getOrElse(0L)
-
-      val newData = dateToPerformance.get(shiftDate) match {
-        case None => Performance(managementCount, performanceCount, countQty)
-        case Some(oldData) => 
-          Performance(
-            oldData.standard + managementCount, 
-            oldData.standardPerformance + performanceCount, 
-            oldData.countQty + countQty
-          )
-      }
-
-      dateToPerformance = dateToPerformance.updated(shiftDate, newData)
-
-      val oldCount = dateToCount.get(shiftDate).getOrElse(0L)
-      val newCount = oldCount + data.get("countQty").toString.toLong
-      dateToCount = dateToCount.updated(shiftDate, newCount)
+  def getWorkerPerformance(workerMongoID: String): List[Performance] = {
+    val records = workerPerformanceTable.find(DBObject("workerMongoID" -> workerMongoID)).map { record =>
+      Performance(record.get("shiftDate").toString, record.get("countQty").toString.toLong)
     }
-
-    dateToPerformance.toList.sortWith(_._1 < _._1)
+    records.toList.sortWith(_.shiftDate < _.shiftDate)
   }
 
-  def getAveragePeformance(worker: Worker, date: String) = {
+  def getOperationTime(record: DBObject) = {
+    record.get("currentTimestamp").toString.toLong - record.get("startTimestamp").toString.toLong
+  }
 
-    var average: List[Double] = Nil
-    val dataList = WorkerPerformance.findAll(MongoDBObject("workerMongoID" -> worker.id.get.toString, "shiftDate" -> date))
-    
-    for {
-      record <- dataList
-      performance <- MachinePerformance.find(record.machineID.get, record.productCode.get).map(_.managementCount.get).filterNot(_ == 0)
-    } {
-      average ::= record.countQty.get / performance.toDouble
+
+  case class OrderCount(shiftDate: String, lotNo: String, partNo: String, productCode: String, machineID: String)
+
+  def getStandardPerformance(date: String, workerMongoID: String) = {
+    val data = operationTimeTable.find(DBObject("shiftDate" -> date, "workerID" -> workerMongoID)).toList
+    val operationTimeInMinutes = data.map(record => getOperationTime(record)).sum / 60
+    val distinctOrders = data.map { record => 
+      OrderCount(
+        record.get("shiftDate").toString, 
+        record.get("lotNo").toString, 
+        record.get("partNo").toString, 
+        record.get("productCode").toString,
+        record.get("machineID").toString
+      ) 
+    }.toSet
+
+    var managementCount = 0L
+    var performanceCount = 0L
+
+    distinctOrders.foreach { order =>
+      val machinePerformance = MachinePerformance.find(order.machineID, order.productCode)
+      managementCount  += machinePerformance.map(_.managementCount.get).getOrElse(0L)
+      performanceCount += machinePerformance.map(_.performanceCount.get).getOrElse(0L)
     }
 
-    average.sum / dataList.size
+    (managementCount, performanceCount, operationTimeInMinutes)
+  }
+
+  
+  def getAveragePeformance(workerMongoID: String, date: String): Double = {
+    case class OperationTimeWithCount(machineID: String, lotNo: String, partNo: String, productCode: String)
+
+    var operationToCount: Map[OperationTimeWithCount, Long] = Map.empty
+    val data = operationTimeTable.find(DBObject("shiftDate" -> date, "workerID" -> workerMongoID)).toList
+    val operationTimes = data.foreach { record =>
+      val operation = OperationTimeWithCount(
+        record.get("machineID").toString,
+        record.get("lotNo").toString,
+        record.get("partNo").toString,
+        record.get("productCode").toString
+      )
+
+      val newValue = operationToCount.get(operation).getOrElse(0L)
+      operationToCount = operationToCount.updated(operation, newValue)
+    }
+
+    val performances = operationToCount.map { case (operation, countQty) =>
+      val machinePerformance = MachinePerformance.find(operation.machineID, operation.productCode)
+      val managementCountHolder = machinePerformance.map(_.managementCount.get)
+
+      managementCountHolder match {
+        case Full(managementCount) => countQty / managementCount.toDouble
+        case _ => 0
+      }
+    }
+
+    performances match {
+      case Nil => 0
+      case xs => xs.sum / xs.size
+    }
   }
 
   def createMatrix(sheet: WritableSheet) {
@@ -123,20 +150,25 @@ class WorkerPerformanceExcel(year: Int, month: Int, outputStream: OutputStream) 
 
     workers.foreach { worker =>
 
+      
       val performanceOfDates = getWorkerPerformance(worker.id.get.toString)
       val startRow = rowCount
 
-      performanceOfDates.foreach { case(date, performance) =>
+      performanceOfDates.foreach { performance =>
 
+        val (standard, standardPerformance, operationTime) = getStandardPerformance(performance.shiftDate, worker.id.toString)
         
         val workerIDCell = new Label(0, rowCount, worker.workerID.get, centeredTitleFormat)
         val workerNameCell = new Label(1, rowCount, worker.name.get, centeredTitleFormat)
-        val dateCell = new Label(2, rowCount, date, centeredTitleFormat)
-        val standardCell = new Number(3, rowCount, performance.standard, centeredNumberFormat)
-        val standardPerformanceCell = new Number(4, rowCount, performance.standardPerformance, centeredNumberFormat)
+        val dateCell = new Label(2, rowCount, performance.shiftDate, centeredTitleFormat)
+        val standardCell = new Number(3, rowCount, standard, centeredNumberFormat)
+        val standardPerformanceCell = new Number(4, rowCount, standardPerformance, centeredNumberFormat)
         val countQtyCell = new Number(5, rowCount, performance.countQty, centeredNumberFormat)
-        val lockCount = 
-            zhenhaiDB("lock").find(MongoDBObject("shiftDate" -> date, "workerMongoID" -> worker.id.toString)).count
+        val operationTimeCell = new Number(6, rowCount, operationTime, centeredNumberFormat)
+
+        getStandardPerformance(performance.shiftDate, worker.id.toString)
+
+        val lockCount = lockTable.count(MongoDBObject("shiftDate" -> performance.shiftDate, "workerMongoID" -> worker.id.toString))
         val lockTimeCell = new Number(7, rowCount, lockCount * 10, centeredNumberFormat)
 
         val standardLoc = CellReferenceHelper.getCellReference(3, rowCount)
@@ -144,7 +176,7 @@ class WorkerPerformanceExcel(year: Int, month: Int, outputStream: OutputStream) 
         val countQtyLoc = CellReferenceHelper.getCellReference(5, rowCount)
         val kadou = new Formula(8, rowCount, s"$countQtyLoc / $standardLoc", centeredPercentFormat)
         val performancePercent = new Formula(9, rowCount, s"$countQtyLoc / $standardPerformanceLoc", centeredPercentFormat)
-        val averagePerformance = new Number(10, rowCount, getAveragePeformance(worker, date), centeredPercentFormat)
+        val averagePerformance = new Number(10, rowCount, getAveragePeformance(worker.id.toString, performance.shiftDate), centeredPercentFormat)
 
         sheet.addCell(workerIDCell)
         sheet.addCell(workerNameCell)
@@ -152,6 +184,7 @@ class WorkerPerformanceExcel(year: Int, month: Int, outputStream: OutputStream) 
         sheet.addCell(standardCell)
         sheet.addCell(standardPerformanceCell)
         sheet.addCell(countQtyCell)
+        sheet.addCell(operationTimeCell)
         sheet.addCell(lockTimeCell)
 
         sheet.addCell(kadou)
@@ -169,16 +202,31 @@ class WorkerPerformanceExcel(year: Int, month: Int, outputStream: OutputStream) 
       val countQtyFormula = s"SUM(F${startRow+1}:F${rowCount})"
       val countQtyCell = new Formula(5, rowCount, countQtyFormula, centeredNumberFormat)
 
+      val operationTimeFormula = s"SUM(G${startRow+1}:G${rowCount})"
+      val operationTimeCell = new Formula(6, rowCount, operationTimeFormula, centeredNumberFormat)
+      val lockTimeFormula = s"SUM(H${startRow+1}:H${rowCount})"
+      val lockTimeCell = new Formula(7, rowCount, operationTimeFormula, centeredNumberFormat)
+
+      val kadouFormula = s"F${rowCount+1} / D${rowCount+1}"
+      val kadouCell = new Formula(8, rowCount, kadouFormula, centeredPercentFormat)
+
+      val performanceFormula = s"F${rowCount+1} / E${rowCount+1}"
+      val performanceCell = new Formula(9, rowCount, performanceFormula, centeredPercentFormat)
+
+      val averageFormula = s"AVERAGE(K${startRow+1}:K${rowCount})"
+      val averageCell = new Formula(10, rowCount, averageFormula, centeredPercentFormat)
+
       sheet.addCell(titleCell)
       sheet.addCell(new Blank(1, rowCount, centeredTitleFormat))
       sheet.addCell(new Blank(2, rowCount, centeredTitleFormat))
       sheet.addCell(standardCell)
       sheet.addCell(standardPerformanceCell)
       sheet.addCell(countQtyCell)
-      sheet.addCell(new Blank(6, rowCount, centeredTitleFormat))
-      sheet.addCell(new Blank(7, rowCount, centeredTitleFormat))
-      sheet.addCell(new Blank(8, rowCount, centeredTitleFormat))
-      sheet.addCell(new Blank(9, rowCount, centeredTitleFormat))
+      sheet.addCell(operationTimeCell)
+      sheet.addCell(lockTimeCell)
+      sheet.addCell(kadouCell)
+      sheet.addCell(performanceCell)
+      sheet.addCell(averageCell)
 
       rowCount += 1
 
