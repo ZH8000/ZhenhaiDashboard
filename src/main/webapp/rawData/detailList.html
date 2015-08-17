@@ -1,0 +1,31 @@
+<div data-lift="Surround?with=default;at=content">
+  <div class="center aligned one column ui grid">
+    <div class="column">
+      <div class="one column ui grid" data-lift="LazyLoad?template=loading">
+        <div class="column" data-lift="MachineDailyCount.detail">
+
+          <div data-lift="lift:msgs?showAll=true">
+            <lift:error_msg class="ui red sys message"></lift:error_msg>
+            <lift:warning_msg class="ui yellow sys message"></lift:warning_msg>
+            <lift:notice_msg class="ui green sys message"></lift:notice_msg>
+          </div>
+
+          <div class="dataBlock">
+            <table class="ui striped table segment">
+              <thead>
+                <tr>
+                  <th class="ui center aligned">原始資料</th>
+                </tr>
+              </thead>
+              <tbody id="table">
+                <tr class="row">
+                  <td class="rawData ui center aligned">00 11 22</td>
+                </tr>
+              </tbody>
+            </table>
+	  </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

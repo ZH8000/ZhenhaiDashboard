@@ -1,0 +1,39 @@
+<div data-lift="Surround?with=default;at=content">
+  <div class="center aligned one column ui grid">
+    <div class="column">
+      <div class="one column ui page grid" data-lift="LazyLoad?template=loading">
+        <div class="column" data-lift="MachineDailyCount">
+
+          <div data-lift="lift:msgs?showAll=true">
+            <lift:error_msg class="ui red sys message"></lift:error_msg>
+            <lift:warning_msg class="ui yellow sys message"></lift:warning_msg>
+            <lift:notice_msg class="ui green sys message"></lift:notice_msg>
+          </div>
+
+          <div class="dataBlock">
+            <table class="ui celled table segment">
+              <thead>
+                <tr>
+                  <th class="ui center aligned">機台</th>
+                  <th class="ui center aligned">本日累積良品數</th>
+                  <th class="ui center aligned">本日累積事件數</th>
+                  <th class="ui center aligned">最後機台狀態代碼</th>
+                  <th class="ui center aligned">原始資料</th>
+                </tr>
+              </thead>
+              <tbody id="table">
+                <tr class="row">
+                  <td class="machineID ui center aligned">E13</td>
+                  <td class="countQty ui center aligned">1234</td>
+                  <td class="eventQty ui center aligned">5678</td>
+                  <td class="machineStatus ui center aligned">01</td>
+                  <td class="ui center aligned"><a class="rawDataList" href="#">原始詳細資料</a></td>
+                </tr>
+              </tbody>
+            </table>
+	  </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -64,6 +64,9 @@ class Boot
     Menu("DailyMorning") / "excel" / "morning" / * / * >> getTemplate("excel/morning/detail") >> needLogin,
     Menu("WorkerPerformance") / "excel" / "workerPerformance" / * / * >> getTemplate("excel/workerPerformance/detail") >> needLogin,
 
+    Menu("RawData") / "rawData" / * >> getTemplate("rawData/machineList") >> needLogin,
+    Menu("RawData") / "rawData" / * / * >> getTemplate("rawData/detailList") >> needLogin,
+
     Menu("Alert") / "alert" / "index" >> needLogin,
     Menu("Alert") / "alert" / "strangeQty" >> needLogin,
     Menu("Alert") / "alert" / "alertDate" >> needLogin,

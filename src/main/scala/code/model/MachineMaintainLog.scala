@@ -8,6 +8,21 @@ import net.liftweb.mongodb.record.field._
 import net.liftweb.record.field._
 import scala.collection.JavaConversions._
 
+object DailyMachineCount extends DailyMachineCount with MongoMetaRecord[DailyMachineCount] {
+  override def collectionName = "dailyMachineCount"
+}
+
+class DailyMachineCount extends MongoRecord[DailyMachineCount] with ObjectIdPk[DailyMachineCount] {
+  def meta = DailyMachineCount
+
+  val machineID = new StringField(this, 10)
+  val insertDate = new StringField(this, 10)
+  val count_qty = new LongField(this)
+  val event_qty = new LongField(this)
+  val status = new StringField(this, 10)
+}
+
+
 object MachineMaintainLog extends MachineMaintainLog with MongoMetaRecord[MachineMaintainLog] {
   override def collectionName = "machineMaintainLog"
 
