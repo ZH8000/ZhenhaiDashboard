@@ -55,7 +55,8 @@ class Dashboard {
     "#dailyReportButton [href]" #> s"/daily/$currentYear/$currentMonth" &
     "#monthlyExcelReportButton [href]" #> s"/excel/monthly/$currentYear/$currentMonth" &
     "#dailyMorningReportButton [href]" #> s"/excel/morning/$currentYear/$currentMonth" &
-    "#workerPerformanceReportButton [href]" #> s"/excel/workerPerformance/$currentYear/$currentMonth"
+    "#workerPerformanceReportButton [href]" #> s"/excel/workerPerformance/$currentYear/$currentMonth" &
+    "#kadouTableReportButton [href]" #> s"/api/excel/kadou/$currentYear/$currentMonth"
   }
 
   def yearSelector = {

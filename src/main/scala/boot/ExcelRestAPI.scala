@@ -26,6 +26,11 @@ object ExcelRestAPI extends RestHelper {
     excelGenerater.outputExcel()
   }
 
+  def gnerateKadouExcel(year: Int, month: Int)(outputStream: OutputStream) = {
+    val excelGenerater = new KadouExcel(year, month, outputStream)
+    excelGenerater.outputExcel()
+  }
+
 
   serve("api" / "excel" / "workerPerformance" prefix {
     case AsInt(year) :: AsInt(month) :: Nil Get req => 
@@ -40,6 +45,11 @@ object ExcelRestAPI extends RestHelper {
   serve("api" / "excel" / "morning" prefix {
     case AsInt(year) :: AsInt(month) :: Nil Get req => 
       OutputStreamResponse(gnerateMorningExcel(year, month)_, List("Content-Type" -> "application/vnd.ms-excel"))
+  })
+
+  serve("api" / "excel" / "kadou" prefix {
+    case AsInt(year) :: AsInt(month) :: Nil Get req => 
+      OutputStreamResponse(gnerateKadouExcel(year, month)_, List("Content-Type" -> "application/vnd.ms-excel"))
   })
 
 }
