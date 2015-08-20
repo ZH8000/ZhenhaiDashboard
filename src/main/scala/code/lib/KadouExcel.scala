@@ -102,20 +102,11 @@ class KadouExcel(year: Int, month: Int, outputStream: OutputStream) {
     sheet.mergeCells(0, 0, 5, 0)
   }
 
-  case class OrderAndPart(lotNo: String, partNo: String)
-
-  def getWorkQty(orderAndPart: OrderAndPart): Long = {
-    val workQtyList = workQty.find(
-      MongoDBObject(
-        "lotNo" -> orderAndPart.lotNo,
-        "partNo" -> orderAndPart.partNo
-      )
-    )
-
-    workQtyList.map(_.get("workQty").toString.toLong).toList.headOption.getOrElse(0)
+  def getKadouRate(date: String, step: Int, countQty: Long): Option[Double] = {
+    KadouExcelSaved.get(date, step).map { workQty => countQty / workQty.toDouble }
   }
 
-  def getData(sheet: WritableSheet, date: Int): (Double, Double, Double, Double, Double) = {
+  def getData(sheet: WritableSheet, date: Int) = {
     val shiftDate = f"$year-$month%02d-$date%02d"
     val step1 = operationTime.find(
       MongoDBObject(
@@ -152,41 +143,19 @@ class KadouExcel(year: Int, month: Int, outputStream: OutputStream) {
       )
     ).toList.filter(x => x.get("machineID").toString.startsWith("C"))
 
-    println("step4:" + step4)
-    println("step5:" + step5)
-
     val step1Count = step1.map(x => x.get("countQty").toString.toLong).sum
     val step2Count = step2.map(x => x.get("countQty").toString.toLong).sum
     val step3Count = step3.map(x => x.get("countQty").toString.toLong).sum
     val step4Count = step4.map(x => x.get("countQty").toString.toLong).sum
     val step5Count = step5.map(x => x.get("countQty").toString.toLong).sum
 
-    val step1Orders = step1.map(x => OrderAndPart(x.get("lotNo").toString, x.get("partNo").toString)).toSet
-    val step2Orders = step2.map(x => OrderAndPart(x.get("lotNo").toString, x.get("partNo").toString)).toSet
-    val step3Orders = step3.map(x => OrderAndPart(x.get("lotNo").toString, x.get("partNo").toString)).toSet
-    val step4Orders = step4.map(x => OrderAndPart(x.get("lotNo").toString, x.get("partNo").toString)).toSet
-    val step5Orders = step5.map(x => OrderAndPart(x.get("lotNo").toString, x.get("partNo").toString)).toSet
+    val step1Kadou = getKadouRate(shiftDate, 1, step1Count)
+    val step2Kadou = getKadouRate(shiftDate, 2, step2Count)
+    val step3Kadou = getKadouRate(shiftDate, 3, step3Count)
+    val step4Kadou = getKadouRate(shiftDate, 4, step4Count)
+    val step5Kadou = getKadouRate(shiftDate, 5, step5Count)
 
-    val step1WorkQty = step1Orders.map(getWorkQty).sum
-    val step2WorkQty = step2Orders.map(getWorkQty).sum
-    val step3WorkQty = step3Orders.map(getWorkQty).sum
-    val step4WorkQty = step4Orders.map(getWorkQty).sum
-    val step5WorkQty = step5Orders.map(getWorkQty).sum
-
-    val step1Average = step1Count / step1WorkQty.toDouble
-    val step2Average = step2Count / step2WorkQty.toDouble
-    val step3Average = step3Count / step3WorkQty.toDouble
-    val step4Average = step4Count / step4WorkQty.toDouble
-    val step5Average = step5Count / step5WorkQty.toDouble
-
-    println(s"$date: $step1Count / $step2Count / $step3Count / $step4Count / $step5Count")
-    println(s"$date: $step1WorkQty")
-    println(s"$date: $step2WorkQty")
-    println(s"$date: $step3WorkQty")
-    println(s"$date: $step4WorkQty")
-    println(s"$date: $step5WorkQty")
-
-    (step1Average, step2Average, step3Average, step4Average, step5Average)
+    (step1Kadou, step2Kadou, step3Kadou, step4Kadou, step5Kadou)
   }
 
   def createMatrix(sheet: WritableSheet) {
@@ -203,29 +172,31 @@ class KadouExcel(year: Int, month: Int, outputStream: OutputStream) {
       val step5TargetTitle = new Label(10, rowOffset + date, "85.00", centeredTitleFormat)
       val step6TargetTitle = new Label(11, rowOffset + date, "85.00", centeredTitleFormat)
 
-      val (step1Avg, step2Avg, step3Avg, step4Avg, step5Avg) = getData(sheet, date)
+      val (step1Kadou, step2Kadou, step3Kadou, step4Kadou, step5Kadou) = getData(sheet, date)
 
-      val step1AvgCell = step1Avg.isNaN match {
-        case false => new Number(1, rowOffset + date, step1Avg, centeredPercentFormat)
-        case true  => new Label(1, rowOffset + date, "-", centeredPercentFormat)
-      }
-
-      val step2AvgCell = step2Avg.isNaN match {
-        case false => new Number(2, rowOffset + date, step2Avg, centeredPercentFormat)
-        case true  => new Label(2, rowOffset + date, "-", centeredPercentFormat)
+      val step1KadouCell = step1Kadou match {
+        case Some(value) => new Number(1, rowOffset + date, value, centeredPercentFormat)
+        case None  => new Label(1, rowOffset + date, "請先設定製造應生產數", centeredPercentFormat)
       }
 
-      val step3AvgCell = step3Avg.isNaN match {
-        case false => new Number(3, rowOffset + date, step3Avg, centeredPercentFormat)
-        case true  => new Label(3, rowOffset + date, "-", centeredPercentFormat)
+      val step2KadouCell = step2Kadou match {
+        case Some(value) => new Number(2, rowOffset + date, value, centeredPercentFormat)
+        case None  => new Label(2, rowOffset + date, "請先設定製造應生產數", centeredPercentFormat)
       }
-      val step4AvgCell = step4Avg.isNaN match {
-        case false => new Number(4, rowOffset + date, step4Avg, centeredPercentFormat)
-        case true  => new Label(4, rowOffset + date, "-", centeredPercentFormat)
+
+      val step3KadouCell = step3Kadou match {
+        case Some(value) => new Number(3, rowOffset + date, value, centeredPercentFormat)
+        case None  => new Label(3, rowOffset + date, "請先設定製造應生產數", centeredPercentFormat)
       }
-      val step5AvgCell = step5Avg.isNaN match {
-        case false => new Number(5, rowOffset + date, step5Avg, centeredPercentFormat)
-        case true  => new Label(5, rowOffset + date, "-", centeredPercentFormat)
+
+      val step4KadouCell = step4Kadou match {
+        case Some(value) => new Number(4, rowOffset + date, value, centeredPercentFormat)
+        case None  => new Label(4, rowOffset + date, "請先設定製造應生產數", centeredPercentFormat)
+      }
+
+      val step5KadouCell = step5Kadou match {
+        case Some(value) => new Number(5, rowOffset + date, value, centeredPercentFormat)
+        case None  => new Label(5, rowOffset + date, "請先設定製造應生產數", centeredPercentFormat)
       }
 
       sheet.addCell(dateTitle)
@@ -236,12 +207,11 @@ class KadouExcel(year: Int, month: Int, outputStream: OutputStream) {
       sheet.addCell(step5TargetTitle)
       sheet.addCell(step6TargetTitle)
 
-      sheet.addCell(step1AvgCell)
-      sheet.addCell(step2AvgCell)
-      sheet.addCell(step3AvgCell)
-      sheet.addCell(step4AvgCell)
-      sheet.addCell(step5AvgCell)
-
+      sheet.addCell(step1KadouCell)
+      sheet.addCell(step2KadouCell)
+      sheet.addCell(step3KadouCell)
+      sheet.addCell(step4KadouCell)
+      sheet.addCell(step5KadouCell)
     }
   }
 

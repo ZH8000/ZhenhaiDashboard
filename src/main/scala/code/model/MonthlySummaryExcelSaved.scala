@@ -40,3 +40,30 @@ class MonthlySummaryExcelSaved extends MongoRecord[MonthlySummaryExcelSaved] wit
   val value = new LongField(this)
 }
 
+object KadouExcelSaved extends KadouExcelSaved with MongoMetaRecord[KadouExcelSaved] {
+  override def collectionName = "kadouExcelSaved"
+
+  def updateValue(date: String, step: Int, value: Long): Box[KadouExcelSaved] = {
+    val dataRow = this.find(("date" -> date) ~ ("step" -> step))
+    val updatedRow = dataRow match {
+      case Full(data) => data.value(value)
+      case _ => KadouExcelSaved.createRecord.date(date).step(step).value(value)
+    }
+    updatedRow.saveTheRecord()
+  }
+
+  def get(date: String, step: Int): Option[Long] = {
+    val dataRow = this.find(("date" -> date) ~ ("step" -> step))
+    dataRow.map(_.value.get)
+  }
+
+}
+
+class KadouExcelSaved extends MongoRecord[KadouExcelSaved] with ObjectIdPk[KadouExcelSaved] {
+  def meta = KadouExcelSaved
+
+  val date  = new StringField(this, 10)
+  val step  = new LongField(this)
+  val value = new LongField(this)
+
+}

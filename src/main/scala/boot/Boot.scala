@@ -63,6 +63,7 @@ class Boot
     Menu("ExcelMonthlyDetail") / "excel" / "monthly" / * / * / * >> getTemplate("excel/monthly/detail") >> needLogin,
     Menu("DailyMorning") / "excel" / "morning" / * / * >> getTemplate("excel/morning/detail") >> needLogin,
     Menu("WorkerPerformance") / "excel" / "workerPerformance" / * / * >> getTemplate("excel/workerPerformance/detail") >> needLogin,
+    Menu("Kadou") / "excel" / "kadou" / * / * >> getTemplate("excel/kadou/detail") >> needLogin,
 
     Menu("RawData") / "rawData" / * >> getTemplate("rawData/machineList") >> needLogin,
     Menu("RawData") / "rawData" / * / * >> getTemplate("rawData/detailList") >> needLogin,

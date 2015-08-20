@@ -1,0 +1,49 @@
+<div data-lift="Surround?with=default;at=content">
+  <div class="ui one column grid" data-lift="KadouExcel.detail">
+    <div class="center aligned column">
+      <div class="ui two steps">
+        <a href="/excel/kadou/" class="ui step active">總覽</a>
+        <a href="#" class="ui step active" id="currentYearMonth">2015-06</a>
+      </div>
+    </div>
+    <div class="center aligned column">
+      <a href="#" class="ui icon huge teal button" id="downloadExcel">
+        <i class="huge lightning icon"></i>
+        <div class="marginTop">開啟完整 Excel 報表</div>
+      </a>
+    </div>
+  </div>
+  <div class="ui one column grid">
+    <div class="column">
+      <table class="ui celled table"id="dataTable" data-lift="KadouExcel.table">
+        <thead>
+          <tr>
+            <th class="ui center aligned"></th>
+            <th class="ui center aligned" colspan="6">製造應生產量設定</th>
+          </tr>
+          <tr>
+            <th class="ui center aligned">日期</th>
+            <th class="ui center aligned">卷取</th>
+            <th class="ui center aligned">組立</th>
+            <th class="ui center aligned">老化</th>
+            <th class="ui center aligned">CUTTING</th>
+            <th class="ui center aligned">TAPPING</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="row">
+            <td class="date ui center aligned">日期</td>
+            <td class="ui center aligned"><input type="text" size="5" class="step1"/></td>
+            <td class="ui center aligned"><input type="text" size="5" class="step2"/></td>
+            <td class="ui center aligned"><input type="text" size="5" class="step3"/></td>
+            <td class="ui center aligned"><input type="text" size="5" class="step4"/></td>
+            <td class="ui center aligned"><input type="text" size="5" class="step5"/></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <script>
+   $('#dataTable').floatThead({scrollingTop: 50});
+  </script>
+</div>
