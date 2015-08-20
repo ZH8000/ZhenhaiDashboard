@@ -112,7 +112,7 @@ class WorkerPerformanceExcel(year: Int, month: Int, outputStream: OutputStream) 
   }
 
   
-  def getAveragePeformance(workerMongoID: String, date: String): Double = {
+  def getAveragePeformance(workerMongoID: String, date: String): Option[Double] = {
     case class OperationTimeWithCount(machineID: String, lotNo: String, partNo: String, productCode: String)
 
     var operationToCount: Map[OperationTimeWithCount, Long] = Map.empty
@@ -134,14 +134,14 @@ class WorkerPerformanceExcel(year: Int, month: Int, outputStream: OutputStream) 
       val managementCountHolder = machinePerformance.map(_.managementCount.get)
 
       managementCountHolder match {
-        case Full(managementCount) => countQty / managementCount.toDouble
-        case _ => 0
+        case Full(managementCount) => Some(countQty / managementCount.toDouble)
+        case _ => None
       }
     }
 
-    performances match {
-      case Nil => 0
-      case xs => xs.sum / xs.size
+    performances.flatten match {
+      case Nil => None
+      case xs => Some(xs.sum / xs.size)
     }
   }
 
@@ -174,9 +174,26 @@ class WorkerPerformanceExcel(year: Int, month: Int, outputStream: OutputStream) 
         val standardLoc = CellReferenceHelper.getCellReference(3, rowCount)
         val standardPerformanceLoc = CellReferenceHelper.getCellReference(4, rowCount)
         val countQtyLoc = CellReferenceHelper.getCellReference(5, rowCount)
-        val kadou = new Formula(8, rowCount, s"$countQtyLoc / $standardLoc", centeredPercentFormat)
-        val performancePercent = new Formula(9, rowCount, s"$countQtyLoc / $standardPerformanceLoc", centeredPercentFormat)
-        val averagePerformance = new Number(10, rowCount, getAveragePeformance(worker.id.toString, performance.shiftDate), centeredPercentFormat)
+        val kadou = {
+          if (standard == 0) {
+            new Label(8, rowCount, "請設定標準量", centeredTitleFormat)
+          } else {
+            new Formula(8, rowCount, s"$countQtyLoc / $standardLoc", centeredPercentFormat)
+          }
+        }
+
+        val performancePercent = {
+          if (standardPerformance == 0) {
+            new Label(9, rowCount, "請設定效率標準量", centeredTitleFormat)
+          } else {
+            new Formula(9, rowCount, s"$countQtyLoc / $standardPerformanceLoc", centeredPercentFormat)
+          }
+        }
+
+        val averagePerformance = getAveragePeformance(worker.id.toString, performance.shiftDate) match {
+          case None => new Label(10, rowCount, "請設定標準量", centeredTitleFormat)
+          case Some(value) => new Number(10, rowCount, value, centeredPercentFormat)
+        }
 
         sheet.addCell(workerIDCell)
         sheet.addCell(workerNameCell)
