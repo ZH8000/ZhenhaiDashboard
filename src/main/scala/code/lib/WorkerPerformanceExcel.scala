@@ -275,7 +275,7 @@ class WorkerPerformanceExcel(year: Int, month: Int, outputStream: OutputStream) 
   def outputExcel() {
 
     val workbook = Workbook.createWorkbook(outputStream)
-    val sheet = workbook.createSheet("abc", 0)
+    val sheet = workbook.createSheet("人員效率", 0)
     val sheetSettings = sheet.getSettings
     sheetSettings.setDefaultRowHeight(400)
     sheetSettings.setDefaultColumnWidth(20)

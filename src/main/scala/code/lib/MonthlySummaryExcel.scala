@@ -227,7 +227,7 @@ class MonthlySummaryExcel(year: Int, month: Int, capacityRange: String, outputSt
   def outputExcel() {
 
     val workbook = Workbook.createWorkbook(outputStream)
-    val sheet = workbook.createSheet("abc", 0)
+    val sheet = workbook.createSheet("重點統計", 0)
     val sheetSettings = sheet.getSettings
     sheetSettings.setDefaultRowHeight(400)
     sheetSettings.setDefaultColumnWidth(10)

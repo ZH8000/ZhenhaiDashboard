@@ -65,8 +65,10 @@ class Boot
     Menu("WorkerPerformance") / "excel" / "workerPerformance" / * / * >> getTemplate("excel/workerPerformance/detail") >> needLogin,
     Menu("Kadou") / "excel" / "kadou" / * / * >> getTemplate("excel/kadou/detail") >> needLogin,
 
-    Menu("RawData") / "rawData" / * >> getTemplate("rawData/machineList") >> needLogin,
-    Menu("RawData") / "rawData" / * / * >> getTemplate("rawData/detailList") >> needLogin,
+    Menu("RawDataMachineList") / "rawData" / * >> getTemplate("rawData/machineList") >> needLogin,
+    Menu("RawDataDetaiList") / "rawData" / * / * >> getTemplate("rawData/detailList") >> needLogin,
+
+    Menu("test") / "machineDefactSummary" / * / * / * / * >> getTemplate("machineDefact/summary") >> needLogin,
 
     Menu("Alert") / "alert" / "index" >> needLogin,
     Menu("Alert") / "alert" / "strangeQty" >> needLogin,
