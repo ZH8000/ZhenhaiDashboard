@@ -102,8 +102,8 @@ class MachineDefactSummary {
       ".area *"         #> area &
       ".standard *"     #> standard.getOrElse("-").toString &
       ".countQty *"     #> countQty &
-      ".okRate *"       #> okRate &
       ".kadou *"        #> kadouRate &
+      ".okRate *"       #> okRate &
       ".shortRate *"    #> shortRate &
       ".stickRate *"    #> stickRate &
       ".tapeRate *"     #> tapeRate &
@@ -112,8 +112,87 @@ class MachineDefactSummary {
     }
   }
 
+  def step2Rows = {
+
+    val dataRow = dataTable.find(
+      MongoDBObject(
+        "insertDate" -> s"$yearString-$monthString-$dateString",
+        "shit" -> shiftTag,
+        "machineType" -> 2
+      )
+    )
+
+    dataRow.toList.map { record =>
+
+      val machineID = record.get("machineID").toString
+      val machineModel = "Model"
+      val standard = MachineLevel.find("machineID", machineID).map(x => x.levelA.get).toOption
+      val product = record.get("product").toString
+      val area = s"${record.get("floor").toString} 樓 ${record.get("area").toString} 區"
+      val countQty = record.get("countQty").toString.toLong
+      val total   = Option(record.get("total")).map(_.toString.toLong)
+      val defactD = Option(record.get("defactD")).map(_.toString.toLong)
+      val white   = Option(record.get("white")).map(_.toString.toLong)
+      val rubber  = Option(record.get("rubber")).map(_.toString.toLong)
+      val shell   = Option(record.get("shell")).map(_.toString.toLong)
+
+      val kadouRate = standard match {
+        case None => "-"
+        case Some(standardValue) => f"${(countQty / standard.getOrElse(0L).toDouble) * 100}%.2f %%"
+      }
+
+      val okRate = total match {
+        case None => "-"
+        case Some(totalValue) => f"${(countQty / totalValue.toDouble) * 100}%.2f %%"
+      }
+
+      val insertRate = total match {
+        case None => "-"
+        case Some(totalValue) =>
+          val rate = ((totalValue - defactD.getOrElse(0L) - white.getOrElse(0L) - countQty) / totalValue.toDouble) - 1
+          f"$rate%.2f %%"
+      }
+
+      val defactDRateHolder = for {
+        totalValue <- total
+        defactDValue <- defactD
+      } yield (defactDValue / totalValue.toDouble)
+
+      val whiteRateHolder = for {
+        totalValue <- total
+        whiteValue <- white
+      } yield (whiteValue / totalValue.toDouble)
+
+      val rubberRate = rubber match {
+        case None => "-"
+        case Some(rubberValue) => f"${((rubberValue / countQty.toDouble) - 1) * 100}%.2f %%"
+      }
+
+      val shellRate = shell match {
+        case None => "-"
+        case Some(shellValue) => f"${((shellValue / countQty.toDouble) - 1) * 100}%.2f %%"
+      }
+
+
+      ".machineID *"    #> machineID &
+      ".machineModel *" #> machineModel &
+      ".product *"      #> product &
+      ".area *"         #> area &
+      ".standard *"     #> standard.getOrElse("-").toString &
+      ".countQty *"     #> countQty &
+      ".kadou *"        #> kadouRate &
+      ".okRate *"       #> okRate &
+      ".insertRate *"   #> insertRate &
+      ".defactDRate *"  #> defactDRateHolder.map(x => f"$x%.2f %%").getOrElse("-") &
+      ".whiteRate *"    #> whiteRateHolder.map(x => f"$x%.2f %%").getOrElse("-") &
+      ".rubberRate *"   #> rubberRate &
+      ".shellRate *"    #> shellRate
+    }
+  }
+
   def render = {
-    ".step1Rows" #> step1Rows
+    ".step1Rows" #> step1Rows &
+    ".step2Rows" #> step2Rows
   }
 
 }
