@@ -10,6 +10,7 @@ import java.util.Date
 import java.util.GregorianCalendar
 import net.liftweb.common._
 import net.liftweb.http.js.JsCmd
+import net.liftweb.http.js.JsCmds._
 import net.liftweb.http.S
 import net.liftweb.http.SHtml
 import net.liftweb.util._
@@ -19,16 +20,35 @@ class MachineDefactSummary {
 
   val Array(_, yearString, monthString, dateString, shiftTag) = S.uri.drop(1).split("/")
   val dataTable = MongoDB.zhenhaiDB(s"defactSummary-$yearString-$monthString")
+  val insertDate = s"$yearString-$monthString-$dateString"
 
-  def step1Rows = {
-
-    val dataRow = dataTable.find(
+  def updatePolicy(insertDate: String, shiftTag: String, machineID: String)(value: String): JsCmd = {
+    val query = 
       MongoDBObject(
         "insertDate" -> s"$yearString-$monthString-$dateString",
         "shit" -> shiftTag,
-        "machineType" -> 1
+        "machineID" -> machineID
       )
-    )
+
+    dataTable.update(query, $set("policy" -> value))
+    Noop
+  }
+
+  def updateFixer(insertDate: String, shiftTag: String, machineID: String)(value: String): JsCmd = {
+    val query = 
+      MongoDBObject(
+        "insertDate" -> s"$yearString-$monthString-$dateString",
+        "shit" -> shiftTag,
+        "machineID" -> machineID
+      )
+
+    dataTable.update(query, $set("fixer" -> value))
+    Noop
+  }
+
+  def step1Rows = {
+
+    val dataRow = dataTable.find(MongoDBObject("insertDate" -> insertDate, "shit" -> shiftTag, "machineType" -> 1))
 
     dataRow.toList.map { record =>
 
@@ -45,7 +65,9 @@ class MachineDefactSummary {
       val plus  = Option(record.get("plus")).map(_.toString.toLong)
       val minus = Option(record.get("minus")).map(_.toString.toLong)
       val total = countQty + short.getOrElse(0L) + stick.getOrElse(0L) + tape.getOrElse(0L) + roll.getOrElse(0L)
-    
+      val policy = Option(record.get("policy")).map(_.toString).getOrElse("")
+      val fixer = Option(record.get("fixer")).map(_.toString).getOrElse("")
+   
       val okRate = total match {
         case 0 => "總數為 0 無法計算"
         case x => f"${((countQty / total.toDouble) * 100)}%.2f" + " %"
@@ -108,7 +130,9 @@ class MachineDefactSummary {
       ".stickRate *"    #> stickRate &
       ".tapeRate *"     #> tapeRate &
       ".plusRate *"     #> plusRate &
-      ".minusRate *"    #> minusRate
+      ".minusRate *"    #> minusRate &
+      ".policy *"       #> SHtml.ajaxText(policy, false, updatePolicy(insertDate, shiftTag, machineID)_) &
+      ".fixer *"        #> SHtml.ajaxText(fixer, false, updateFixer(insertDate, shiftTag, machineID)_)
     }
   }
 
@@ -135,6 +159,8 @@ class MachineDefactSummary {
       val white   = Option(record.get("white")).map(_.toString.toLong)
       val rubber  = Option(record.get("rubber")).map(_.toString.toLong)
       val shell   = Option(record.get("shell")).map(_.toString.toLong)
+      val policy = Option(record.get("policy")).map(_.toString).getOrElse("")
+      val fixer = Option(record.get("fixer")).map(_.toString).getOrElse("")
 
       val kadouRate = standard match {
         case None => "-"
@@ -186,13 +212,151 @@ class MachineDefactSummary {
       ".defactDRate *"  #> defactDRateHolder.map(x => f"$x%.2f %%").getOrElse("-") &
       ".whiteRate *"    #> whiteRateHolder.map(x => f"$x%.2f %%").getOrElse("-") &
       ".rubberRate *"   #> rubberRate &
-      ".shellRate *"    #> shellRate
+      ".shellRate *"    #> shellRate &
+      ".policy *"       #> SHtml.ajaxText(policy, false, updatePolicy(insertDate, shiftTag, machineID)_) &
+      ".fixer *"        #> SHtml.ajaxText(fixer, false, updateFixer(insertDate, shiftTag, machineID)_)
     }
   }
 
+  def step3Rows = {
+
+    val dataRow = dataTable.find(
+      MongoDBObject(
+        "insertDate" -> s"$yearString-$monthString-$dateString",
+        "shit" -> shiftTag,
+        "machineType" -> 3
+      )
+    )
+
+    dataRow.toList.map { record =>
+
+      val machineID = record.get("machineID").toString
+      val machineModel = "Model"
+      val standard = MachineLevel.find("machineID", machineID).map(x => x.levelA.get).toOption
+      val product = record.get("product").toString
+      val area = s"${record.get("floor").toString} 樓 ${record.get("area").toString} 區"
+      val countQty = record.get("countQty").toString.toLong
+      val total   = Option(record.get("total")).map(_.toString.toLong)
+
+      val short     = Option(record.get("short")).map(_.toString.toLong)
+      val open      = Option(record.get("open")).map(_.toString.toLong)
+      val capacity  = Option(record.get("capacity")).map(_.toString.toLong)
+      val lose      = Option(record.get("lose")).map(_.toString.toLong)
+      val lc        = Option(record.get("lc")).map(_.toString.toLong)
+      val retest    = Option(record.get("retest")).map(_.toString.toLong)
+      val policy = Option(record.get("policy")).map(_.toString).getOrElse("")
+      val fixer = Option(record.get("fixer")).map(_.toString).getOrElse("")
+
+      val kadouRate = standard match {
+        case None => "-"
+        case Some(standardValue) => f"${(countQty / standard.getOrElse(0L).toDouble) * 100}%.2f %%"
+      }
+
+      val okRate = total match {
+        case None => "-"
+        case Some(totalValue) => f"${(countQty / totalValue.toDouble) * 100}%.2f %%"
+      }
+
+      val shortHolder = for {
+        totalValue <- total
+        shortValue <- short
+      } yield (shortValue / totalValue.toDouble)
+
+      val openHolder = for {
+        totalValue <- total
+        openValue <- open
+      } yield (openValue / totalValue.toDouble)
+
+      val capacityHolder = for {
+        totalValue <- total
+        capacityValue <- capacity
+      } yield (capacityValue / totalValue.toDouble)
+
+      val loseHolder = for {
+        totalValue <- total
+        loseValue <- lose
+      } yield (loseValue / totalValue.toDouble)
+
+      val lcHolder = for {
+        totalValue <- total
+        lcValue <- lc
+      } yield (lcValue / totalValue.toDouble)
+
+      val retestHolder = for {
+        totalValue <- total
+        retestValue <- retest
+      } yield (retestValue / totalValue.toDouble)
+
+      ".machineID *"    #> machineID &
+      ".machineModel *" #> machineModel &
+      ".product *"      #> product &
+      ".area *"         #> area &
+      ".standard *"     #> standard.getOrElse("-").toString &
+      ".countQty *"     #> countQty &
+      ".kadou *"        #> kadouRate &
+      ".okRate *"       #> okRate &
+      ".shortRate *"    #> shortHolder.map(x => f"$x%.2f %%").getOrElse("-") &
+      ".openRate *"     #> openHolder.map(x => f"$x%.2f %%").getOrElse("-") &
+      ".capacityRate *" #> capacityHolder.map(x => f"$x%.2f %%").getOrElse("-") &
+      ".loseRate *"     #> loseHolder.map(x => f"$x%.2f %%").getOrElse("-") &
+      ".lcRate *"       #> lcHolder.map(x => f"$x%.2f %%").getOrElse("-") &
+      ".retestRate *"   #> retestHolder.map(x => f"$x%.2f %%").getOrElse("-") &
+      ".policy *"       #> SHtml.ajaxText(policy, false, updatePolicy(insertDate, shiftTag, machineID)_) &
+      ".fixer *"        #> SHtml.ajaxText(fixer, false, updateFixer(insertDate, shiftTag, machineID)_)
+    }
+  }
+
+  def step5Rows(prefix: String) = {
+
+    val dataRow = dataTable.find(
+      MongoDBObject(
+        "insertDate" -> s"$yearString-$monthString-$dateString",
+        "shit" -> shiftTag,
+        "machineType" -> 5
+      )
+    ).toList.filter(x => x.get("machineID").toString.startsWith(prefix))
+
+    dataRow.map { record =>
+      val machineID = record.get("machineID").toString
+      val machineModel = "Model"
+      val standard = MachineLevel.find("machineID", machineID).map(x => x.levelA.get).toOption
+      val product = record.get("product").toString
+      val area = s"${record.get("floor").toString} 樓 ${record.get("area").toString} 區"
+      val countQty = record.get("countQty").toString.toLong
+      val total   = Option(record.get("total")).map(_.toString.toLong)
+      val policy = Option(record.get("policy")).map(_.toString).getOrElse("")
+      val fixer = Option(record.get("fixer")).map(_.toString).getOrElse("")
+
+      val kadouRate = standard match {
+        case None => "-"
+        case Some(standardValue) => f"${(countQty / standard.getOrElse(0L).toDouble) * 100}%.2f %%"
+      }
+
+      val okRate = total match {
+        case None => "-"
+        case Some(totalValue) => f"${(countQty / totalValue.toDouble) * 100}%.2f %%"
+      }
+
+      ".machineID *"    #> machineID &
+      ".machineModel *" #> machineModel &
+      ".product *"      #> product &
+      ".area *"         #> area &
+      ".standard *"     #> standard.getOrElse("-").toString &
+      ".countQty *"     #> countQty &
+      ".kadou *"        #> kadouRate &
+      ".okRate *"       #> okRate &
+      ".policy *"       #> SHtml.ajaxText(policy, false, updatePolicy(insertDate, shiftTag, machineID)_) &
+      ".fixer *"        #> SHtml.ajaxText(fixer, false, updateFixer(insertDate, shiftTag, machineID)_)
+    }
+  }
+
+
   def render = {
     ".step1Rows" #> step1Rows &
-    ".step2Rows" #> step2Rows
+    ".step2Rows" #> step2Rows &
+    ".step3Rows" #> step3Rows &
+    ".step5Rows-1" #> step5Rows("T") &
+    ".step5Rows-2" #> step5Rows("C")
   }
 
 }
