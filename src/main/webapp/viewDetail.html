@@ -1,7 +1,7 @@
 <div data-lift="Surround?with=default;at=content">
   <div class="ui one column grid" data-lift="Dashboard.reportLink">
     <div class="column">
-      <div class="center aligned four column ui stackable page grid">
+      <div class="center aligned three column ui stackable page grid">
         <div class="column">
           <a href="/total" class="ui icon huge teal button">
             <i class="huge cubes icon"></i>
@@ -73,6 +73,16 @@
             請選擇月份：<input type="text" id="kadouTableMonthPicker" size="10"/>
           </div>
         </div>
+        <div class="column">
+          <a href="#" class="ui icon huge teal button" id="machineDefactButton">
+            <i class="huge bug icon"></i>
+            <div style="margin-top: 0.5em">生產狀況</div>
+          </a>
+          <div style="margin-top: 1em">
+            請選擇日期：<input type="text" id="machineDefactDatePicker" size="10"/>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -89,6 +99,12 @@
       setupMonthChooser("#morningMonthPicker", $("#maxYear").val(), $("#maxMonth").val(), $("#minYear").val(), $("#minMonth").val(), "/excel/morning");
       setupMonthChooser("#workerPerformanceMonthPicker", $("#maxYear").val(), $("#maxMonth").val(), $("#minYear").val(), $("#minMonth").val(), "/excel/workerPerformance");
       setupMonthChooser("#kadouTableMonthPicker", $("#maxYear").val(), $("#maxMonth").val(), $("#minYear").val(), $("#minMonth").val(), "/excel/kadou");
+      $( "#machineDefactDatePicker" ).datepicker({
+        dateFormat: "yy-mm-dd",
+        onSelect: function(dateText, inst) {
+          window.location = "/machineDefactSummary/" + dateText.split("-").join("/");
+        }
+      });
 
 
     </script>

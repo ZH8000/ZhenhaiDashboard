@@ -68,7 +68,8 @@ class Boot
     Menu("RawDataMachineList") / "rawData" / * >> getTemplate("rawData/machineList") >> needLogin,
     Menu("RawDataDetaiList") / "rawData" / * / * >> getTemplate("rawData/detailList") >> needLogin,
 
-    Menu("test") / "machineDefactSummary" / * / * / * / * >> getTemplate("machineDefact/summary") >> needLogin,
+    Menu("DefactSummaryDetail") / "machineDefactSummary" / * / * / * / * >> getTemplate("machineDefact/summary") >> needLogin,
+    Menu("DefactSummaryIndex") / "machineDefactSummary" / * / * / * >> getTemplate("machineDefact/index") >> needLogin,
 
     Menu("Alert") / "alert" / "index" >> needLogin,
     Menu("Alert") / "alert" / "strangeQty" >> needLogin,

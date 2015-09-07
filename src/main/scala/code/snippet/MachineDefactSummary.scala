@@ -18,15 +18,63 @@ import net.liftweb.util.Helpers._
 
 class MachineDefactSummary {
 
-  val Array(_, yearString, monthString, dateString, shiftTag) = S.uri.drop(1).split("/")
+  val Array(_, yearString, monthString, dateString, _*) = S.uri.drop(1).split("/")
+
   val dataTable = MongoDB.zhenhaiDB(s"defactSummary-$yearString-$monthString")
   val insertDate = s"$yearString-$monthString-$dateString"
+
+  def getSteps(uri: List[String]) = uri match {
+
+    case "machineDefactSummary" :: year :: month :: date :: Nil =>
+
+      List(
+        Step("總覽", true, Some(s"/viewDetail")),
+        Step(f"$year-$month-$date", true, Some(f"/machineDefactSummary/$year-$month-$date")),
+        Step("班別"),
+        Step("分類")
+      )
+
+      
+    case "machineDefactSummary" :: year :: month :: date :: shift :: Nil =>
+
+      val shiftTitle = shift match {
+        case "M" => "早班"
+        case "N" => "晚班"
+        case _   => "Unknown"
+      }
+
+      List(
+        Step("總覽", true, Some(s"/viewDetail")),
+        Step(f"$year-$month-$date", true, Some(f"/machineDefactSummary/$year-$month-$date")),
+        Step(shiftTitle),
+        Step("分類")
+      )
+
+    case _ => Nil
+  }
+
+  def showStepsSelector = {
+    val steps = getSteps(S.uri.drop(1).split("/").toList)
+
+    ".step" #> steps.map { step => 
+      "a [href]" #> step.link &
+      "a *" #> step.title &
+      "a [class+]" #> (if (step.isActive) "active" else "")
+    }
+
+  }
+
+  def shiftLink = {
+
+    "#morningShift [href]" #> s"/machineDefactSummary/$yearString/$monthString/$dateString/M" &
+    "#nightShift [href]" #> s"/machineDefactSummary/$yearString/$monthString/$dateString/N"
+  }
 
   def updatePolicy(insertDate: String, shiftTag: String, machineID: String)(value: String): JsCmd = {
     val query = 
       MongoDBObject(
         "insertDate" -> s"$yearString-$monthString-$dateString",
-        "shit" -> shiftTag,
+        "shift" -> shiftTag,
         "machineID" -> machineID
       )
 
@@ -38,7 +86,7 @@ class MachineDefactSummary {
     val query = 
       MongoDBObject(
         "insertDate" -> s"$yearString-$monthString-$dateString",
-        "shit" -> shiftTag,
+        "shift" -> shiftTag,
         "machineID" -> machineID
       )
 
@@ -46,14 +94,14 @@ class MachineDefactSummary {
     Noop
   }
 
-  def step1Rows = {
+  def step1Rows(shiftTag: String) = {
 
-    val dataRow = dataTable.find(MongoDBObject("insertDate" -> insertDate, "shit" -> shiftTag, "machineType" -> 1))
+    val dataRow = dataTable.find(MongoDBObject("insertDate" -> insertDate, "shift" -> shiftTag, "machineType" -> 1))
 
     dataRow.toList.map { record =>
 
       val machineID = record.get("machineID").toString
-      val machineModel = "Model"
+      val machineModel = record.get("machineModel").toString
       val standard = MachineLevel.find("machineID", machineID).map(x => x.levelA.get).toOption
       val product = record.get("product").toString
       val area = s"${record.get("floor").toString} 樓 ${record.get("area").toString} 區"
@@ -136,12 +184,12 @@ class MachineDefactSummary {
     }
   }
 
-  def step2Rows = {
+  def step2Rows(shiftTag: String) = {
 
     val dataRow = dataTable.find(
       MongoDBObject(
         "insertDate" -> s"$yearString-$monthString-$dateString",
-        "shit" -> shiftTag,
+        "shift" -> shiftTag,
         "machineType" -> 2
       )
     )
@@ -149,7 +197,7 @@ class MachineDefactSummary {
     dataRow.toList.map { record =>
 
       val machineID = record.get("machineID").toString
-      val machineModel = "Model"
+      val machineModel = record.get("machineModel").toString
       val standard = MachineLevel.find("machineID", machineID).map(x => x.levelA.get).toOption
       val product = record.get("product").toString
       val area = s"${record.get("floor").toString} 樓 ${record.get("area").toString} 區"
@@ -218,12 +266,12 @@ class MachineDefactSummary {
     }
   }
 
-  def step3Rows = {
+  def step3Rows(shiftTag: String) = {
 
     val dataRow = dataTable.find(
       MongoDBObject(
         "insertDate" -> s"$yearString-$monthString-$dateString",
-        "shit" -> shiftTag,
+        "shift" -> shiftTag,
         "machineType" -> 3
       )
     )
@@ -231,7 +279,7 @@ class MachineDefactSummary {
     dataRow.toList.map { record =>
 
       val machineID = record.get("machineID").toString
-      val machineModel = "Model"
+      val machineModel = record.get("machineModel").toString
       val standard = MachineLevel.find("machineID", machineID).map(x => x.levelA.get).toOption
       val product = record.get("product").toString
       val area = s"${record.get("floor").toString} 樓 ${record.get("area").toString} 區"
@@ -306,19 +354,19 @@ class MachineDefactSummary {
     }
   }
 
-  def step5Rows(prefix: String) = {
+  def step5Rows(shiftTag: String, prefix: String) = {
 
     val dataRow = dataTable.find(
       MongoDBObject(
         "insertDate" -> s"$yearString-$monthString-$dateString",
-        "shit" -> shiftTag,
+        "shift" -> shiftTag,
         "machineType" -> 5
       )
     ).toList.filter(x => x.get("machineID").toString.startsWith(prefix))
 
     dataRow.map { record =>
       val machineID = record.get("machineID").toString
-      val machineModel = "Model"
+      val machineModel = record.get("machineModel").toString
       val standard = MachineLevel.find("machineID", machineID).map(x => x.levelA.get).toOption
       val product = record.get("product").toString
       val area = s"${record.get("floor").toString} 樓 ${record.get("area").toString} 區"
@@ -352,11 +400,14 @@ class MachineDefactSummary {
 
 
   def render = {
-    ".step1Rows" #> step1Rows &
-    ".step2Rows" #> step2Rows &
-    ".step3Rows" #> step3Rows &
-    ".step5Rows-1" #> step5Rows("T") &
-    ".step5Rows-2" #> step5Rows("C")
+
+    val Array(_, yearString, monthString, dateString, shiftTag) = S.uri.drop(1).split("/")
+
+    ".step1Rows" #> step1Rows(shiftTag) &
+    ".step2Rows" #> step2Rows(shiftTag) &
+    ".step3Rows" #> step3Rows(shiftTag) &
+    ".step5Rows-1" #> step5Rows(shiftTag, "T") &
+    ".step5Rows-2" #> step5Rows(shiftTag, "C")
   }
 
 }

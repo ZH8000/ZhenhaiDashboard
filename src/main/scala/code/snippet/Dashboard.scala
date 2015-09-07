@@ -50,13 +50,15 @@ class Dashboard {
     val calendar = Calendar.getInstance
     val currentYear = calendar.get(Calendar.YEAR)
     val currentMonth = calendar.get(Calendar.MONTH) + 1
+    val currentDate = calendar.get(Calendar.DATE)
 
     "#monthlyReportButton [href]" #> s"/monthly/$currentYear" &
     "#dailyReportButton [href]" #> s"/daily/$currentYear/$currentMonth" &
     "#monthlyExcelReportButton [href]" #> s"/excel/monthly/$currentYear/$currentMonth" &
     "#dailyMorningReportButton [href]" #> s"/excel/morning/$currentYear/$currentMonth" &
     "#workerPerformanceReportButton [href]" #> s"/excel/workerPerformance/$currentYear/$currentMonth" &
-    "#kadouTableReportButton [href]" #> s"/excel/kadou/$currentYear/$currentMonth"
+    "#kadouTableReportButton [href]" #> s"/excel/kadou/$currentYear/$currentMonth" &
+    "#machineDefactButton [href]" #> f"/machineDefactSummary/$currentYear/$currentMonth%02d/$currentDate%02d"
   }
 
   def yearSelector = {
