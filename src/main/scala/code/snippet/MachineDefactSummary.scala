@@ -21,7 +21,7 @@ class MachineDefactSummary {
   val Array(_, yearString, monthString, dateString, _*) = S.uri.drop(1).split("/")
 
   val dataTable = MongoDB.zhenhaiDB(s"defactSummary-$yearString-$monthString")
-  val insertDate = s"$yearString-$monthString-$dateString"
+  val shiftDate = s"$yearString-$monthString-$dateString"
 
   def getSteps(uri: List[String]) = uri match {
 
@@ -46,9 +46,32 @@ class MachineDefactSummary {
       List(
         Step("總覽", true, Some(s"/viewDetail")),
         Step(f"$year-$month-$date", true, Some(f"/machineDefactSummary/$year-$month-$date")),
-        Step(shiftTitle),
+        Step(shiftTitle, true),
         Step("分類")
       )
+
+    case "machineDefactSummary" :: year :: month :: date :: shift :: sort :: Nil =>
+
+      val shiftTitle = shift match {
+        case "M" => "早班"
+        case "N" => "晚班"
+        case _   => "Unknown"
+      }
+
+      val sortTitle = sort match {
+        case "model" => "依機種排序"
+        case "size"  => "依尺寸排序"
+        case "area"  => "依區域排序"
+        case _   => "Unknown"
+      }
+
+      List(
+        Step("總覽", true, Some(s"/viewDetail")),
+        Step(f"$year-$month-$date", true, Some(f"/machineDefactSummary/$year-$month-$date")),
+        Step(shiftTitle, true),
+        Step(sortTitle, true)
+      )
+
 
     case _ => Nil
   }
@@ -70,10 +93,19 @@ class MachineDefactSummary {
     "#nightShift [href]" #> s"/machineDefactSummary/$yearString/$monthString/$dateString/N"
   }
 
-  def updatePolicy(insertDate: String, shiftTag: String, machineID: String)(value: String): JsCmd = {
+  def sortLink = {
+
+    val Array(_, yearString, monthString, dateString, shiftLink) = S.uri.drop(1).split("/")
+
+    "#sortByModel [href]" #> s"/machineDefactSummary/$yearString/$monthString/$dateString/$shiftLink/model" &
+    "#sortBySize [href]" #> s"/machineDefactSummary/$yearString/$monthString/$dateString/$shiftLink/size" &
+    "#sortByArea [href]" #> s"/machineDefactSummary/$yearString/$monthString/$dateString/$shiftLink/area"
+  }
+
+  def updatePolicy(shiftDate: String, shiftTag: String, machineID: String)(value: String): JsCmd = {
     val query = 
       MongoDBObject(
-        "insertDate" -> s"$yearString-$monthString-$dateString",
+        "shiftDate" -> s"$yearString-$monthString-$dateString",
         "shift" -> shiftTag,
         "machineID" -> machineID
       )
@@ -82,10 +114,10 @@ class MachineDefactSummary {
     Noop
   }
 
-  def updateFixer(insertDate: String, shiftTag: String, machineID: String)(value: String): JsCmd = {
+  def updateFixer(shiftDate: String, shiftTag: String, machineID: String)(value: String): JsCmd = {
     val query = 
       MongoDBObject(
-        "insertDate" -> s"$yearString-$monthString-$dateString",
+        "shiftDate" -> s"$yearString-$monthString-$dateString",
         "shift" -> shiftTag,
         "machineID" -> machineID
       )
@@ -94,11 +126,24 @@ class MachineDefactSummary {
     Noop
   }
 
-  def step1Rows(shiftTag: String) = {
+  def sortData(dataRow: List[DBObject], sortTag: String) = {
+    sortTag match {
+      case "model" => dataRow.sortWith((x, y) => x.get("machineModel").toString < y.get("machineModel").toString)
+      case "size"  => dataRow.sortWith((x, y) => x.get("product").toString < y.get("product").toString)
+      case "area"  => dataRow.sortWith { case (x, y) => 
+        s"${x.get("floor").toString} 樓 ${x.get("area").toString} 區"  < 
+        s"${y.get("floor").toString} 樓 ${y.get("area").toString} 區"
+      }
+      case _ => dataRow
+    }
+  }
 
-    val dataRow = dataTable.find(MongoDBObject("insertDate" -> insertDate, "shift" -> shiftTag, "machineType" -> 1))
+  def step1Rows(shiftTag: String, sortTag: String) = {
 
-    dataRow.toList.map { record =>
+    val dataRow = dataTable.find(MongoDBObject("shiftDate" -> shiftDate, "shift" -> shiftTag, "machineType" -> 1)).toList
+    val sortedData = sortData(dataRow, sortTag)
+
+    sortedData.map { record =>
 
       val machineID = record.get("machineID").toString
       val machineModel = record.get("machineModel").toString
@@ -179,22 +224,24 @@ class MachineDefactSummary {
       ".tapeRate *"     #> tapeRate &
       ".plusRate *"     #> plusRate &
       ".minusRate *"    #> minusRate &
-      ".policy *"       #> SHtml.ajaxText(policy, false, updatePolicy(insertDate, shiftTag, machineID)_) &
-      ".fixer *"        #> SHtml.ajaxText(fixer, false, updateFixer(insertDate, shiftTag, machineID)_)
+      ".policy *"       #> SHtml.ajaxText(policy, false, updatePolicy(shiftDate, shiftTag, machineID)_) &
+      ".fixer *"        #> SHtml.ajaxText(fixer, false, updateFixer(shiftDate, shiftTag, machineID)_)
     }
   }
 
-  def step2Rows(shiftTag: String) = {
+  def step2Rows(shiftTag: String, sortTag: String) = {
 
     val dataRow = dataTable.find(
       MongoDBObject(
-        "insertDate" -> s"$yearString-$monthString-$dateString",
+        "shiftDate" -> s"$yearString-$monthString-$dateString",
         "shift" -> shiftTag,
         "machineType" -> 2
       )
-    )
+    ).toList
 
-    dataRow.toList.map { record =>
+    val sortedData = sortData(dataRow, sortTag)
+
+    sortedData.map { record =>
 
       val machineID = record.get("machineID").toString
       val machineModel = record.get("machineModel").toString
@@ -261,22 +308,24 @@ class MachineDefactSummary {
       ".whiteRate *"    #> whiteRateHolder.map(x => f"$x%.2f %%").getOrElse("-") &
       ".rubberRate *"   #> rubberRate &
       ".shellRate *"    #> shellRate &
-      ".policy *"       #> SHtml.ajaxText(policy, false, updatePolicy(insertDate, shiftTag, machineID)_) &
-      ".fixer *"        #> SHtml.ajaxText(fixer, false, updateFixer(insertDate, shiftTag, machineID)_)
+      ".policy *"       #> SHtml.ajaxText(policy, false, updatePolicy(shiftDate, shiftTag, machineID)_) &
+      ".fixer *"        #> SHtml.ajaxText(fixer, false, updateFixer(shiftDate, shiftTag, machineID)_)
     }
   }
 
-  def step3Rows(shiftTag: String) = {
+  def step3Rows(shiftTag: String, sortTag: String) = {
 
     val dataRow = dataTable.find(
       MongoDBObject(
-        "insertDate" -> s"$yearString-$monthString-$dateString",
+        "shiftDate" -> s"$yearString-$monthString-$dateString",
         "shift" -> shiftTag,
         "machineType" -> 3
       )
-    )
+    ).toList
 
-    dataRow.toList.map { record =>
+    val sortedData = sortData(dataRow, sortTag)
+
+    sortedData.map { record =>
 
       val machineID = record.get("machineID").toString
       val machineModel = record.get("machineModel").toString
@@ -349,22 +398,25 @@ class MachineDefactSummary {
       ".loseRate *"     #> loseHolder.map(x => f"$x%.2f %%").getOrElse("-") &
       ".lcRate *"       #> lcHolder.map(x => f"$x%.2f %%").getOrElse("-") &
       ".retestRate *"   #> retestHolder.map(x => f"$x%.2f %%").getOrElse("-") &
-      ".policy *"       #> SHtml.ajaxText(policy, false, updatePolicy(insertDate, shiftTag, machineID)_) &
-      ".fixer *"        #> SHtml.ajaxText(fixer, false, updateFixer(insertDate, shiftTag, machineID)_)
+      ".policy *"       #> SHtml.ajaxText(policy, false, updatePolicy(shiftDate, shiftTag, machineID)_) &
+      ".fixer *"        #> SHtml.ajaxText(fixer, false, updateFixer(shiftDate, shiftTag, machineID)_)
     }
   }
 
-  def step5Rows(shiftTag: String, prefix: String) = {
+  def step5Rows(shiftTag: String, sortTag: String, prefix: String) = {
 
     val dataRow = dataTable.find(
       MongoDBObject(
-        "insertDate" -> s"$yearString-$monthString-$dateString",
+        "shiftDate" -> s"$yearString-$monthString-$dateString",
         "shift" -> shiftTag,
         "machineType" -> 5
       )
     ).toList.filter(x => x.get("machineID").toString.startsWith(prefix))
 
-    dataRow.map { record =>
+    val sortedData = sortData(dataRow, sortTag)
+
+    sortedData.map { record =>
+
       val machineID = record.get("machineID").toString
       val machineModel = record.get("machineModel").toString
       val standard = MachineLevel.find("machineID", machineID).map(x => x.levelA.get).toOption
@@ -393,21 +445,21 @@ class MachineDefactSummary {
       ".countQty *"     #> countQty &
       ".kadou *"        #> kadouRate &
       ".okRate *"       #> okRate &
-      ".policy *"       #> SHtml.ajaxText(policy, false, updatePolicy(insertDate, shiftTag, machineID)_) &
-      ".fixer *"        #> SHtml.ajaxText(fixer, false, updateFixer(insertDate, shiftTag, machineID)_)
+      ".policy *"       #> SHtml.ajaxText(policy, false, updatePolicy(shiftDate, shiftTag, machineID)_) &
+      ".fixer *"        #> SHtml.ajaxText(fixer, false, updateFixer(shiftDate, shiftTag, machineID)_)
     }
   }
 
 
   def render = {
 
-    val Array(_, yearString, monthString, dateString, shiftTag) = S.uri.drop(1).split("/")
+    val Array(_, yearString, monthString, dateString, shiftTag, sortTag) = S.uri.drop(1).split("/")
 
-    ".step1Rows" #> step1Rows(shiftTag) &
-    ".step2Rows" #> step2Rows(shiftTag) &
-    ".step3Rows" #> step3Rows(shiftTag) &
-    ".step5Rows-1" #> step5Rows(shiftTag, "T") &
-    ".step5Rows-2" #> step5Rows(shiftTag, "C")
+    ".step1Rows" #> step1Rows(shiftTag, sortTag) &
+    ".step2Rows" #> step2Rows(shiftTag, sortTag) &
+    ".step3Rows" #> step3Rows(shiftTag, sortTag) &
+    ".step5Rows-1" #> step5Rows(shiftTag, sortTag, "T") &
+    ".step5Rows-2" #> step5Rows(shiftTag, sortTag, "C")
   }
 
 }
