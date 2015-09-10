@@ -9,10 +9,11 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import scala.xml.NodeSeq
 
-class TodayOrder {
+class ProductionStatusHistory {
 
+  val Array(_, shiftDate) = S.uri.drop(1).split("/")
+  val order = ProductionStatusHistory.findAll("shiftDate", shiftDate).sortWith(_.lotNo.get < _.lotNo.get)
   val dateFormatter = new SimpleDateFormat("yyyy-MM-dd")
-  val order = ProductionStatus.findAll("lastUpdatedShifted", dateFormatter.format(today.getTime)).sortWith(_.lotNo.get < _.lotNo.get)
 
   def showEmptyBox() = {
     S.error("目前無今日工單資料")

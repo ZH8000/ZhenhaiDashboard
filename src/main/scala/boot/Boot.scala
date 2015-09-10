@@ -227,6 +227,7 @@ class Boot
       >> getTemplate("management/alarms/add") 
       >> needLogin
       >> hasPermission(PermissionContent.ManagementAlarm),
+
     editAlarmMenu / "management" / "alarms" / "edit" / * 
       >> getTemplate("management/alarms/edit") 
       >> needLogin
@@ -272,6 +273,12 @@ class Boot
     Menu("TodayOrder") / "todayOrder" 
       >> needLogin
       >> hasPermission(PermissionContent.ReportTodayOrder),
+
+    Menu("ProductionStatusHistory") / "productionStatusHistory" / *
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportTodayOrder)
+      >> getTemplate("productionStatusHistory") >> needLogin,
+
 
     Menu("OrderStatus") / "orderStatus" / "index"
       >> needLogin
