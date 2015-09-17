@@ -31,6 +31,11 @@ object ExcelRestAPI extends RestHelper {
     excelGenerater.outputExcel()
   }
 
+  def gnerateMachineDefactSummaryExcel(year: Int, month: Int, date: Int, shiftTag: String, sortTag: String)(outputStream: OutputStream) = {
+    val excelGenerater = new MachineDefactSummaryExcel(year, month, date, shiftTag, sortTag, outputStream)
+    excelGenerater.outputExcel()
+  }
+
 
   serve("api" / "excel" / "workerPerformance" prefix {
     case AsInt(year) :: AsInt(month) :: Nil Get req => 
@@ -50,6 +55,14 @@ object ExcelRestAPI extends RestHelper {
   serve("api" / "excel" / "kadou" prefix {
     case AsInt(year) :: AsInt(month) :: Nil Get req => 
       OutputStreamResponse(gnerateKadouExcel(year, month)_, List("Content-Type" -> "application/vnd.ms-excel"))
+  })
+
+  serve("api" / "excel" / "machineDefactSummary" prefix {
+    case AsInt(year) :: AsInt(month) :: AsInt(date) :: shiftTag :: sortTag :: Nil Get req => 
+      OutputStreamResponse(
+        gnerateMachineDefactSummaryExcel(year, month, date, shiftTag, sortTag)_, 
+        List("Content-Type" -> "application/vnd.ms-excel")
+      )
   })
 
 }

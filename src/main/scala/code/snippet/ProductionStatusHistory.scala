@@ -25,7 +25,7 @@ class ProductionStatusHistory {
     order.isEmpty match {
       case true  => showEmptyBox()
       case false =>
-        ".tableDate" #> dateFormatter.format(new Date) &
+        ".tableDate" #> shiftDate &
         ".row" #> order.map { record =>
 
           val orderStatusHolder = code.model.OrderStatus.find("lotNo", record.lotNo.get)

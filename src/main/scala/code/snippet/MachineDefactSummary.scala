@@ -199,7 +199,7 @@ class MachineDefactSummary {
         case 0 => "良品數為 0 無法計算"
         case x => plus match {
           case None => "-"
-          case Some(plusCount) => f"$plusCount / $countQty - 1" + " %"
+          case Some(plusCount) => f"${(plusCount / countQty.toDouble) - 1}%.2f" + " %"
         }
       }
 
@@ -207,7 +207,7 @@ class MachineDefactSummary {
         case 0 => "良品數為 0 無法計算"
         case x => minus match {
           case None => "-"
-          case Some(minusCount) => f"$minusCount / $countQty - 1" + " %"
+          case Some(minusCount) => f"${(minusCount / countQty.toDouble) - 1}%.2f" + " %"
         }
       }
 
@@ -455,6 +455,7 @@ class MachineDefactSummary {
 
     val Array(_, yearString, monthString, dateString, shiftTag, sortTag) = S.uri.drop(1).split("/")
 
+    "#excel [href]" #> s"/api/excel/machineDefactSummary/$yearString/$monthString/$dateString/$shiftTag/$sortTag" &
     ".step1Rows" #> step1Rows(shiftTag, sortTag) &
     ".step2Rows" #> step2Rows(shiftTag, sortTag) &
     ".step3Rows" #> step3Rows(shiftTag, sortTag) &
