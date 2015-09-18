@@ -6,6 +6,9 @@ import code.lib._
 import net.liftweb.http.rest.RestHelper
 import net.liftweb.http.PlainTextResponse
 import net.liftweb.http.OutputStreamResponse
+import net.liftweb.http.InMemoryResponse
+import net.liftweb.http.NotFoundResponse
+import net.liftweb.http.RedirectResponse
 import net.liftweb.util.BasicTypesHelpers.AsInt
 import java.io._
 
@@ -18,11 +21,6 @@ object ExcelRestAPI extends RestHelper {
 
   def gnerateMonthlyExcel(year: Int, month: Int, capacityRange: String)(outputStream: OutputStream) = {
     val excelGenerater = new MonthlySummaryExcel(year, month, capacityRange, outputStream)
-    excelGenerater.outputExcel()
-  }
-
-  def gneratePerformanceExcel(year: Int, month: Int)(outputStream: OutputStream) = {
-    val excelGenerater = new WorkerPerformanceExcel(year, month, outputStream)
     excelGenerater.outputExcel()
   }
 
@@ -39,7 +37,13 @@ object ExcelRestAPI extends RestHelper {
 
   serve("api" / "excel" / "workerPerformance" prefix {
     case AsInt(year) :: AsInt(month) :: Nil Get req => 
-      OutputStreamResponse(gneratePerformanceExcel(year, month)_, List("Content-Type" -> "application/vnd.ms-excel"))
+      try {
+        import java.nio.file.{Files, Paths}
+        val byteArray = Files.readAllBytes(Paths.get(f"/opt/Jetty-9.2.5/workerPerformance/$year-$month%02d.xls"))
+        InMemoryResponse(byteArray, List("Content-Type" -> "application/vnd.ms-excel"), Nil, 200)
+      } catch {
+        case e: Exception => RedirectResponse("/notFound")
+      }
   })
 
   serve("api" / "excel" / "monthly" prefix {

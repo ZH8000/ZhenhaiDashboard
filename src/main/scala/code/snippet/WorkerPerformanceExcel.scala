@@ -8,6 +8,9 @@ import net.liftweb.util.Helpers._
 import net.liftweb.util._
 import net.liftweb.http.SHtml
 import net.liftweb.http.js.JsCmd
+import net.liftweb.http.js.JsCmds._
+import net.liftweb.http.js.JE._
+
 import net.liftweb.common._
 
 import java.util.Date
@@ -31,7 +34,7 @@ class WorkerPerformanceExcel {
 
     "#currentYearMonth *" #> f"$year-$month" &
     "#currentYearMonth [href]" #> s"/excel/workerPerformance/$year/$month" &
-    "#downloadExcel [href]" #> s"/api/excel/workerPerformance/$year/$month"
+    "#downloadExcel [href]" #> s"/api/excel/workerPerformance/$year/$month.xls"
   }
 
   def createNewRecord() = {
@@ -105,11 +108,27 @@ class WorkerPerformanceExcel {
       }
     }
 
+    def deletePeformanceCount(machineID: String, productCode: String): JsCmd = {
+      MachinePerformance.delete(machineID, productCode) match {
+        case Full(true) => S.notice(s"已刪除 $machineID 的 $productCode 設定")
+        case _ => S.error(s"無法刪除 $machineID 的 $productCode 設定，請稍候再試")
+      }
+      
+      JsRaw(raw"$$('#row-$machineID-$productCode').remove()")
+
+    }
+
     ".dataRow" #> dataList.map { data =>
+      val machineID = data.machineID.get
+      val productCode = data.productCode.get
+
+      ".dataRow [id]" #> s"row-$machineID-$productCode" &
       ".machineID *" #> data.machineID.get &
       ".productCode *" #> data.productCode.get &
       ".managementCount" #> SHtml.ajaxText(data.managementCount.get.toString, false, updateManagementCount(data)_) &
-      ".performanceCount" #> SHtml.ajaxText(data.performanceCount.get.toString, false, updatePeformanceCount(data)_)
+      ".performanceCount" #> SHtml.ajaxText(data.performanceCount.get.toString, false, updatePeformanceCount(data)_) &
+      ".delete [onclick]" #> SHtml.onEventIf(s"確定要刪除 $machineID 的 $productCode 設定嗎？", s => deletePeformanceCount(machineID, productCode))
+
     }
 
   }

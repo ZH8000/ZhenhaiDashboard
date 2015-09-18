@@ -71,7 +71,7 @@ class MonthlyExcel {
     "#currentYearMonth [href]" #> s"/excel/monthly/$year/$month" &
     "#capacityRange *" #> f"${URLDecoder.decode(capacityRange, "utf-8")} Φ" &
     "#capacityRange [href]" #> s"/excel/monthly/$year/$month/$capacityRange" &
-    "#downloadExcel [href]" #> s"/api/excel/monthly/$year/$month/$capacityRange"
+    "#downloadExcel [href]" #> s"/api/excel/monthly/$year/$month/$capacityRange.xls"
   }
 
   def month = {

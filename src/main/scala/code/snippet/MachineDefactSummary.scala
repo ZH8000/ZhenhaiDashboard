@@ -195,6 +195,14 @@ class MachineDefactSummary {
         }
       }
 
+      val rollRate = total match {
+        case 0 => "總數為 0 無法計算"
+        case x => roll match {
+          case None => "-" 
+          case Some(rollCount) => f"${((rollCount / total.toDouble) * 100)}%.2f" + " %"
+        }
+      }
+
       val plusRate = countQty match {
         case 0 => "良品數為 0 無法計算"
         case x => plus match {
@@ -222,8 +230,15 @@ class MachineDefactSummary {
       ".shortRate *"    #> shortRate &
       ".stickRate *"    #> stickRate &
       ".tapeRate *"     #> tapeRate &
+      ".rollRate *"     #> rollRate &
       ".plusRate *"     #> plusRate &
       ".minusRate *"    #> minusRate &
+      ".short *"        #> short.map(_.toString).getOrElse("沒資料") &
+      ".stick *"        #> stick.map(_.toString).getOrElse("沒資料") &
+      ".tape *"         #> tape.map(_.toString).getOrElse("沒資料") &
+      ".roll *"         #> roll.map(_.toString).getOrElse("沒資料") &
+      ".plus *"         #> plus.map(_.toString).getOrElse("沒資料") &
+      ".minus *"        #> minus.map(_.toString).getOrElse("沒資料") &
       ".policy *"       #> SHtml.ajaxText(policy, false, updatePolicy(shiftDate, shiftTag, machineID)_) &
       ".fixer *"        #> SHtml.ajaxText(fixer, false, updateFixer(shiftDate, shiftTag, machineID)_)
     }
@@ -308,6 +323,11 @@ class MachineDefactSummary {
       ".whiteRate *"    #> whiteRateHolder.map(x => f"$x%.2f %%").getOrElse("-") &
       ".rubberRate *"   #> rubberRate &
       ".shellRate *"    #> shellRate &
+      ".total *"        #> total.map(_.toString).getOrElse("無資料") & 
+      ".defactD *"      #> defactD.map(_.toString).getOrElse("無資料") & 
+      ".white *"        #> white.map(_.toString).getOrElse("無資料") & 
+      ".rubber *"       #> rubber.map(_.toString).getOrElse("無資料") & 
+      ".shell *"        #> shell.map(_.toString).getOrElse("無資料") & 
       ".policy *"       #> SHtml.ajaxText(policy, false, updatePolicy(shiftDate, shiftTag, machineID)_) &
       ".fixer *"        #> SHtml.ajaxText(fixer, false, updateFixer(shiftDate, shiftTag, machineID)_)
     }
@@ -398,6 +418,13 @@ class MachineDefactSummary {
       ".loseRate *"     #> loseHolder.map(x => f"$x%.2f %%").getOrElse("-") &
       ".lcRate *"       #> lcHolder.map(x => f"$x%.2f %%").getOrElse("-") &
       ".retestRate *"   #> retestHolder.map(x => f"$x%.2f %%").getOrElse("-") &
+      ".total   *"      #> total.map(_.toString).getOrElse("無資料") &
+      ".short   *"      #> short.map(_.toString).getOrElse("無資料") &
+      ".open   *"       #> open.map(_.toString).getOrElse("無資料") &
+      ".capacity   *"   #> capacity.map(_.toString).getOrElse("無資料") &
+      ".lose    *"      #> lose.map(_.toString).getOrElse("無資料") &
+      ".lc      *"      #> lc.map(_.toString).getOrElse("無資料") &
+      ".retest  *"      #> retest.map(_.toString).getOrElse("無資料") &
       ".policy *"       #> SHtml.ajaxText(policy, false, updatePolicy(shiftDate, shiftTag, machineID)_) &
       ".fixer *"        #> SHtml.ajaxText(fixer, false, updateFixer(shiftDate, shiftTag, machineID)_)
     }
@@ -445,6 +472,7 @@ class MachineDefactSummary {
       ".countQty *"     #> countQty &
       ".kadou *"        #> kadouRate &
       ".okRate *"       #> okRate &
+      ".total *"        #> total.map(_.toString).getOrElse("無資料") &
       ".policy *"       #> SHtml.ajaxText(policy, false, updatePolicy(shiftDate, shiftTag, machineID)_) &
       ".fixer *"        #> SHtml.ajaxText(fixer, false, updateFixer(shiftDate, shiftTag, machineID)_)
     }
@@ -455,7 +483,7 @@ class MachineDefactSummary {
 
     val Array(_, yearString, monthString, dateString, shiftTag, sortTag) = S.uri.drop(1).split("/")
 
-    "#excel [href]" #> s"/api/excel/machineDefactSummary/$yearString/$monthString/$dateString/$shiftTag/$sortTag" &
+    "#excel [href]" #> s"/api/excel/machineDefactSummary/$yearString/$monthString/$dateString/$shiftTag/$sortTag.xls" &
     ".step1Rows" #> step1Rows(shiftTag, sortTag) &
     ".step2Rows" #> step2Rows(shiftTag, sortTag) &
     ".step3Rows" #> step3Rows(shiftTag, sortTag) &

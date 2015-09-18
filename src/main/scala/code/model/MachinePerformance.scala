@@ -30,6 +30,10 @@ class WorkerPerformance extends MongoRecord[WorkerPerformance] with ObjectIdPk[W
 object MachinePerformance extends MachinePerformance with MongoMetaRecord[MachinePerformance] {
   override def collectionName = "machinePerformance"
 
+  def delete(machineID: String, productCode: String) = {
+    this.find(("machineID" -> machineID) ~ ("productCode" -> productCode)).map(_.delete_!)
+  }
+
   def find(machineID: String, productCode: String): Box[MachinePerformance] = {
     this.find(("machineID" -> machineID) ~ ("productCode" -> productCode))
   }

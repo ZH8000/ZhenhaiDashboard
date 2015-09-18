@@ -37,6 +37,7 @@
               <th>短路不良率</th>
               <th>素子導線棒不良率</th>
               <th>膠帶貼付不良率</th>
+              <th>素子卷取不良率</th>
               <th>正導針損耗率</th>
               <th>負導針損耗率</th>
               <th>改善對策</th>
@@ -45,21 +46,110 @@
           </thead>
           <tbody>
             <tr class="step1Rows">
-              <td class="machineID">Cell</td>
-              <td class="machineModel">Cell</td>
-              <td class="product">Cell</td>
-              <td class="area">Cell</td>
-              <td class="standard">Cell</td>
-              <td class="countQty">Cell</td>
-              <td class="kadou">Cell</td>
-              <td class="okRate">Cell</td>
-              <td class="shortRate">Cell</td>
-              <td class="stickRate">Cell</td>
-              <td class="tapeRate">Cell</td>
-              <td class="plusRate">Cell</td>
-              <td class="minusRate">Cell</td>
-              <td class="policy">Cell</td>
-              <td class="fixer">Cell</td>
+              <td><span class="machineID">Cell</span></td>
+              <td><span class="machineModel">Cell<span></td>
+              <td><span class="product">Cell</span></td>
+              <td><span class="area">Cell</span></td>
+              <td><span class="standard">Cell</span></td>
+              <td><span class="countQty">Cell</span></td>
+              <td>
+                <div class="ui accordion">
+                  <div class="title">
+                    <i class="dropdown icon"></i>
+                    <span class="kadou">Cell</span>
+                  </div>
+                  <div class="content">
+                    良品數：<span class="countQty">123</span><br/>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="ui accordion">
+                  <div class="title">
+                    <i class="dropdown icon"></i>
+                    <span class="okRate">Cell</span>
+                  </div>
+                  <div class="content">
+                    總數：<br/>
+                    良品數 (<span class="countQty"></span>) +  <br/>
+                    短路不良數 (<span class="short"></span>) + <br/>
+                    素子导线棒不良数 (<span class="stick"></span>) + <br/>
+                    胶带贴附不良数 (<span class="tape"></span>) + <br/>
+                    素子卷取不良数 (<span class="roll"></span>)<br/>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="ui accordion">
+                  <div class="title">
+                    <i class="dropdown icon"></i>
+                    <span class="shortRate">Cell</span><br/>
+                  </div>
+                  <div class="content">
+                    短路不良數 (<span class="short"></span>) / 良品數 (<span class="countQty"></span>) <br/>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="ui accordion">
+                  <div class="title">
+                    <i class="dropdown icon"></i>
+                    <span class="stickRate">Cell</span><br/>
+                  </div>
+                  <div class="content">
+                    素子导线棒不良数 (<span class="stick"></span>) / 良品數 (<span class="countQty"></span>)<br/>
+                  </div>
+                </div>
+
+              </td>
+              <td>
+                <div class="ui accordion">
+                  <div class="title">
+                    <i class="dropdown icon"></i>
+                    <span class="tapeRate">Cell</span> <br/>
+                  </div>
+                  <div class="content">
+                    胶带贴附不良数 (<span class="tape"></span>)  / 良品數 (<span class="countQty"></span>)<br/>
+                  </div>
+                </div>
+
+              </td>
+              <td>
+                <div class="ui accordion">
+                  <div class="title">
+                    <i class="dropdown icon"></i>
+                    <span class="rollRate">Cell</span> <br/>
+                  </div>
+                  <div class="content">
+                    素子卷取不良数 (<span class="roll"></span>)  / 良品數 (<span class="countQty"></span>)<br/>
+                  </div>
+                </div>
+
+              </td>
+              <td>
+                <div class="ui accordion">
+                  <div class="title">
+                    <i class="dropdown icon"></i>
+                    <span class="plusRate">Cell</span><br/>
+                  </div>
+                  <div class="content">
+                    正導針投入數 (<span class="plus"></span>) / 良品數 (<span class="countQty"></span>) - 1
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="ui accordion">
+                  <div class="title">
+                    <i class="dropdown icon"></i>
+                    <span class="minusRate">Cell</span><br/>
+                  </div>
+                  <div class="content">
+                    負導針投入數 (<span class="minus"></span>) / 良品數 (<span class="countQty"></span>) - 1
+                  </div>
+                </div>
+              </td>
+              <td><span class="policy">Cell</span></td>
+              <td><span class="fixer">Cell</span></td>
             </tr>
           </tbody>
         </table>
@@ -87,21 +177,91 @@
           </thead>
           <tbody>
             <tr class="step2Rows">
-              <td class="machineID">Cell</td>
-              <td class="machineModel">Cell</td>
-              <td class="product">Cell</td>
-              <td class="area">Cell</td>
-              <td class="standard">Cell</td>
-              <td class="countQty">Cell</td>
-              <td class="kadou">Cell</td>
-              <td class="okRate">Cell</td>
-              <td class="insertRate">Cell</td>
-              <td class="defactDRate">Cell</td>
-              <td class="whiteRate">Cell</td>
-              <td class="rubberRate">Cell</td>
-              <td class="shellRate">Cell</td>
-              <td class="policy">Cell</td>
-              <td class="fixer">Cell</td>
+              <td><span class="machineID">Cell</span></td>
+              <td><span class="machineModel">Cell</span></td>
+              <td><span class="product">Cell</span></td>
+              <td><span class="area">Cell</span></td>
+              <td><span class="standard">Cell</span></td>
+              <td><span class="countQty">Cell</span></td>
+              <td>
+                <div class="ui accordion">
+                  <div class="title">
+                    <i class="dropdown icon"></i>
+                    <span class="kadou">Cell</span>
+                  </div>
+                  <div class="content">
+                    良品數 (<span class="countQty"></span>) / 標準量(<span class="standard"></span>)
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="ui accordion">
+                  <div class="title">
+                    <i class="dropdown icon"></i>
+                    <span class="okRate">Cell</span>
+                  </div>
+                  <div class="content">
+                    良品數 (<span class="countQty"></span>) / 總數(<span class="total"></span>)
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="ui accordion">
+                  <div class="title">
+                    <i class="dropdown icon"></i>
+                    <span class="insertRate">Cell</span>
+                  </div>
+                  <div class="content">
+                    [素子投入數(<span class="total"></span>) - 不良品 D 數(<span class="defactD"></span>) - 露白不良數(<span class="white"></span> - 良品數(<span class="countQty"></span>) ] / 總數(<span class="total"></span>) - 1
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="ui accordion">
+                  <div class="title">
+                    <i class="dropdown icon"></i>
+                    <span class="defactDRate">Cell</span>
+                  </div>
+                  <div class="content">
+                    不良品 D 數(<span class="defactD"></span>) / 總數(<span class="total"></span>)
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="ui accordion">
+                  <div class="title">
+                    <i class="dropdown icon"></i>
+                    <span class="whiteRate">Cell</span>
+                  </div>
+                  <div class="content">
+                    露白不良數 (<span class="white"></span>) / 總數(<span class="total"></span>)
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="ui accordion">
+                  <div class="title">
+                    <i class="dropdown icon"></i>
+                    <span class="rubberRate">Cell</span>
+                  </div>
+                  <div class="content">
+                    柏梗投入数 (<span class="rubber"></span>) / 良品數(<span class="countQty"></span>) - 1
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="ui accordion">
+                  <div class="title">
+                    <i class="dropdown icon"></i>
+                    <span class="shellRate">Cell</span>
+                  </div>
+                  <div class="content">
+                    外殼投入数 (<span class="shell"></span>) / 良品數(<span class="countQty"></span>) - 1
+                  </div>
+                </div>
+              </td>
+              <td><span class="policy">Cell</span></td>
+              <td><span class="fixer">Cell</span></td>
             </tr>
           </tbody>
         </table>
@@ -130,22 +290,103 @@
           </thead>
           <tbody>
             <tr class="step3Rows">
-              <td class="machineID">Cell</td>
-              <td class="machineModel">Cell</td>
-              <td class="product">Cell</td>
-              <td class="area">Cell</td>
-              <td class="standard">Cell</td>
-              <td class="countQty">Cell</td>
-              <td class="kadou">Cell</td>
-              <td class="okRate">Cell</td>
-              <td class="shortRate">Cell</td>
-              <td class="openRate">Cell</td>
-              <td class="capacityRate">Cell</td>
-              <td class="loseRate">Cell</td>
-              <td class="lcRate">Cell</td>
-              <td class="retestRate">Cell</td>
-              <td class="policy">Cell</td>
-              <td class="fixer">Cell</td>
+              <td><span class="machineID">Cell</span></td>
+              <td><span class="machineModel">Cell</span></td>
+              <td><span class="product">Cell</span></td>
+              <td><span class="area">Cell</span></td>
+              <td><span class="standard">Cell</span></td>
+              <td><span class="countQty">Cell</span></td>
+              <td>
+                <div class="ui accordion">
+                  <div class="title">
+                    <i class="dropdown icon"></i>
+                    <span class="kadou">Cell</span>
+                  </div>
+                  <div class="content">
+                    良品數(<span class="countQty"></span>) / 標準量(<span class="standard"></span>)
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="ui accordion">
+                  <div class="title">
+                    <i class="dropdown icon"></i>
+                    <span class="okRate">Cell</span>
+                  </div>
+                  <div class="content">
+                    良品數(<span class="countQty"></span>) / 總數(<span class="total"></span>)
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="ui accordion">
+                  <div class="title">
+                    <i class="dropdown icon"></i>
+                    <span class="shortRate">Cell</span>
+                  </div>
+                  <div class="content">
+                    短路不良數(<span class="short"></span>) / 總數(<span class="total"></span>)
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="ui accordion">
+                  <div class="title">
+                    <i class="dropdown icon"></i>
+                    <span class="openRate">Cell</span>
+                  </div>
+                  <div class="content">
+                    開路不良數(<span class="open"></span>) / 總數(<span class="total"></span>)
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="ui accordion">
+                  <div class="title">
+                    <i class="dropdown icon"></i>
+                    <span class="capacityRate">Cell</span>
+                  </div>
+                  <div class="content">
+                    容量不良數(<span class="capacity"></span>) / 總數(<span class="total"></span>)
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="ui accordion">
+                  <div class="title">
+                    <i class="dropdown icon"></i>
+                    <span class="loseRate">Cell</span>
+                  </div>
+                  <div class="content">
+                    損失不良數(<span class="lose"></span>) / 總數(<span class="total"></span>)
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="ui accordion">
+                  <div class="title">
+                    <i class="dropdown icon"></i>
+                    <span class="lcRate">Cell</span>
+                  </div>
+                  <div class="content">
+                    LC 不良數(<span class="lc"></span>) / 總數(<span class="total"></span>)
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="ui accordion">
+                  <div class="title">
+                    <i class="dropdown icon"></i>
+                    <span class="retestRate">Cell</span>
+                  </div>
+                  <div class="content">
+                    重測良數(<span class="retest"></span>) / 總數(<span class="total"></span>)
+                  </div>
+                </div>
+
+              </td>
+              <td><span class="policy">Cell</span></td>
+              <td><span class="fixer">Cell</span></td>
             </tr>
           </tbody>
         </table>
@@ -169,16 +410,36 @@
           </thead>
           <tbody>
             <tr class="step5Rows-1">
-              <td class="machineID">Cell</td>
-              <td class="machineModel">Cell</td>
-              <td class="product">Cell</td>
-              <td class="area">Cell</td>
-              <td class="standard">Cell</td>
-              <td class="countQty">Cell</td>
-              <td class="kadou">Cell</td>
-              <td class="okRate">Cell</td>
-              <td class="policy">Cell</td>
-              <td class="fixer">Cell</td>
+              <td><span class="machineID">Cell</span></td>
+              <td><span class="machineModel">Cell</span></td>
+              <td><span class="product">Cell</span></td>
+              <td><span class="area">Cell</span></td>
+              <td><span class="standard">Cell</span></td>
+              <td><span class="countQty">Cell</span></td>
+              <td>
+                <div class="ui accordion">
+                  <div class="title">
+                    <i class="dropdown icon"></i>
+                    <span class="kadou">Cell</span>
+                  </div>
+                  <div class="content">
+                    良品數(<span class="countQty"></span>) / 標準量(<span class="standard"></span>)
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="ui accordion">
+                  <div class="title">
+                    <i class="dropdown icon"></i>
+                    <span class="okRate">Cell</span>
+                  </div>
+                  <div class="content">
+                    良品數(<span class="countQty"></span>) / 總數(<span class="total"></span>)
+                  </div>
+                </div>
+              </td>
+              <td><span class="policy">Cell</span></td>
+              <td><span class="fixer">Cell</span></td>
             </tr>
           </tbody>
         </table>
@@ -201,16 +462,37 @@
           </thead>
           <tbody>
             <tr class="step5Rows-2">
-              <td class="machineID">Cell</td>
-              <td class="machineModel">Cell</td>
-              <td class="product">Cell</td>
-              <td class="area">Cell</td>
-              <td class="standard">Cell</td>
-              <td class="countQty">Cell</td>
-              <td class="kadou">Cell</td>
-              <td class="okRate">Cell</td>
-              <td class="policy">Cell</td>
-              <td class="fixer">Cell</td>
+              <td><span class="machineID">Cell</span></td>
+              <td><span class="machineModel">Cell</span></td>
+              <td><span class="product">Cell</span></td>
+              <td><span class="area">Cell</span></td>
+              <td><span class="standard">Cell</span></td>
+              <td><span class="countQty">Cell</span></td>
+              <td>
+                <div class="ui accordion">
+                  <div class="title">
+                    <i class="dropdown icon"></i>
+                    <span class="kadou">Cell</span>
+                  </div>
+                  <div class="content">
+                    良品數(<span class="countQty"></span>) / 標準量(<span class="standard"></span>)
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="ui accordion">
+                  <div class="title">
+                    <i class="dropdown icon"></i>
+                    <span class="okRate">Cell</span>
+                  </div>
+                  <div class="content">
+                    良品數(<span class="countQty"></span>) / 總數(<span class="total"></span>)
+                  </div>
+                </div>
+              </td>
+
+              <td><span class="policy">Cell</span></td>
+              <td><span class="fixer">Cell</span></td>
             </tr>
           </tbody>
         </table>
@@ -221,5 +503,7 @@
   <script>
    $('#dataTable').floatThead({scrollingTop: 50});
    $('.menu .item').tab();
+   $('.ui.accordion').accordion();
+
   </script>
 </div>

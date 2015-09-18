@@ -75,12 +75,12 @@ class MachineDefactSummaryExcel(year: Int, month: Int, date: Int, shiftTag: Stri
     val reportTitle = f"卷取機生產狀況表     $year 年 $month 月 $date 日  $shiftTagTitle"
 
     sheet.addCell(new Label(0, 0, reportTitle, centeredTitleFormat))
-    sheet.mergeCells(0, 0, 14, 0)
+    sheet.mergeCells(0, 0, 15, 0)
 
     val titles = List(
       "機台號", "機種", "尺寸", "區域", "標準量", "良品數", "稼動率", 
       "良品率", "短路不良率", "素子導線棒不良率", "膠帶貼付不良率", 
-      "正導針損耗率", "負導針損耗率", "改善對策", "負責人"
+      "素子卷取不良率", "正導針損耗率", "負導針損耗率", "改善對策", "負責人"
     )
 
     titles.zipWithIndex.foreach { case(title, index) => sheet.addCell(new Label(index, 1, title, centeredTitleFormat)) }
@@ -164,21 +164,31 @@ class MachineDefactSummaryExcel(year: Int, month: Int, date: Int, shiftTag: Stri
 
       sheet.addCell(tapeRate)
 
-      val plusRate = countQty match {
+      val rollRate = total match {
         case 0 => new Label(11, index + 2, "總數為 0 無法計算", centeredTitleFormat)
-        case x => plus match {
+        case x => roll match {
           case None => new Label(11, index + 2, "-", centeredTitleFormat)
-          case Some(plusCount) => new Number(11, index + 2, (plusCount / countQty.toDouble) - 1, centeredPercentFormat)
+          case Some(rollCount) => new Number(11, index + 2, (rollCount / total.toDouble), centeredPercentFormat)
+        }
+      }
+
+      sheet.addCell(rollRate)
+
+      val plusRate = countQty match {
+        case 0 => new Label(12, index + 2, "總數為 0 無法計算", centeredTitleFormat)
+        case x => plus match {
+          case None => new Label(12, index + 2, "-", centeredTitleFormat)
+          case Some(plusCount) => new Number(12, index + 2, (plusCount / countQty.toDouble) - 1, centeredPercentFormat)
         }
       }
 
       sheet.addCell(plusRate)
 
       val minusRate = countQty match {
-        case 0 => new Label(12, index + 2, "良品數為 0 無法計算", centeredTitleFormat)
+        case 0 => new Label(13, index + 2, "良品數為 0 無法計算", centeredTitleFormat)
         case x => minus match {
-          case None => new Label(12, index + 2, "-", centeredTitleFormat)
-          case Some(minusCount) => new Number(12, index + 2, (minusCount / countQty.toDouble) - 1, centeredPercentFormat)
+          case None => new Label(13, index + 2, "-", centeredTitleFormat)
+          case Some(minusCount) => new Number(13, index + 2, (minusCount / countQty.toDouble) - 1, centeredPercentFormat)
         }
       }
 
@@ -187,8 +197,8 @@ class MachineDefactSummaryExcel(year: Int, month: Int, date: Int, shiftTag: Stri
       val policy = Option(record.get("policy")).map(_.toString).getOrElse("")
       val fixer = Option(record.get("fixer")).map(_.toString).getOrElse("")
 
-      sheet.addCell(new Label(13, index + 2, policy, centeredTitleFormat))
-      sheet.addCell(new Label(14, index + 2, fixer, centeredTitleFormat))
+      sheet.addCell(new Label(14, index + 2, policy, centeredTitleFormat))
+      sheet.addCell(new Label(15, index + 2, fixer, centeredTitleFormat))
 
     }
 

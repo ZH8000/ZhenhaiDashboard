@@ -10,12 +10,24 @@ import jxl._
 import jxl.write._
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.io.File
 
 object WorkerPerformanceExcel {
   private lazy val zhenhaiDB = MongoDB.zhenhaiDB
+
+  def main(args: Array[String]) {
+    val year = args(1).toInt
+    val month = args(2).toInt
+    val filepath = args(3)
+    val boot = new bootstrap.liftweb.Boot
+    boot.boot
+
+    val exporter = new WorkerPerformanceExcel(year, month, filepath)
+    exporter.outputExcel()
+  }
 }
 
-class WorkerPerformanceExcel(year: Int, month: Int, outputStream: OutputStream) {
+class WorkerPerformanceExcel(year: Int, month: Int, filepath: String) {
   
   val zhenhaiDB = MongoDB.zhenhaiDB
   val workerPerformanceTable = zhenhaiDB(f"workerPerformance-$year%4d-$month%02d")
@@ -274,7 +286,7 @@ class WorkerPerformanceExcel(year: Int, month: Int, outputStream: OutputStream) 
 
   def outputExcel() {
 
-    val workbook = Workbook.createWorkbook(outputStream)
+    val workbook = Workbook.createWorkbook(new File(filepath))
     val sheet = workbook.createSheet("人員效率", 0)
     val sheetSettings = sheet.getSettings
     sheetSettings.setDefaultRowHeight(400)

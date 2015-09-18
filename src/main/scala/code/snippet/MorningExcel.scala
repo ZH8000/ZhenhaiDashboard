@@ -26,7 +26,7 @@ class MorningExcel {
 
     "#currentYearMonth *" #> f"$year-$month" &
     "#currentYearMonth [href]" #> s"/excel/morning/$year/$month" &
-    "#downloadExcel [href]" #> s"/api/excel/morning/$year/$month"
+    "#downloadExcel [href]" #> s"/api/excel/morning/$year/$month.xls"
   }
 
   def editor = {
