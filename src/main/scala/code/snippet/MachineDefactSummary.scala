@@ -150,25 +150,25 @@ class MachineDefactSummary {
       val standard = MachineLevel.find("machineID", machineID).map(x => x.levelA.get).toOption
       val product = record.get("product").toString
       val area = s"${record.get("floor").toString} 樓 ${record.get("area").toString} 區"
-      val countQty = record.get("countQty").toString.toLong
+      val countQty = Option(record.get("countQty"))map(_.toString.toLong)
       val short = Option(record.get("short")).map(_.toString.toLong)
       val stick = Option(record.get("stick")).map(_.toString.toLong)
       val tape  = Option(record.get("tape")).map(_.toString.toLong)
       val roll  = Option(record.get("roll")).map(_.toString.toLong)
       val plus  = Option(record.get("plus")).map(_.toString.toLong)
       val minus = Option(record.get("minus")).map(_.toString.toLong)
-      val total = countQty + short.getOrElse(0L) + stick.getOrElse(0L) + tape.getOrElse(0L) + roll.getOrElse(0L)
+      val total = countQty.getOrElse(0L) + short.getOrElse(0L) + stick.getOrElse(0L) + tape.getOrElse(0L) + roll.getOrElse(0L)
       val policy = Option(record.get("policy")).map(_.toString).getOrElse("")
       val fixer = Option(record.get("fixer")).map(_.toString).getOrElse("")
    
       val okRate = total match {
         case 0 => "總數為 0 無法計算"
-        case x => f"${((countQty / total.toDouble) * 100)}%.2f" + " %"
+        case x => f"${((countQty.getOrElse(0L) / total.toDouble) * 100)}%.2f" + " %"
       }
 
       val kadouRate = standard match {
         case None => "-"
-        case Some(standardValue) => f"${(countQty / standard.getOrElse(0L).toDouble) * 100}%.2f %%"
+        case Some(standardValue) => f"${(countQty.getOrElse(0L) / standard.getOrElse(0L).toDouble) * 100}%.2f %%"
       }
 
       val shortRate = total match {
@@ -203,19 +203,19 @@ class MachineDefactSummary {
         }
       }
 
-      val plusRate = countQty match {
+      val plusRate = countQty.getOrElse(0) match {
         case 0 => "良品數為 0 無法計算"
         case x => plus match {
           case None => "-"
-          case Some(plusCount) => f"${(plusCount / countQty.toDouble) - 1}%.2f" + " %"
+          case Some(plusCount) => f"${(plusCount / countQty.getOrElse(0L).toDouble) - 1}%.2f" + " %"
         }
       }
 
-      val minusRate = countQty match {
+      val minusRate = countQty.getOrElse(0) match {
         case 0 => "良品數為 0 無法計算"
         case x => minus match {
           case None => "-"
-          case Some(minusCount) => f"${(minusCount / countQty.toDouble) - 1}%.2f" + " %"
+          case Some(minusCount) => f"${(minusCount / countQty.getOrElse(0L).toDouble) - 1}%.2f" + " %"
         }
       }
 
@@ -224,7 +224,7 @@ class MachineDefactSummary {
       ".product *"      #> product &
       ".area *"         #> area &
       ".standard *"     #> standard.getOrElse("-").toString &
-      ".countQty *"     #> countQty &
+      ".countQty *"     #> countQty.getOrElse(0L) &
       ".kadou *"        #> kadouRate &
       ".okRate *"       #> okRate &
       ".shortRate *"    #> shortRate &
@@ -263,7 +263,7 @@ class MachineDefactSummary {
       val standard = MachineLevel.find("machineID", machineID).map(x => x.levelA.get).toOption
       val product = record.get("product").toString
       val area = s"${record.get("floor").toString} 樓 ${record.get("area").toString} 區"
-      val countQty = record.get("countQty").toString.toLong
+      val countQty = Option(record.get("countQty")).map(_.toString.toLong)
       val total   = Option(record.get("total")).map(_.toString.toLong)
       val defactD = Option(record.get("defactD")).map(_.toString.toLong)
       val white   = Option(record.get("white")).map(_.toString.toLong)
@@ -274,18 +274,18 @@ class MachineDefactSummary {
 
       val kadouRate = standard match {
         case None => "-"
-        case Some(standardValue) => f"${(countQty / standard.getOrElse(0L).toDouble) * 100}%.2f %%"
+        case Some(standardValue) => f"${(countQty.getOrElse(0L) / standard.getOrElse(0L).toDouble) * 100}%.2f %%"
       }
 
       val okRate = total match {
         case None => "-"
-        case Some(totalValue) => f"${(countQty / totalValue.toDouble) * 100}%.2f %%"
+        case Some(totalValue) => f"${(countQty.getOrElse(0L) / totalValue.toDouble) * 100}%.2f %%"
       }
 
       val insertRate = total match {
         case None => "-"
         case Some(totalValue) =>
-          val rate = ((totalValue - defactD.getOrElse(0L) - white.getOrElse(0L) - countQty) / totalValue.toDouble) - 1
+          val rate = ((totalValue - defactD.getOrElse(0L) - white.getOrElse(0L) - countQty.getOrElse(0L)) / totalValue.toDouble)
           f"$rate%.2f %%"
       }
 
@@ -301,12 +301,12 @@ class MachineDefactSummary {
 
       val rubberRate = rubber match {
         case None => "-"
-        case Some(rubberValue) => f"${((rubberValue / countQty.toDouble) - 1) * 100}%.2f %%"
+        case Some(rubberValue) => f"${((rubberValue / countQty.getOrElse(0L).toDouble) - 1) * 100}%.2f %%"
       }
 
       val shellRate = shell match {
         case None => "-"
-        case Some(shellValue) => f"${((shellValue / countQty.toDouble) - 1) * 100}%.2f %%"
+        case Some(shellValue) => f"${((shellValue / countQty.getOrElse(0L).toDouble) - 1) * 100}%.2f %%"
       }
 
 
@@ -315,7 +315,7 @@ class MachineDefactSummary {
       ".product *"      #> product &
       ".area *"         #> area &
       ".standard *"     #> standard.getOrElse("-").toString &
-      ".countQty *"     #> countQty &
+      ".countQty *"     #> countQty.getOrElse(0L) &
       ".kadou *"        #> kadouRate &
       ".okRate *"       #> okRate &
       ".insertRate *"   #> insertRate &
@@ -352,7 +352,7 @@ class MachineDefactSummary {
       val standard = MachineLevel.find("machineID", machineID).map(x => x.levelA.get).toOption
       val product = record.get("product").toString
       val area = s"${record.get("floor").toString} 樓 ${record.get("area").toString} 區"
-      val countQty = record.get("countQty").toString.toLong
+      val countQty = Option(record.get("countQty")).map(_.toString.toLong)
       val total   = Option(record.get("total")).map(_.toString.toLong)
 
       val short     = Option(record.get("short")).map(_.toString.toLong)
@@ -366,12 +366,12 @@ class MachineDefactSummary {
 
       val kadouRate = standard match {
         case None => "-"
-        case Some(standardValue) => f"${(countQty / standard.getOrElse(0L).toDouble) * 100}%.2f %%"
+        case Some(standardValue) => f"${(countQty.getOrElse(0L) / standard.getOrElse(0L).toDouble) * 100}%.2f %%"
       }
 
       val okRate = total match {
         case None => "-"
-        case Some(totalValue) => f"${(countQty / totalValue.toDouble) * 100}%.2f %%"
+        case Some(totalValue) => f"${(countQty.getOrElse(0L) / totalValue.toDouble) * 100}%.2f %%"
       }
 
       val shortHolder = for {
@@ -409,7 +409,7 @@ class MachineDefactSummary {
       ".product *"      #> product &
       ".area *"         #> area &
       ".standard *"     #> standard.getOrElse("-").toString &
-      ".countQty *"     #> countQty &
+      ".countQty *"     #> countQty.getOrElse(0L) &
       ".kadou *"        #> kadouRate &
       ".okRate *"       #> okRate &
       ".shortRate *"    #> shortHolder.map(x => f"$x%.2f %%").getOrElse("-") &
@@ -449,19 +449,19 @@ class MachineDefactSummary {
       val standard = MachineLevel.find("machineID", machineID).map(x => x.levelA.get).toOption
       val product = record.get("product").toString
       val area = s"${record.get("floor").toString} 樓 ${record.get("area").toString} 區"
-      val countQty = record.get("countQty").toString.toLong
+      val countQty = Option(record.get("countQty")).map(_.toString.toLong)
       val total   = Option(record.get("total")).map(_.toString.toLong)
       val policy = Option(record.get("policy")).map(_.toString).getOrElse("")
       val fixer = Option(record.get("fixer")).map(_.toString).getOrElse("")
 
       val kadouRate = standard match {
         case None => "-"
-        case Some(standardValue) => f"${(countQty / standard.getOrElse(0L).toDouble) * 100}%.2f %%"
+        case Some(standardValue) => f"${(countQty.getOrElse(0L) / standard.getOrElse(0L).toDouble) * 100}%.2f %%"
       }
 
       val okRate = total match {
         case None => "-"
-        case Some(totalValue) => f"${(countQty / totalValue.toDouble) * 100}%.2f %%"
+        case Some(totalValue) => f"${(countQty.getOrElse(0L) / totalValue.toDouble) * 100}%.2f %%"
       }
 
       ".machineID *"    #> machineID &
@@ -469,7 +469,7 @@ class MachineDefactSummary {
       ".product *"      #> product &
       ".area *"         #> area &
       ".standard *"     #> standard.getOrElse("-").toString &
-      ".countQty *"     #> countQty &
+      ".countQty *"     #> countQty.getOrElse(0L) &
       ".kadou *"        #> kadouRate &
       ".okRate *"       #> okRate &
       ".total *"        #> total.map(_.toString).getOrElse("無資料") &

@@ -100,7 +100,7 @@ class MachineDefactSummaryExcel(year: Int, month: Int, date: Int, shiftTag: Stri
       sheet.addCell(new Label(3, index + 2, area, centeredTitleFormat))
 
       val standard = MachineLevel.find("machineID", machineID).map(x => x.levelA.get).toOption
-      val countQty = record.get("countQty").toString.toLong
+      val countQty = Option(record.get("countQty")).map(_.toString.toLong)
 
       val standardCell = standard match {
         case None => new Label(4, index + 2, "-", centeredTitleFormat)
@@ -109,11 +109,11 @@ class MachineDefactSummaryExcel(year: Int, month: Int, date: Int, shiftTag: Stri
 
 
       sheet.addCell(standardCell)
-      sheet.addCell(new Number(5, index + 2, countQty, centeredNumberFormat))
+      sheet.addCell(new Number(5, index + 2, countQty.getOrElse(0L).toDouble, centeredNumberFormat))
 
       val kadouRate = standard match {
         case None => new Label(6, index + 2, "-", centeredTitleFormat)
-        case Some(standardValue) => new Number(6, index + 2, countQty / standard.getOrElse(0L).toDouble, centeredPercentFormat)
+        case Some(standardValue) => new Number(6, index + 2, countQty.getOrElse(0L) / standard.getOrElse(0L).toDouble, centeredPercentFormat)
       }
 
       sheet.addCell(kadouRate)
@@ -124,11 +124,11 @@ class MachineDefactSummaryExcel(year: Int, month: Int, date: Int, shiftTag: Stri
       val roll  = Option(record.get("roll")).map(_.toString.toLong)
       val plus  = Option(record.get("plus")).map(_.toString.toLong)
       val minus = Option(record.get("minus")).map(_.toString.toLong)
-      val total = countQty + short.getOrElse(0L) + stick.getOrElse(0L) + tape.getOrElse(0L) + roll.getOrElse(0L)
+      val total = countQty.getOrElse(0L) + short.getOrElse(0L) + stick.getOrElse(0L) + tape.getOrElse(0L) + roll.getOrElse(0L)
 
       val okRate = total match {
         case 0 => new Label(7, index + 2, "總數為 0 無法計算", centeredTitleFormat)
-        case x => new Number(7, index + 2, countQty / total.toDouble, centeredPercentFormat)
+        case x => new Number(7, index + 2, countQty.getOrElse(0L) / total.toDouble, centeredPercentFormat)
       }
 
       sheet.addCell(okRate)
@@ -174,21 +174,21 @@ class MachineDefactSummaryExcel(year: Int, month: Int, date: Int, shiftTag: Stri
 
       sheet.addCell(rollRate)
 
-      val plusRate = countQty match {
-        case 0 => new Label(12, index + 2, "總數為 0 無法計算", centeredTitleFormat)
+      val plusRate = countQty.getOrElse(0L) match {
+        case 0 => new Label(12, index + 2, "良品數為 0 無法計算", centeredTitleFormat)
         case x => plus match {
           case None => new Label(12, index + 2, "-", centeredTitleFormat)
-          case Some(plusCount) => new Number(12, index + 2, (plusCount / countQty.toDouble) - 1, centeredPercentFormat)
+          case Some(plusCount) => new Number(12, index + 2, (plusCount / countQty.getOrElse(0L).toDouble) - 1, centeredPercentFormat)
         }
       }
 
       sheet.addCell(plusRate)
 
-      val minusRate = countQty match {
+      val minusRate = countQty.getOrElse(0L) match {
         case 0 => new Label(13, index + 2, "良品數為 0 無法計算", centeredTitleFormat)
         case x => minus match {
           case None => new Label(13, index + 2, "-", centeredTitleFormat)
-          case Some(minusCount) => new Number(13, index + 2, (minusCount / countQty.toDouble) - 1, centeredPercentFormat)
+          case Some(minusCount) => new Number(13, index + 2, (minusCount / countQty.getOrElse(0L).toDouble) - 1, centeredPercentFormat)
         }
       }
 
@@ -235,7 +235,7 @@ class MachineDefactSummaryExcel(year: Int, month: Int, date: Int, shiftTag: Stri
       val product = record.get("product").toString
       val area = s"${record.get("floor").toString} 樓 ${record.get("area").toString} 區"
       val standard = MachineLevel.find("machineID", machineID).map(x => x.levelA.get).toOption
-      val countQty = record.get("countQty").toString.toLong
+      val countQty = Option(record.get("countQty")).map(_.toString.toLong)
 
       sheet.addCell(new Label(0, index + 2, machineID, centeredTitleFormat))
       sheet.addCell(new Label(1, index + 2, machineModel, centeredTitleFormat))
@@ -248,11 +248,11 @@ class MachineDefactSummaryExcel(year: Int, month: Int, date: Int, shiftTag: Stri
       }
 
       sheet.addCell(standardCell)
-      sheet.addCell(new Number(5, index + 2, countQty, centeredNumberFormat))
+      sheet.addCell(new Number(5, index + 2, countQty.getOrElse(0L).toDouble, centeredNumberFormat))
 
       val kadouRate = standard match {
         case None => new Label(6, index + 2, "-", centeredTitleFormat)
-        case Some(standardValue) => new Number(6, index + 2, countQty / standard.getOrElse(0L).toDouble, centeredPercentFormat)
+        case Some(standardValue) => new Number(6, index + 2, countQty.getOrElse(0L) / standard.getOrElse(0L).toDouble, centeredPercentFormat)
       }
 
       sheet.addCell(kadouRate)
@@ -265,7 +265,7 @@ class MachineDefactSummaryExcel(year: Int, month: Int, date: Int, shiftTag: Stri
 
       val okRate = total match {
         case None => new Label(7, index + 2, "-", centeredTitleFormat)
-        case Some(totalValue) => new Number(7, index + 2, countQty / totalValue.toDouble, centeredPercentFormat)
+        case Some(totalValue) => new Number(7, index + 2, countQty.getOrElse(0L) / totalValue.toDouble, centeredPercentFormat)
       }
 
       sheet.addCell(okRate)
@@ -273,7 +273,7 @@ class MachineDefactSummaryExcel(year: Int, month: Int, date: Int, shiftTag: Stri
       val insertRate = total match {
         case None => new Label(8, index + 2, "-", centeredTitleFormat)
         case Some(totalValue) =>
-          val rate = ((totalValue - defactD.getOrElse(0L) - white.getOrElse(0L) - countQty) / totalValue.toDouble) - 1
+          val rate = ((totalValue - defactD.getOrElse(0L) - white.getOrElse(0L) - countQty.getOrElse(0L)) / totalValue.toDouble)
           new Number(8, index + 2, rate, centeredPercentFormat)
       }
 
@@ -305,14 +305,14 @@ class MachineDefactSummaryExcel(year: Int, month: Int, date: Int, shiftTag: Stri
 
       val rubberRate = rubber match {
         case None => new Label(11, index + 2, "-", centeredTitleFormat)
-        case Some(rubberValue) => new Number(11, index + 2, (rubberValue / countQty.toDouble) - 1, centeredPercentFormat)
+        case Some(rubberValue) => new Number(11, index + 2, (rubberValue / countQty.getOrElse(0L).toDouble) - 1, centeredPercentFormat)
       }
 
       sheet.addCell(rubberRate)
 
       val shellRate = shell match {
         case None => new Label(12, index + 2, "-", centeredTitleFormat)
-        case Some(shellValue) => new Number(12, index + 2, (shellValue / countQty.toDouble) - 1, centeredPercentFormat)
+        case Some(shellValue) => new Number(12, index + 2, (shellValue / countQty.getOrElse(0L).toDouble) - 1, centeredPercentFormat)
       }
 
       sheet.addCell(shellRate)
@@ -366,7 +366,7 @@ class MachineDefactSummaryExcel(year: Int, month: Int, date: Int, shiftTag: Stri
       sheet.addCell(new Label(3, index + 2, area, centeredTitleFormat))
 
       val standard = MachineLevel.find("machineID", machineID).map(x => x.levelA.get).toOption
-      val countQty = record.get("countQty").toString.toLong
+      val countQty = Option(record.get("countQty")).map(_.toString.toLong)
       val total   = Option(record.get("total")).map(_.toString.toLong)
 
       val standardCell = standard match {
@@ -375,11 +375,11 @@ class MachineDefactSummaryExcel(year: Int, month: Int, date: Int, shiftTag: Stri
       }
 
       sheet.addCell(standardCell)
-      sheet.addCell(new Number(5, index + 2, countQty, centeredNumberFormat))
+      sheet.addCell(new Number(5, index + 2, countQty.getOrElse(0L).toDouble, centeredNumberFormat))
 
       val kadouRate = standard match {
         case None => new Label(6, index + 2, "-", centeredTitleFormat)
-        case Some(standardValue) => new Number(6, index + 2, countQty / standard.getOrElse(0L).toDouble, centeredPercentFormat)
+        case Some(standardValue) => new Number(6, index + 2, countQty.getOrElse(0L) / standard.getOrElse(0L).toDouble, centeredPercentFormat)
       }
 
       sheet.addCell(kadouRate)
@@ -395,7 +395,7 @@ class MachineDefactSummaryExcel(year: Int, month: Int, date: Int, shiftTag: Stri
 
       val okRate = total match {
         case None => new Label(7, index + 2, "-", centeredTitleFormat)
-        case Some(totalValue) => new Number(7, index + 2, countQty / totalValue.toDouble, centeredPercentFormat)
+        case Some(totalValue) => new Number(7, index + 2, countQty.getOrElse(0L) / totalValue.toDouble, centeredPercentFormat)
       }
 
       sheet.addCell(okRate)
@@ -526,15 +526,15 @@ class MachineDefactSummaryExcel(year: Int, month: Int, date: Int, shiftTag: Stri
         case Some(value) => new Number(4, index + 2, value, centeredNumberFormat)
       }
 
-      val countQty = record.get("countQty").toString.toLong
+      val countQty = Option(record.get("countQty")).map(_.toString.toLong)
 
       sheet.addCell(standardCell)
-      sheet.addCell(new Number(5, index + 2, countQty, centeredNumberFormat))
+      sheet.addCell(new Number(5, index + 2, countQty.getOrElse(0L).toDouble, centeredNumberFormat))
 
 
       val kadouRate = standard match {
         case None => new Label(6, index + 2, "-", centeredTitleFormat)
-        case Some(standardValue) => new Number(6, index + 2, countQty / standard.getOrElse(0L).toDouble, centeredPercentFormat)
+        case Some(standardValue) => new Number(6, index + 2, countQty.getOrElse(0L) / standard.getOrElse(0L).toDouble, centeredPercentFormat)
       }
 
       sheet.addCell(kadouRate)
@@ -543,7 +543,7 @@ class MachineDefactSummaryExcel(year: Int, month: Int, date: Int, shiftTag: Stri
 
       val okRate = total match {
         case None => new Label(7, index + 2, "-", centeredTitleFormat)
-        case Some(totalValue) => new Number(7, index + 2, countQty / totalValue.toDouble, centeredPercentFormat)
+        case Some(totalValue) => new Number(7, index + 2, countQty.getOrElse(0L) / totalValue.toDouble, centeredPercentFormat)
       }
 
       sheet.addCell(okRate)
