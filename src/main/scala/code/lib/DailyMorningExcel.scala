@@ -513,7 +513,7 @@ class DailyMorningExcel(year: Int, month: Int, outputStream: OutputStream) {
 
   def createSumRow(sheet: WritableSheet) {
     val rowOffset = 4
-    val row = rowOffset + maxDate
+    val row = rowOffset + maxDate + 1
     val titleCell = new Label(0, row, "TOTAL:", centeredTitleFormat)
 
     sheet.addCell(titleCell)
