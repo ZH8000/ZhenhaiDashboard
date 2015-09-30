@@ -13,9 +13,11 @@ object MonthlySummaryExcel {
   private lazy val zhenhaiDB = MongoDB.zhenhaiDB
 
   def getAllProductPrefix(capacityRange: String) = {
+
     zhenhaiDB("product").find(DBObject("capacityRange" -> capacityRange))
                         .map(record => record("product").toString.split("x")(0))
-                        .toSet.filterNot(_.contains(".")).toList.sortWith(_ < _)
+                        .toSet
+                        .filterNot(_.contains(".")).toList.sortWith(_ < _)
 
   }
 }

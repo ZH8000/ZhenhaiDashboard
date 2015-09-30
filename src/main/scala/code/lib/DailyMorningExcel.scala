@@ -9,12 +9,25 @@ import jxl._
 import jxl.write._
 
 object DailyMorningExcel {
+
+  val validSet = Set(
+    "4x7", "5x11", "6x7", "6x11", "6x15", "8x11", "8x15",
+    "8x20", "10x12", "10x16", "10x20", "10x25", "10x30", "10x40",
+    "12x15", "12x20", "12x25", "12x30", "12x35", "12x40", "12x45",
+    "12x50", "16x20", "16x25", "16x30", "16x35", "16x40", "18x16",
+    "18x20", "18x25", "18x30", "18x35", "18x40", "18x45", "18x50",
+    "20x40", "22x40"
+  )
+
   def getAllProducts = {
     val zhenhaiDB = MongoDB.zhenhaiDB
+
     val productLists = 
       zhenhaiDB("product").distinct("product")
+                          .filter(validSet contains _.toString)
                           .filter(p => p.toString.contains("x") && !p.toString.contains("."))
-                          .filter(p => p.toString.split("x")(0).toDouble <= 18)
+                          .filter(p => p.toString.split("x")(0).toDouble <= 22)
+                          .filterNot(p => p.toString.startsWith("16x") || p.toString.startsWith("18x"))
                           .map(_.toString)
 
     productLists.toList.sortWith { case (product1, product2) =>
@@ -22,7 +35,8 @@ object DailyMorningExcel {
       val Array(radius2, height2) = product2.split("x").map(_.toInt)
 
       radius1 * 1000 + height1 < radius2 * 1000 + height2
-    }
+    } ++ List("16", "18")
+
 
   }
 }
@@ -427,17 +441,40 @@ class DailyMorningExcel(year: Int, month: Int, outputStream: OutputStream) {
   }
 
   def getMonthlyCountForProduct(product: String) = {
-      var dateToCount: Map[String, Long] = Map.empty
-      val dataTable = zhenhaiDB(s"product-$product")
 
-      dataTable.find(DBObject("machineType" -> 2)).foreach { case record =>
-        val shiftDate = record.get("shiftDate").toString
-        val oldValue = dateToCount.get(shiftDate).getOrElse(0L)
-        val newValue = record.get("count_qty").toString.toLong + oldValue
-        dateToCount = dateToCount.updated(shiftDate, newValue)
+      if (product == "16" || product == "18") {
+        var dateToCount: Map[String, Long] = Map.empty
+
+        for (productCode <- DailyMorningExcel.validSet.filter(_.startsWith(product))) {
+
+          println(s"===> productCode in $product: $productCode")
+          val dataTable = zhenhaiDB(s"product-$productCode")
+
+          dataTable.find(DBObject("machineType" -> 2)).foreach { case record =>
+            val shiftDate = record.get("shiftDate").toString
+            val oldValue = dateToCount.get(shiftDate).getOrElse(0L)
+            val newValue = record.get("count_qty").toString.toLong + oldValue
+            dateToCount = dateToCount.updated(shiftDate, newValue)
+          }
+        }
+
+        println(dateToCount)
+
+        dateToCount
+
+      } else {
+        var dateToCount: Map[String, Long] = Map.empty
+        val dataTable = zhenhaiDB(s"product-$product")
+
+        dataTable.find(DBObject("machineType" -> 2)).foreach { case record =>
+          val shiftDate = record.get("shiftDate").toString
+          val oldValue = dateToCount.get(shiftDate).getOrElse(0L)
+          val newValue = record.get("count_qty").toString.toLong + oldValue
+          dateToCount = dateToCount.updated(shiftDate, newValue)
+        }
+
+        dateToCount
       }
-
-      dateToCount
   }
 
   def createMatrix(sheet: WritableSheet) {
