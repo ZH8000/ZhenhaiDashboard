@@ -7,6 +7,38 @@ import net.liftweb.http.rest.RestHelper
 import net.liftweb.http.PlainTextResponse
 import net.liftweb.util.BasicTypesHelpers.AsInt
 
+object MachineStatusRestAPI extends RestHelper {
+  
+  import net.liftweb.http._
+  import code.model._
+  import com.mongodb.casbah.Imports._
+
+  def getMachineStatus(machineID: String) = {
+    val totalCountOfOrders = MongoDB.zhenhaiDB("totalCountOfOrders")
+    val query = MongoDBObject("machineID" -> machineID, "status" -> "11")
+
+    totalCountOfOrders.find(query).toList match {
+      case Nil => NotFoundResponse("NotFound")
+      case records => 
+        val lines = records.map { record => 
+          val lotNo = record.get("lotNo")
+          val partNo = record.get("partNo")
+          val workQty = record.get("workQty")
+          val totalCount = record.get("totalCount")
+          s"$lotNo $partNo $workQty $totalCount" 
+        }
+      
+        PlainTextResponse(lines.mkString("\n"))
+    }
+
+  }
+
+  serve("api" / "machineStatus" prefix {
+    case machineID :: Nil Get req => getMachineStatus(machineID)
+  })
+
+}
+
 object CsvRestAPI extends RestHelper {
 
   def toCSVResponse(csvString: String) = PlainTextResponse(csvString, List("Content-Type" -> "text/csv"), 200)

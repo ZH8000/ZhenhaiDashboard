@@ -335,6 +335,7 @@ class Boot
     LiftRules.dispatch.append(ensureLogin guard JsonRestAPI)
     LiftRules.dispatch.append(ensureLogin guard CsvRestAPI)
     LiftRules.dispatch.append(ensureLogin guard ExcelRestAPI)
+    LiftRules.dispatch.append(MachineStatusRestAPI)
 
     LiftRules.uriNotFound.prepend({
       case (req,failure) => NotFoundAsResponse(errorPageResponse(req, 404))

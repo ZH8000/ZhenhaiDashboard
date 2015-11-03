@@ -367,7 +367,7 @@ class MachineDefactSummaryExcel(year: Int, month: Int, date: Int, shiftTag: Stri
 
       val standard = MachineLevel.find("machineID", machineID).map(x => x.levelA.get).toOption
       val countQty = Option(record.get("countQty")).map(_.toString.toLong)
-      val total   = Option(record.get("total")).map(_.toString.toLong)
+//      val total   = Option(record.get("total")).map(_.toString.toLong)
 
       val standardCell = standard match {
         case None => new Label(4, index + 2, "-", centeredTitleFormat)
@@ -392,6 +392,7 @@ class MachineDefactSummaryExcel(year: Int, month: Int, date: Int, shiftTag: Stri
       val retest    = Option(record.get("retest")).map(_.toString.toLong)
       val policy = Option(record.get("policy")).map(_.toString).getOrElse("")
       val fixer = Option(record.get("fixer")).map(_.toString).getOrElse("")
+      val total: Option[Long] = Some(countQty.getOrElse(0L) + capacity.getOrElse(0L) + lose.getOrElse(0L) + lc.getOrElse(0L) + retest.getOrElse(0L))
 
       val okRate = total match {
         case None => new Label(7, index + 2, "-", centeredTitleFormat)

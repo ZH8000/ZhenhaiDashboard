@@ -353,7 +353,7 @@ class MachineDefactSummary {
       val product = record.get("product").toString
       val area = s"${record.get("floor").toString} 樓 ${record.get("area").toString} 區"
       val countQty = Option(record.get("countQty")).map(_.toString.toLong)
-      val total   = Option(record.get("total")).map(_.toString.toLong)
+
 
       val short     = Option(record.get("short")).map(_.toString.toLong)
       val open      = Option(record.get("open")).map(_.toString.toLong)
@@ -363,6 +363,7 @@ class MachineDefactSummary {
       val retest    = Option(record.get("retest")).map(_.toString.toLong)
       val policy = Option(record.get("policy")).map(_.toString).getOrElse("")
       val fixer = Option(record.get("fixer")).map(_.toString).getOrElse("")
+      val total: Option[Long] = Some(countQty.getOrElse(0L) + capacity.getOrElse(0L) + lose.getOrElse(0L) + lc.getOrElse(0L) + retest.getOrElse(0L))
 
       val kadouRate = standard match {
         case None => "-"
