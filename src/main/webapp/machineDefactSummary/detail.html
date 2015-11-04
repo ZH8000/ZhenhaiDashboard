@@ -164,6 +164,7 @@
               <th>區域</th>
               <th>標準量</th>
               <th>良品數</th>
+              <th>總數</th>
               <th>稼動率</th>
               <th>良品率</th>
               <th>素子插入不良率</th>
@@ -183,6 +184,21 @@
               <td><span class="area">Cell</span></td>
               <td><span class="standard">Cell</span></td>
               <td><span class="countQty">Cell</span></td>
+              <td>
+                <div class="ui accordion">
+                  <div class="title">
+                    <i class="dropdown icon"></i>
+                    <span class="total">Cell</span>
+                  </div>
+                  <div class="content">
+                    素子投入數(<span class="originalTotal"></span>)
+                    <hr/>
+                    良品數(<span class="countQty"></span>) + 不良品 D 數(<span class="defactD"></span>) + 
+                    露白不良數(<span class="white"></span>)
+                  </div>
+                </div>
+              </td>
+
               <td>
                 <div class="ui accordion">
                   <div class="title">
@@ -303,6 +319,8 @@
                     <span class="total">Cell</span>
                   </div>
                   <div class="content">
+                    素子投入數(<span class="originalTotal"></span>)
+                    <hr/>
                     良品數(<span class="countQty"></span>) + 容量不良數(<span class="capacity"></span>) + 
                     損失不良數(<span class="lose"></span>) + LC 不良數(<span class="lc"></span>) + 
                     重測不良數(<span class="retest"></span>)

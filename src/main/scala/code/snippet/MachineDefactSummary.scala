@@ -264,13 +264,15 @@ class MachineDefactSummary {
       val product = record.get("product").toString
       val area = s"${record.get("floor").toString} 樓 ${record.get("area").toString} 區"
       val countQty = Option(record.get("countQty")).map(_.toString.toLong)
-      val total   = Option(record.get("total")).map(_.toString.toLong)
       val defactD = Option(record.get("defactD")).map(_.toString.toLong)
       val white   = Option(record.get("white")).map(_.toString.toLong)
       val rubber  = Option(record.get("rubber")).map(_.toString.toLong)
       val shell   = Option(record.get("shell")).map(_.toString.toLong)
       val policy = Option(record.get("policy")).map(_.toString).getOrElse("")
       val fixer = Option(record.get("fixer")).map(_.toString).getOrElse("")
+      val originalTotal = Option(record.get("total")).map(_.toString.toLong)
+      val inaccurateTotal = Some(countQty.getOrElse(0L) + defactD.getOrElse(0L) + white.getOrElse(0L))
+      val total = originalTotal orElse inaccurateTotal
 
       val kadouRate = standard match {
         case None => "-"
@@ -310,26 +312,27 @@ class MachineDefactSummary {
       }
 
 
-      ".machineID *"    #> machineID &
-      ".machineModel *" #> machineModel &
-      ".product *"      #> product &
-      ".area *"         #> area &
-      ".standard *"     #> standard.getOrElse("-").toString &
-      ".countQty *"     #> countQty.getOrElse(0L) &
-      ".kadou *"        #> kadouRate &
-      ".okRate *"       #> okRate &
-      ".insertRate *"   #> insertRate &
-      ".defactDRate *"  #> defactDRateHolder.map(x => f"$x%.2f %%").getOrElse("-") &
-      ".whiteRate *"    #> whiteRateHolder.map(x => f"$x%.2f %%").getOrElse("-") &
-      ".rubberRate *"   #> rubberRate &
-      ".shellRate *"    #> shellRate &
-      ".total *"        #> total.map(_.toString).getOrElse("無資料") & 
-      ".defactD *"      #> defactD.map(_.toString).getOrElse("無資料") & 
-      ".white *"        #> white.map(_.toString).getOrElse("無資料") & 
-      ".rubber *"       #> rubber.map(_.toString).getOrElse("無資料") & 
-      ".shell *"        #> shell.map(_.toString).getOrElse("無資料") & 
-      ".policy *"       #> SHtml.ajaxText(policy, false, updatePolicy(shiftDate, shiftTag, machineID)_) &
-      ".fixer *"        #> SHtml.ajaxText(fixer, false, updateFixer(shiftDate, shiftTag, machineID)_)
+      ".machineID *"     #> machineID &
+      ".machineModel *"  #> machineModel &
+      ".product *"       #> product &
+      ".area *"          #> area &
+      ".standard *"      #> standard.getOrElse("-").toString &
+      ".countQty *"      #> countQty.getOrElse(0L) &
+      ".kadou *"         #> kadouRate &
+      ".okRate *"        #> okRate &
+      ".insertRate *"    #> insertRate &
+      ".defactDRate *"   #> defactDRateHolder.map(x => f"$x%.2f %%").getOrElse("-") &
+      ".whiteRate *"     #> whiteRateHolder.map(x => f"$x%.2f %%").getOrElse("-") &
+      ".rubberRate *"    #> rubberRate &
+      ".shellRate *"     #> shellRate &
+      ".total *"         #> total.map(_.toString).getOrElse("無資料") & 
+      ".originalTotal *" #> originalTotal.map(_.toString).getOrElse("無資料") & 
+      ".defactD *"       #> defactD.map(_.toString).getOrElse("無資料") & 
+      ".white *"         #> white.map(_.toString).getOrElse("無資料") & 
+      ".rubber *"        #> rubber.map(_.toString).getOrElse("無資料") & 
+      ".shell *"         #> shell.map(_.toString).getOrElse("無資料") & 
+      ".policy *"        #> SHtml.ajaxText(policy, false, updatePolicy(shiftDate, shiftTag, machineID)_) &
+      ".fixer *"         #> SHtml.ajaxText(fixer, false, updateFixer(shiftDate, shiftTag, machineID)_)
     }
   }
 
@@ -363,7 +366,9 @@ class MachineDefactSummary {
       val retest    = Option(record.get("retest")).map(_.toString.toLong)
       val policy = Option(record.get("policy")).map(_.toString).getOrElse("")
       val fixer = Option(record.get("fixer")).map(_.toString).getOrElse("")
-      val total: Option[Long] = Some(countQty.getOrElse(0L) + capacity.getOrElse(0L) + lose.getOrElse(0L) + lc.getOrElse(0L) + retest.getOrElse(0L))
+      val originalTotal = Option(record.get("total")).map(_.toString.toLong)
+      val inaccurateTotal = Some(countQty.getOrElse(0L) + capacity.getOrElse(0L) + lose.getOrElse(0L) + lc.getOrElse(0L) + retest.getOrElse(0L))
+      val total = originalTotal orElse inaccurateTotal
 
       val kadouRate = standard match {
         case None => "-"
@@ -405,29 +410,30 @@ class MachineDefactSummary {
         retestValue <- retest
       } yield (retestValue / totalValue.toDouble)
 
-      ".machineID *"    #> machineID &
-      ".machineModel *" #> machineModel &
-      ".product *"      #> product &
-      ".area *"         #> area &
-      ".standard *"     #> standard.getOrElse("-").toString &
-      ".countQty *"     #> countQty.getOrElse(0L) &
-      ".kadou *"        #> kadouRate &
-      ".okRate *"       #> okRate &
-      ".shortRate *"    #> shortHolder.map(x => f"$x%.2f %%").getOrElse("-") &
-      ".openRate *"     #> openHolder.map(x => f"$x%.2f %%").getOrElse("-") &
-      ".capacityRate *" #> capacityHolder.map(x => f"$x%.2f %%").getOrElse("-") &
-      ".loseRate *"     #> loseHolder.map(x => f"$x%.2f %%").getOrElse("-") &
-      ".lcRate *"       #> lcHolder.map(x => f"$x%.2f %%").getOrElse("-") &
-      ".retestRate *"   #> retestHolder.map(x => f"$x%.2f %%").getOrElse("-") &
-      ".total   *"      #> total.map(_.toString).getOrElse("無資料") &
-      ".short   *"      #> short.map(_.toString).getOrElse("無資料") &
-      ".open   *"       #> open.map(_.toString).getOrElse("無資料") &
-      ".capacity   *"   #> capacity.map(_.toString).getOrElse("無資料") &
-      ".lose    *"      #> lose.map(_.toString).getOrElse("無資料") &
-      ".lc      *"      #> lc.map(_.toString).getOrElse("無資料") &
-      ".retest  *"      #> retest.map(_.toString).getOrElse("無資料") &
-      ".policy *"       #> SHtml.ajaxText(policy, false, updatePolicy(shiftDate, shiftTag, machineID)_) &
-      ".fixer *"        #> SHtml.ajaxText(fixer, false, updateFixer(shiftDate, shiftTag, machineID)_)
+      ".machineID *"     #> machineID &
+      ".machineModel *"  #> machineModel &
+      ".product *"       #> product &
+      ".area *"          #> area &
+      ".standard *"      #> standard.getOrElse("-").toString &
+      ".countQty *"      #> countQty.getOrElse(0L) &
+      ".kadou *"         #> kadouRate &
+      ".okRate *"        #> okRate &
+      ".shortRate *"     #> shortHolder.map(x => f"$x%.2f %%").getOrElse("-") &
+      ".openRate *"      #> openHolder.map(x => f"$x%.2f %%").getOrElse("-") &
+      ".capacityRate *"  #> capacityHolder.map(x => f"$x%.2f %%").getOrElse("-") &
+      ".loseRate *"      #> loseHolder.map(x => f"$x%.2f %%").getOrElse("-") &
+      ".lcRate *"        #> lcHolder.map(x => f"$x%.2f %%").getOrElse("-") &
+      ".retestRate *"    #> retestHolder.map(x => f"$x%.2f %%").getOrElse("-") &
+      ".total   *"       #> total.map(_.toString).getOrElse("無資料") &
+      ".originalTotal *" #> originalTotal.map(_.toString).getOrElse("無資料") & 
+      ".short   *"       #> short.map(_.toString).getOrElse("無資料") &
+      ".open   *"        #> open.map(_.toString).getOrElse("無資料") &
+      ".capacity   *"    #> capacity.map(_.toString).getOrElse("無資料") &
+      ".lose    *"       #> lose.map(_.toString).getOrElse("無資料") &
+      ".lc      *"       #> lc.map(_.toString).getOrElse("無資料") &
+      ".retest  *"       #> retest.map(_.toString).getOrElse("無資料") &
+      ".policy *"        #> SHtml.ajaxText(policy, false, updatePolicy(shiftDate, shiftTag, machineID)_) &
+      ".fixer *"         #> SHtml.ajaxText(fixer, false, updateFixer(shiftDate, shiftTag, machineID)_)
     }
   }
 
