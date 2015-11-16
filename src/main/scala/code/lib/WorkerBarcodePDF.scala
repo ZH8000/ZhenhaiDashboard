@@ -23,7 +23,7 @@ object WorkerBarcodePDF {
 
     val barcodePrefix = if (worker.workerType.get == "maintain") "M" else "P"
 
-    barCode.setCode("XXX" + barcodePrefix + worker.id.toString.toUpperCase)
+    barCode.setCode("XXX" + barcodePrefix + worker.id.toString.toUpperCase + worker.workerID.toString.toUpperCase)
     nameTag.setAlignment(Element.ALIGN_CENTER)
     departmentTag.setAlignment(Element.ALIGN_CENTER)
 
