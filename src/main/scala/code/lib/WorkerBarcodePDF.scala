@@ -42,10 +42,12 @@ object WorkerBarcodePDF {
   }
 
   def createPDF(outputStream: OutputStream) = {
-    val document = new Document(PageSize.A4)
+    val document = new Document(PageSize.A4, 0, 0, 0, 0)
     val pdfWriter = PdfWriter.getInstance(document, outputStream)
     val table = new PdfPTable(2)
     val workers = Worker.findAll("isDeleted", false)
+
+    table.setWidthPercentage(95)
 
     document.open()
     document.newPage()
