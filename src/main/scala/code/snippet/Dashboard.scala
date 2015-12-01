@@ -37,6 +37,15 @@ class Dashboard {
     }
   }
 
+  def aliveLink = {
+    if (S.hostAndPath contains "221.4.141.146") {
+      "#aliveButton [href]" #> "http://221.4.141.146:8080/pic" 
+    } else {
+      "#aliveButton [href]" #> "#" &
+      "#aliveButton [class+]" #> "disabled"
+    }
+  }
+
   def monthPicker = {
     "#maxYear [value]" #> maxDate.substring(0, 4) &
     "#maxMonth [value]" #> maxDate.substring(5, 7) &
