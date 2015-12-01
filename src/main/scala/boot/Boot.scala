@@ -311,8 +311,11 @@ class Boot
     Menu("ProductionCard2") / "productionCard"  / *
       >> getTemplate("productionCard/detail")
       >> needLogin
-      >> hasPermission(PermissionContent.ReportOrderStatus)
+      >> hasPermission(PermissionContent.ReportOrderStatus),
 
+    Menu("Announcement") / "management" / "announcement" 
+      >> needLogin
+      >> hasPermission(PermissionContent.ManagementAnnouncement)
   )
 
   val ensureLogin: PartialFunction[Req, Unit] = {
