@@ -16,7 +16,7 @@ object WorkerBarcodePDF {
     val department = worker.department.get
     val workerID = worker.workerID.get
     val cell = new PdfPCell
-    val barCode = new Barcode39()
+    val barCode = new Barcode128()
 
     val departmentTag = new Paragraph(s"【$department】 $workerID", chineseFont)
     val nameTag = new Paragraph(s"$workerName", chineseFont)
