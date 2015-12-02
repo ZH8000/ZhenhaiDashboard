@@ -6,11 +6,11 @@
         <lift:warning_msg class="ui yellow sys message"></lift:warning_msg>
         <lift:notice_msg class="ui green sys message"></lift:notice_msg>
       </div>
-      <form class="ui form segment" id="updateAnnouncementForm">
+      <form class="ui form segment" id="updateAnnouncementForm" data-lift="Announcement.updateAnnouncementForm?form=post">
         <div class="field">
           <label>公告內容</label>
           <div class="ui input">
-            <textarea name="name"></textarea>
+            <textarea name="announcement"></textarea>
           </div>
         </div>
         <input class="ui right floated blue submit button" type="submit" value="更新">
