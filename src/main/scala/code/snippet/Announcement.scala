@@ -37,8 +37,15 @@ class Announcement {
   }
 
   def render = {
-    val announcement = Announcement.findAll.headOption.flatMap(_.content.get)
-    "*" #> announcement.getOrElse("")
+    
+    val announcementList: List[String] = for {
+      announcement <- Announcement.findAll.headOption.toList
+      announcementContent <- announcement.content.get.toList
+      announcementLine <- announcementContent.split("\n").toList
+    } yield announcementLine
+
+    ".text" #> announcementList.map(x => ".text *" #> x)
+
   }
 
 }
