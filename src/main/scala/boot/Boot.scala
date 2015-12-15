@@ -24,14 +24,21 @@ import scala.xml.NodeSeq
 
 class Boot 
 {
+  /**
+   *  取得
+   */
   private def getTemplate(path: String) = Template(() => Templates(path.split("/").toList) openOr NodeSeq.Empty)
+
+
   private def needLogin = If(() => User.isLoggedIn, () => S.redirectTo("/", () => S.error("請先登入")))
+
   private def hasPermission(permission: PermissionContent.Value) = If(
     () => { User.CurrentUser.get.map(_.hasPermission(permission)).openOr(false) }, 
     () => S.redirectTo("/", () => S.error("權限不足"))
   )
 
   private def redirectToDashboardIfLoggedIn = If(() => !User.isLoggedIn, () => S.redirectTo("/dashboard"))
+
   private def logout = EarlyResponse{ () =>
     User.isLoggedIn match {
       case false => Full(NotFoundResponse("NotFound"))
@@ -42,9 +49,11 @@ class Boot
   }
 
   val editWorkerMenu = Menu.param[Worker]("EditWorker", "EditWorker", id => Worker.find(id), worker => worker.id.get.toString)
+
   val editUserMenu = Menu.param[User]("EditUser", "EditUser", id => User.find(id), user => user.id.get.toString)
  
   val editAlarmMenu = Menu.param[Alarm]("EditAlarm", "EditAlarm", id => Alarm.find(id), alarm => alarm.id.get.toString)
+
   def workerMenu(menuID: String) = Menu.param[Worker](menuID, menuID, id => Worker.find(id), worker => worker.id.get.toString)
 
 
@@ -72,11 +81,10 @@ class Boot
     Menu("DefactSummarySort") / "machineDefactSummary" / * / * / * / * >> getTemplate("machineDefactSummary/sort") >> needLogin,
     Menu("DefactSummaryDetail") / "machineDefactSummary" / * / * / * / * / * >> getTemplate("machineDefactSummary/detail") >> needLogin,
 
-    Menu("Alert") / "alert" / "index" >> needLogin,
-    Menu("Alert") / "alert" / "strangeQty" >> needLogin,
-    Menu("Alert") / "alert" / "alertDate" >> needLogin,
-    Menu("Alert") / "alert" / "alert" / * >> getTemplate("alert/alert") >> needLogin,
-    Menu("Alive") / "alive",
+    Menu("AlertIndex") / "alert" / "index" >> needLogin,
+    Menu("AlertStrangeQty") / "alert" / "strangeQty" >> needLogin,
+    Menu("AlertDate") / "alert" / "alertDate" >> needLogin,
+    Menu("AlertAlert") / "alert" / "alert" / * >> getTemplate("alert/alert") >> needLogin,
     Menu("Capacity1") / "capacity" 
       >> getTemplate("capacity/overview") 
       >> needLogin 
