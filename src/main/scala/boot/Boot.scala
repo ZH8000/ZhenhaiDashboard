@@ -329,7 +329,7 @@ class Boot
 
   def boot 
   {
-    MongoDB.defineDb(DefaultConnectionIdentifier, new MongoClient, "zhenhai")
+    MongoDB.defineDb(DefaultConnectionIdentifier, new MongoClient, code.model.MongoDB.DatabaseName)
 
     // Force the request to be UTF-8
     LiftRules.early.append(_.setCharacterEncoding("UTF-8"))
