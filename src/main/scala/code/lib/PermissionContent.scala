@@ -14,13 +14,14 @@ object PermissionContent extends Enumeration {
   val ManagementWorker = Value("網站管理－員工列表")
   val ManagementAlarm = Value("網站管理－維修行事曆")
   val ManagementMachineLevel = Value("網站管理－機台生產均線")
+  val ManagementAnnouncement = Value("網站管理－跑馬燈公告")
   val ManagementAccount = Value("帳號管理")
 
   val allPermissions = List(
     ReportPhi, ReportCapacity, ReportMonthly, ReportDaily,
     ReportWorker, ReportTodayOrder, ReportOrderStatus, ReportMaintainLog,
     ReportBug, ManagementWorker, ManagementAlarm, ManagementMachineLevel,
-    ManagementAccount
+    ManagementAnnouncement, ManagementAccount
   )
 }
 

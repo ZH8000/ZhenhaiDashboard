@@ -311,8 +311,11 @@ class Boot
     Menu("ProductionCard2") / "productionCard"  / *
       >> getTemplate("productionCard/detail")
       >> needLogin
-      >> hasPermission(PermissionContent.ReportOrderStatus)
+      >> hasPermission(PermissionContent.ReportOrderStatus),
 
+    Menu("Announcement") / "management" / "announcement" 
+      >> needLogin
+      >> hasPermission(PermissionContent.ManagementAnnouncement)
   )
 
   val ensureLogin: PartialFunction[Req, Unit] = {
@@ -326,7 +329,7 @@ class Boot
 
   def boot 
   {
-    MongoDB.defineDb(DefaultConnectionIdentifier, new MongoClient, "zhenhai")
+    MongoDB.defineDb(DefaultConnectionIdentifier, new MongoClient, code.model.MongoDB.DatabaseName)
 
     // Force the request to be UTF-8
     LiftRules.early.append(_.setCharacterEncoding("UTF-8"))

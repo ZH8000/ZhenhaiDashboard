@@ -16,6 +16,8 @@
 
 
   <script type="text/javascript" src="/static/lib/javascript/jquery-2.1.1.js"></script>
+  <script type="text/javascript" src="/static/lib/javascript/jquery.cycle2.js"></script>
+
   <script type="text/javascript" src="/static/jQueryUI/jquery-ui.min.js"></script>
   <script type="text/javascript" src="/static/sementicUI/semantic.min.js"></script>
   <script type="text/javascript" src="/static/lib/javascript/d3.v3.min.js"></script>
@@ -34,6 +36,7 @@
 
   <script src="/static/custom/jquery.dataTables.js"></script>
   <script src="/static/custom/dataTables.fixedColumns.js"></script>
+  <script src="/static/custom/dataTables.fixedColumns.js"></script>
 
 </head>
 <body>
@@ -41,8 +44,13 @@
     <div class="container">
       <a href="/" class="title header item">Zhenhai Dashboard</a>
       <div data-lift="embed?what=backgroundChanger"></div>
+      <div data-lift="TestCond.loggedIn" class="item" style="color: #FFFF00; width: 30%; padding: 15px;" >
+        <div class="cycle-slideshow" data-cycle-timeout="10000" data-cycle-fx="scrollHorz" data-cycle-slides="> div" data-lift="Announcement">
+          <div class="text">公告測試之一</div>
+        </div>
+      </div>
       <div class="right menu">
-        <div class="item">Information Center</div>
+        <div class="item"><span data-lift="SiteName">SiteName</span></div>
         <div class="ui simple dropdown item" data-lift="TestCond.loggedIn">
           <div><i class="ui large list icon"></i></div>
           <div class="menu">
