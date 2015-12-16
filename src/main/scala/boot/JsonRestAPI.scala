@@ -141,13 +141,5 @@ object JsonRestAPI extends RestHelper {
     case machineType :: machineModel :: machineID :: "pie" :: Nil Get req => JsonResponse(MachineJSON.detailPie(machineID))
     case machineType :: machineModel :: machineID :: "table" :: Nil Get req => JsonResponse(MachineJSON.detailTable(machineID))
   })
-
-
-  serve {
-    case "api" :: "json" :: "alert" :: Nil Get req => JsonResponse(AlertJSON.overview)
-  }
-
-
-
 }
 
