@@ -71,7 +71,7 @@ class WorkerStatistics {
 
   def overviewTable = {
 
-    val records = WorkerStatisticsJSON()
+    val records = WorkerStatistics()
     val maxValue = if (records.isEmpty) 0 else records.map(_.countQty).max
     val scale = Scale(0, maxValue, 10, 300)
 
@@ -96,7 +96,7 @@ class WorkerStatistics {
   def workerTable = {
 
     val workerID = S.request.map(_.path(1)).filterNot(_ == "index").openOr("")
-    val records = WorkerStatisticsJSON(workerID)
+    val records = WorkerStatistics(workerID)
     val maxValue = if (records.isEmpty) 0 else records.map(_.countQty).max
     val scale = Scale(0, maxValue, 10, 300)
 
@@ -121,7 +121,7 @@ class WorkerStatistics {
 
     val workerID = S.request.map(_.path(1)).filterNot(_ == "index").openOr("")
     val yearAndMonth = S.request.map(_.path(2)).filterNot(_ == "index").openOr("")
-    val records = WorkerStatisticsJSON(workerID, yearAndMonth)
+    val records = WorkerStatistics(workerID, yearAndMonth)
     val maxValue = if (records.isEmpty) 0 else records.map(_.countQty).max
     val scale = Scale(0, maxValue, 10, 300)
 
@@ -147,7 +147,7 @@ class WorkerStatistics {
     val workerID = S.request.map(_.path(1)).filterNot(_ == "index").openOr("")
     val yearAndMonth = S.request.map(_.path(2)).filterNot(_ == "index").openOr("")
     val week = S.request.map(_.path(3)).filterNot(_ == "index").openOr("")
-    val records = WorkerStatisticsJSON(workerID, yearAndMonth, week)
+    val records = WorkerStatistics(workerID, yearAndMonth, week)
 
     val maxValue = if (records.isEmpty) 0 else records.map(_.countQty).max
     val scale = Scale(0, maxValue, 10, 300)
@@ -177,7 +177,7 @@ class WorkerStatistics {
     val week = S.request.map(_.path(3)).filterNot(_ == "index").openOr("")
     val date = S.request.map(_.path(4)).filterNot(_ == "index").openOr("")
 
-    val records = WorkerStatisticsJSON(workerID, yearAndMonth, week, date)
+    val records = WorkerStatistics(workerID, yearAndMonth, week, date)
     val maxValue = if (records.isEmpty) 0 else records.map(_.countQty).max
     val scale = Scale(0, maxValue, 10, 300)
 
