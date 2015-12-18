@@ -5,17 +5,28 @@ import com.itextpdf.text._
 import com.itextpdf.text.pdf._
 import java.io._
 
+/**
+ *  用來產生網站上「網站管理」－＞「維修代碼」中的條碼的 PDF 檔案
+ */
 object MaintenanceCodePDF {
 
+  // 中文字型設定
   val baseFont = BaseFont.createFont(
-    "MHei-Medium",
-    "UniCNS-UCS2-H", // 橫式中文
-     BaseFont.NOT_EMBEDDED
+    "MHei-Medium",          // 內建中文字型
+    "UniCNS-UCS2-H",        // 橫式中文
+     BaseFont.NOT_EMBEDDED  // 非內嵌字型
   )
 
-  val chineseFont = new Font(baseFont, 6) 
-  val titleFont = new Font(baseFont, 10)
+  val chineseFont = new Font(baseFont, 6)     // 項目的標題
+  val titleFont = new Font(baseFont, 10)      // 標題的字型
 
+  /**
+   *  建立維修條碼的
+   *
+   *  @param    code            維修項目的編號
+   *  @param    description     維修項目的描述
+   *  @param    pdfWriter       寫到哪個 PDF
+   */
   def createBarcodeLabel(code: Int, description: String, pdfWriter: PdfWriter) = {
 
     val cell = new PdfPCell
@@ -37,11 +48,13 @@ object MaintenanceCodePDF {
     cell
   }
 
-  def insertBlankPage(document: Document, pdfWriter: PdfWriter) = {
-    document.newPage()
-    pdfWriter.setPageEmpty(false)
-  }
-
+  /**
+   *  建立某個製程中的所有的維修條碼
+   *
+   *  @param    stepTitle     製程標頭
+   *  @param    stepCode      製程的代碼（1 = 加締 / 2 = 組立……）
+   *  @param    pdfWriter     要寫到哪個 PDF 中
+   */
   def createCell(stepTitle: String, stepCode: Int, pdfWriter: PdfWriter) = {
     val outterCell = new PdfPCell
     val titleParagraph = new Paragraph(stepTitle, titleFont)
@@ -63,6 +76,11 @@ object MaintenanceCodePDF {
     outterCell
   }
 
+  /**
+   *  建立維修代碼的條碼的 PDF 檔
+   *
+   *  @param      outputStream      要將維修代碼的條碼輸出到哪個 OutputStream
+   */
   def createPDF(outputStream: OutputStream) = {
     val document = new Document(PageSize.A4.rotate)
     val pdfWriter = PdfWriter.getInstance(document, outputStream)
