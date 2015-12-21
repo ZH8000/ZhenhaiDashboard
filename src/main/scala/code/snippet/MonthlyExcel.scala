@@ -2,6 +2,7 @@ package code.snippet
 
 import code.lib._
 import code.model._
+import code.excel._
 import com.mongodb.casbah.Imports._
 import java.net.URLDecoder
 import java.text.SimpleDateFormat
