@@ -28,8 +28,8 @@ class MachineDefactSummary {
     case "machineDefactSummary" :: year :: month :: date :: Nil =>
 
       List(
-        Step("總覽", true, Some(s"/viewDetail")),
-        Step(f"$year-$month-$date", true, Some(f"/machineDefactSummary/$year/$month/$date")),
+        Step("產量統計", true, Some(s"/viewDetail")),
+        Step(f"生產狀況－$year-$month-$date", true, Some(f"/machineDefactSummary/$year/$month/$date")),
         Step("班別"),
         Step("分類")
       )
@@ -44,8 +44,8 @@ class MachineDefactSummary {
       }
 
       List(
-        Step("總覽", true, Some(s"/viewDetail")),
-        Step(f"$year-$month-$date", true, Some(f"/machineDefactSummary/$year/$month/$date")),
+        Step("產量統計", true, Some(s"/viewDetail")),
+        Step(f"生產狀況－$year-$month-$date", true, Some(f"/machineDefactSummary/$year/$month/$date")),
         Step(shiftTitle, true, Some(f"/machineDefactSummary/$year/$month/$date/$shift")),
         Step("分類")
       )
@@ -66,8 +66,8 @@ class MachineDefactSummary {
       }
 
       List(
-        Step("總覽", true, Some(s"/viewDetail")),
-        Step(f"$year-$month-$date", true, Some(f"/machineDefactSummary/$year/$month/$date")),
+        Step("產量統計", true, Some(s"/viewDetail")),
+        Step(f"生產狀況－$year-$month-$date", true, Some(f"/machineDefactSummary/$year/$month/$date")),
         Step(shiftTitle, true, Some(f"/machineDefactSummary/$year/$month/$date/$shift")),
         Step(sortTitle, true)
       )

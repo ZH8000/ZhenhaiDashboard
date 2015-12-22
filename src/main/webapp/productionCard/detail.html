@@ -1,7 +1,15 @@
 <div data-lift="Surround?with=default;at=content">
   <div class="center aligned one column ui grid">
+    <div class="column" data-lift="ProductionCard.lotNo">
+      <div class="ui two steps">
+        <a href="/productionCard" class="ui active step">生產管理卡</a>
+        <a href="#" class="ui lotNo active step">製令編號</a>
+      </div>
+    </div>
+
     <div class="column">
       <div class="one column ui page grid" data-lift="LazyLoad?template=loading">
+
         <div class="column" data-lift="ProductionCard">
 
           <div data-lift="lift:msgs?showAll=true">

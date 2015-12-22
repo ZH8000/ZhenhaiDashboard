@@ -12,7 +12,8 @@ class TotalReport {
   def getSteps(uri: List[String]) = uri match {
     case "total" :: Nil => 
       List(
-        Step("總覽", true, Some("/total")), 
+        Step("產量統計", true, Some("/viewDetail")),
+        Step("依φ別", true, Some("/total")), 
         Step("工序"),
         Step("Φ 別"),
         Step("月份"),
@@ -23,7 +24,8 @@ class TotalReport {
 
     case "total" :: step :: Nil =>
       List(
-        Step("總覽", true, Some("/total")), 
+        Step("產量統計", true, Some("/viewDetail")),
+        Step("依φ別", true, Some("/total")), 
         Step(stepTitle(urlDecode(step)), true, Some(s"/total/$step")),
         Step("Φ 別"),
         Step("月份"),
@@ -34,7 +36,8 @@ class TotalReport {
 
     case "total" :: step :: product :: Nil =>
       List(
-        Step("總覽", true, Some("/total")), 
+        Step("產量統計", true, Some("/viewDetail")),
+        Step("依φ別", true, Some("/total")), 
         Step(stepTitle(urlDecode(step)), true, Some(s"/total/$step")),
         Step(product, true, Some(s"/total/$step/$product")),
         Step("月份"),
@@ -45,7 +48,8 @@ class TotalReport {
 
     case "total" :: step :: product :: year :: month :: Nil =>
       List(
-        Step("總覽", true, Some("/total")), 
+        Step("產量統計", true, Some("/viewDetail")),
+        Step("依φ別", true, Some("/total")), 
         Step(stepTitle(urlDecode(step)), true, Some(s"/total/$step")),
         Step(product, true, Some(s"/total/$step/$product")),
         Step(s"$year-$month", true, Some(s"/total/$step/$product/$year/$month")),
@@ -56,7 +60,8 @@ class TotalReport {
 
     case "total" :: step :: product :: year :: month :: week :: Nil =>
       List(
-        Step("總覽", true, Some("/total")), 
+        Step("產量統計", true, Some("/viewDetail")),
+        Step("依φ別", true, Some("/total")), 
         Step(stepTitle(urlDecode(step)), true, Some(s"/total/$step")),
         Step(product, true, Some(s"/total/$step/$product")),
         Step(s"$year-$month", true, Some(s"/total/$step/$product/$year/$month")),
@@ -67,7 +72,8 @@ class TotalReport {
 
     case "total" :: step :: product :: year :: month :: week :: date :: Nil =>
       List(
-        Step("總覽", true, Some("/total")), 
+        Step("產量統計", true, Some("/viewDetail")),
+        Step("依φ別", true, Some("/total")), 
         Step(stepTitle(urlDecode(step)), true, Some(s"/total/$step")),
         Step(product, true, Some(s"/total/$step/$product")),
         Step(s"$year-$month", true, Some(s"/total/$step/$product/$year/$month")),
@@ -78,7 +84,8 @@ class TotalReport {
 
     case "total" :: step :: product :: year :: month :: week :: date :: machineID :: Nil =>
       List(
-        Step("總覽", true, Some("/total")), 
+        Step("產量統計", true, Some("/viewDetail")),
+        Step("依φ別", true, Some("/total")), 
         Step(stepTitle(urlDecode(step)), true, Some(s"/total/$step")),
         Step(product, true, Some(s"/total/$step/$product")),
         Step(s"$year-$month", true, Some(s"/total/$step/$product/$year/$month")),

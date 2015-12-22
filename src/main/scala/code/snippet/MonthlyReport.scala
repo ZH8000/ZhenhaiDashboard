@@ -15,7 +15,8 @@ class MonthlyReport {
 
     case "monthly" :: year :: Nil =>
       List(
-        Step(s"$year 年", true, Some(s"/monthly/$year")),
+        Step("產量統計", true, Some("/viewDetail")),
+        Step(s"月報表－$year 年", true, Some(s"/monthly/$year")),
         Step("工序"),
         Step("月份"),
         Step("週"),
@@ -25,7 +26,8 @@ class MonthlyReport {
 
     case "monthly" :: year :: step :: Nil =>
       List(
-        Step(s"$year 年", true, Some(s"/monthly/$year")),
+        Step("產量統計", true, Some("/viewDetail")),
+        Step(s"月報表－$year 年", true, Some(s"/monthly/$year")),
         Step(stepTitle(urlDecode(step)), true, Some(s"/monthly/$year/$step")),
         Step("月份"),
         Step("週"),
@@ -36,7 +38,8 @@ class MonthlyReport {
 
     case "monthly" :: year :: step :: month :: Nil =>
       List(
-        Step(s"$year 年", true, Some(s"/monthly/$year")),
+        Step("產量統計", true, Some("/viewDetail")),
+        Step(s"月報表－$year 年", true, Some(s"/monthly/$year")),
         Step(stepTitle(urlDecode(step)), true, Some(s"/monthly/$year/$step")),
         Step(s"$month 月", true, Some(s"/monthly/$year/$step/$month")),
         Step("週"),
@@ -46,7 +49,8 @@ class MonthlyReport {
 
     case "monthly" :: year :: step :: month :: week :: Nil =>
       List(
-        Step(s"$year 年", true, Some(s"/monthly/$year")),
+        Step("產量統計", true, Some("/viewDetail")),
+        Step(s"月報表－$year 年", true, Some(s"/monthly/$year")),
         Step(stepTitle(urlDecode(step)), true, Some(s"/monthly/$year/$step")),
         Step(s"$month 月", true, Some(s"/monthly/$year/$step/$month")),
         Step(s"第 $week 週", true, Some(s"/monthly/$year/$step/$month/$week")),
@@ -56,7 +60,8 @@ class MonthlyReport {
 
     case "monthly" :: year :: step :: month :: week :: date :: Nil =>
       List(
-        Step(s"$year 年", true, Some(s"/monthly/$year")),
+        Step("產量統計", true, Some("/viewDetail")),
+        Step(s"月報表－$year 年", true, Some(s"/monthly/$year")),
         Step(stepTitle(urlDecode(step)), true, Some(s"/monthly/$year/$step")),
         Step(s"$month 月", true, Some(s"/monthly/$year/$step/$month")),
         Step(s"第 $week 週", true, Some(s"/monthly/$year/$step/$month/$week")),
@@ -66,7 +71,8 @@ class MonthlyReport {
 
     case "monthly" :: year :: step :: month :: week :: date :: machineID :: Nil =>
       List(
-        Step(s"$year 年", true, Some(s"/monthly/$year")),
+        Step("產量統計", true, Some("/viewDetail")),
+        Step(s"月報表－$year 年", true, Some(s"/monthly/$year")),
         Step(stepTitle(urlDecode(step)), true, Some(s"/monthly/$year/$step")),
         Step(s"$month 月", true, Some(s"/monthly/$year/$step/$month")),
         Step(s"第 $week 週", true, Some(s"/monthly/$year/$step/$month/$week")),

@@ -56,7 +56,7 @@ class KadouExcel {
       ".step2"  #> SHtml.ajaxText(step2Value.map(_.toString).getOrElse(""), false, updateValue(fullDate, 2)_) &
       ".step3"  #> SHtml.ajaxText(step3Value.map(_.toString).getOrElse(""), false, updateValue(fullDate, 3)_) &
       ".step4"  #> SHtml.ajaxText(step4Value.map(_.toString).getOrElse(""), false, updateValue(fullDate, 4)_) &
-      ".step5"  #> SHtml.ajaxText(step4Value.map(_.toString).getOrElse(""), false, updateValue(fullDate, 5)_)
+      ".step5"  #> SHtml.ajaxText(step5Value.map(_.toString).getOrElse(""), false, updateValue(fullDate, 5)_)
     }
   }
 }

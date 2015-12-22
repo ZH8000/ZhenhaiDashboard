@@ -18,6 +18,12 @@ class MachineMaintainLog {
     ".dataBlock" #> NodeSeq.Empty
   }
 
+  def dateLink = {
+    val Array(_, date) = S.uri.drop(1).split("/")
+
+    ".date *" #> date
+  }
+
   def dateList = {
     ".maintenanceDate" #> MachineMaintainLog.dateList.map { date =>
       "a [href]" #> s"/maintenanceLog/$date" &

@@ -41,6 +41,12 @@ class ProductionCard {
     "type=submit" #> SHtml.onSubmitUnit(process)
   }
 
+  def lotNo = {
+    val Array(_, lotNo) = S.uri.split("/").drop(1)
+
+    ".lotNo *" #> lotNo
+  }
+
   def renderTable(orderStatus: code.model.OrderStatus) = {
 
     val requireCount = (orderStatus.inputCount.get / 1.04).toLong

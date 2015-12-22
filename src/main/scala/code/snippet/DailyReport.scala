@@ -13,7 +13,8 @@ class DailyReport {
 
     case "daily" :: year :: month :: Nil =>
       List(
-        Step(s"$year 年 $month 月", true, Some(s"/daily/$year/$month")),
+        Step("產量統計", true, Some("/viewDetail")),
+        Step(s"日報表－$year 年 $month 月", true, Some(s"/daily/$year/$month")),
         Step("工序"),
         Step("日期"),
         Step("機器")
@@ -21,7 +22,8 @@ class DailyReport {
 
     case "daily" :: year :: month :: step :: Nil =>
       List(
-        Step(s"$year 年 $month 月", true, Some(s"/daily/$year/$month")),
+        Step("產量統計", true, Some("/viewDetail")),
+        Step(s"日報表－$year 年 $month 月", true, Some(s"/daily/$year/$month")),
         Step(stepTitle(urlDecode(step)), true, Some(s"/daily/$year/$month/$step")),
         Step("日期"),
         Step("機器")
@@ -29,7 +31,8 @@ class DailyReport {
 
     case "daily" :: year :: month :: step :: date :: Nil =>
       List(
-        Step(s"$year 年 $month 月", true, Some(s"/daily/$year/$month")),
+        Step("產量統計", true, Some("/viewDetail")),
+        Step(s"日報表－$year 年 $month 月", true, Some(s"/daily/$year/$month")),
         Step(stepTitle(urlDecode(step)), true, Some(s"/daily/$year/$month/$step")),
         Step(s"$date 日", true, Some(s"/daily/$year/$month/$step/$date")),
         Step("機器")
@@ -37,7 +40,8 @@ class DailyReport {
 
     case "daily" :: year :: month :: step :: date :: machineID :: Nil =>
       List(
-        Step(s"$year 年 $month 月", true, Some(s"/daily/$year/$month")),
+        Step("產量統計", true, Some("/viewDetail")),
+        Step(s"日報表－$year 年 $month 月", true, Some(s"/daily/$year/$month")),
         Step(stepTitle(urlDecode(step)), true, Some(s"/daily/$year/$month/$step")),
         Step(s"$date 日", true, Some(s"/daily/$year/$month/$step/$date")),
         Step(s"$machineID", true, Some(s"/daily/$year/$month/$step/$date/$machineID"))
