@@ -38,7 +38,6 @@ class TodayOrder {
           ".partNo *" #> record.partNo &
           ".customer *" #> record.customer &
           ".product *" #> record.product &
-          ".status *" #> record.status &
           ".step1Status *" #> step1Status &
           ".step2Status *" #> step2Status &
           ".step3Status *" #> step3Status &
