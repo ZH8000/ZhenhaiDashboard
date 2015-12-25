@@ -13,13 +13,23 @@ import net.liftweb.http.js.JsCmds
 import scala.xml.NodeSeq
 import scala.collection.JavaConversions._
 
+/**
+ *  用來顯示 {{{/alert/}}} 此網中的動態資料的 Snippet
+ *
+ */
 class AlertList {
 
+  /**
+   *  當無資料時顯示「查無機台異常」並隱藏其他 HTML 元素的規則
+   */
   def showEmptyBox() = {
      S.error("查無機台異常")
      ".dataBlock" #> NodeSeq.Empty
   }
 
+  /**
+   *  用來顯示有 alert（從 RaspberryPi 傳來良品數或事件數為 -1） 記錄的日期的列表
+   */
   def dateList = {
     val dateList = Alert.useColl(collection => collection.distinct("date")).toList
 
@@ -29,6 +39,9 @@ class AlertList {
     }
   }
 
+  /**
+   *  用來顯示特定日期的 alert 紀錄列表
+   */
   def render = {
 
     val Array(_, _, date) = S.uri.drop(1).split("/")
