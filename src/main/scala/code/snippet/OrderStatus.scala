@@ -11,16 +11,36 @@ import scala.xml.NodeSeq
 import scala.collection.JavaConversions._
 import net.liftweb.json.JsonDSL._
 
+/**
+ *  用來顯示網頁上「訂單狀態」的 Snippet
+ *
+ */
 class OrderStatus {
 
+  /**
+   *  從客戶代碼取得客戶名稱
+   *
+   *  @param      customerID        料號裡的四碼客戶代碼
+   *  @return                       客戶名稱                      
+   */
   def getCustomerName(customerID: String) = Customer.customers.get(customerID).getOrElse("Unknown")
+
+  /**
+   *  訂單狀態
+   */
   val orderStatus = OrderStatus.findAll.sortWith(_.lotNo.get < _.lotNo.get)
 
+  /**
+   *  顯示「目前無客戶訂單資料」的錯誤訊息並且隱藏 HTML 模板裡 class="dataBlock" 以下的子節點
+   */
   def showEmptyBox() = {
     S.error("目前無客戶訂單資料")
     ".dataBlock" #> NodeSeq.Empty
   }
 
+  /**
+   *  用來顯示客戶列表
+   */
   def customerList = {
 
     val sortedCustomers = 
@@ -36,6 +56,9 @@ class OrderStatus {
     }
   }
 
+  /**
+   *  用來顯示特定客戶下，有工單狀態的月份
+   */
   def monthList = {
     
     val Array(_, customer) = S.uri.split("/").drop(1)
@@ -53,6 +76,9 @@ class OrderStatus {
     }
   }
 
+  /**
+   *  用來顯示特定客戶的特定月份的工單狀態
+   */
   def render = {
 
     val Array(_, customer, date) = S.uri.drop(1).split("/")

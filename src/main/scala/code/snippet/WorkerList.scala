@@ -11,11 +11,30 @@ import net.liftweb.http.js.JsCmds._
 import net.liftweb.http.js.jquery.JqJsCmds._
 import java.text.SimpleDateFormat
 
+/**
+ *  用來顯示員工列表的 Snippet
+ */
 class WorkerList {
 
+  /**
+   *  從「部門」對應到「該部門的員工列表」的 Map 物件
+   */
   private val departmentToWorkers = Worker.findAll.filterNot(_.isDeleted.get).groupBy(_.department.get)
+
+  /**
+   *  部門列表
+   */
   private val departments = departmentToWorkers.keySet.toList.sortWith(_ < _)
 
+  /**
+   *  刪除資料庫中的員工紀錄
+   *
+   *  注意，此函式不會真的刪除該員工的 Record，而是將資料表的 isDeleted 欄位標記為 true，
+   *  因為如果直接刪除的話，之前這位員工的生產紀錄的 Record 中會找不到相對應的員工。
+   *
+   *  @param    worker      要刪除的員工
+   *  @param    value       從 HTML 傳入的資料，沒有用到
+   */
   def deleteWorker(worker: Worker)(value: String) = {
     worker.isDeleted(true).saveTheRecord() match {
       case Full(_) => 
@@ -27,6 +46,9 @@ class WorkerList {
     }
   }
 
+  /**
+   *  用來顯示員工列表
+   */
   def render = {
 
     val dateFormatter = new SimpleDateFormat("yyyy-MM-dd")

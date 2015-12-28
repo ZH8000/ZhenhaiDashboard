@@ -13,17 +13,29 @@ import java.util.Date
 import scala.xml.NodeSeq
 import code.lib._
  
+/**
+ *  用來顯示 /alert/ 裡的「異常數量」的記錄的表格
+ */
 class StrangeQty {
 
+  /**
+   *  系統內所有的異常數量的列表
+   */
   val strangeQtyList = StrangeQty.findAll.toList.sortWith(_.emb_date.get > _.emb_date.get)
+
   val dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 
+  /**
+   *  顯示「查無數量異常」的錯誤訊息，並且隱藏 class="dataBlock" 的所有子節點
+   */
   def showEmptyBox() = {
      S.error("查無數量異常")
      ".dataBlock" #> NodeSeq.Empty
   }
 
-
+  /**
+   *  顯示異常數量的表格
+   */
   def render = {
     
     strangeQtyList.isEmpty match {

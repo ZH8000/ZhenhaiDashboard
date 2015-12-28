@@ -8,8 +8,14 @@ import net.liftweb.http.S
 import net.liftweb.util.Helpers._
 import scala.xml.NodeSeq
 
+/**
+ *  用來顯示網頁上「依人員」的頁面的 Snippet
+ */
 class WorkerStatistics {
 
+  /**
+   *  用來設定第二層（年月列表）的麵包屑
+   */
   def workerSteps = {
     val workerID = S.request.map(_.path(1)).openOr("")
     val name = Worker.find(workerID).map(_.name.get).getOrElse("查無此人")
@@ -18,6 +24,9 @@ class WorkerStatistics {
     ".workerName [href]" #> s"/workers/$workerID"
   }
 
+  /**
+   *  用來設定第三層（週列表）的麵包屑
+   */
   def weeklySteps = {
     val workerID = S.request.map(_.path(1)).openOr("")
     val yearAndMonth = S.request.map(_.path(2)).openOr("")
@@ -27,9 +36,11 @@ class WorkerStatistics {
     ".workerName [href]" #> s"/workers/$workerID" &
     ".yearAndMonth *" #> yearAndMonth &
     ".yearAndMonth [href]" #> s"/workers/$workerID/$yearAndMonth"
-
   }
 
+  /**
+   *  用來設定第四層（日期列表）的麵包屑
+   */
   def dailySteps = {
     val workerID = S.request.map(_.path(1)).openOr("")
     val yearAndMonth = S.request.map(_.path(2)).openOr("")
@@ -44,6 +55,9 @@ class WorkerStatistics {
     ".week [href]" #> s"/workers/$workerID/$yearAndMonth/$week"
   }
 
+  /**
+   *  用來設定第五層（機台列表）的麵包屑
+   */
   def detailSteps = {
     val workerID = S.request.map(_.path(1)).openOr("")
     val yearAndMonth = S.request.map(_.path(2)).openOr("")
@@ -62,13 +76,18 @@ class WorkerStatistics {
     ".date [href]" #> s"/workers/$workerID/$yearAndMonth/$week/$date"
   }
 
-
+  /**
+   *  顯示錯誤訊息
+   */
   def showErrorBox(message: String) = {
     S.error(message)
     "table" #> NodeSeq.Empty &
     "#csvURL" #> NodeSeq.Empty
   }
 
+  /**
+   *  用來設定第一層（員工列表）的長條圖表格
+   */
   def overviewTable = {
 
     val records = WorkerStatistics()
@@ -93,6 +112,9 @@ class WorkerStatistics {
     }
   }
 
+  /**
+   *  用來設定第二層（年月份）的長條圖表格
+   */
   def workerTable = {
 
     val workerID = S.request.map(_.path(1)).filterNot(_ == "index").openOr("")
@@ -117,6 +139,9 @@ class WorkerStatistics {
     }
   }
 
+  /**
+   *  用來設定第三層（週列表）的長條圖表格
+   */
   def weeklyTable = {
 
     val workerID = S.request.map(_.path(1)).filterNot(_ == "index").openOr("")
@@ -142,6 +167,9 @@ class WorkerStatistics {
 
   }
 
+  /**
+   *  用來設定第四層（日期列表）的長條圖表格
+   */
   def dailyTable = {
 
     val workerID = S.request.map(_.path(1)).filterNot(_ == "index").openOr("")
@@ -171,6 +199,9 @@ class WorkerStatistics {
 
   }
 
+  /**
+   *  用來設定第五層（機台列表）的長條圖表格
+   */
   def detailTable = {
     val workerID = S.request.map(_.path(1)).filterNot(_ == "index").openOr("")
     val yearAndMonth = S.request.map(_.path(2)).filterNot(_ == "index").openOr("")
