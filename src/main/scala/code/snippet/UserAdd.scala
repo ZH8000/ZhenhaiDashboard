@@ -14,30 +14,38 @@ import net.liftweb.common._
 import net.liftweb.util.Mailer
 import net.liftweb.util.Mailer._
 
+/**
+ *  用來處理「網站管理」－＞「帳號管理」中「新增帳號」表單的 Snippet
+ */
 class UserAdd extends StatefulSnippet {
-
   
-  private var username: String = _
-  private var workerID: String = _
-  private var email: String = _
-  private var password: String = ""
-  private var confirmPassword: String = ""
-  private var permission: String = _
+  private var username: String = _            // 用來儲存表單上傳入的使用者帳號
+  private var workerID: String = _            // 用來儲存表單上傳入的台容的工號
+  private var email: String = _               // 用來儲存表單上傳入的EMail
+  private var password: String = ""           // 用來儲存表單上傳入的密碼
+  private var confirmPassword: String = ""    // 用來儲存表單上傳入的確認密碼
+  private var permission: String = _          // 用來儲存表單上傳入的權限群組
 
-  def dispatch = {
-    case "render" => render
-  }
-
+  /**
+   *  檢查使用者名稱是否在資料庫內已存在
+   *
+   *  @param    username      要新增的使用者名稱
+   *  @return                 如果已經有這個使用者名稱則為 true，否則為 false
+   */
   def hasNoDuplicateUsername(username: String) = User.find("username", username).isEmpty
+
+  /**
+   *  新增使用者至資料庫中
+   */
   def addUser() = {
 
     val newUser = for {
-      usernameValue <- Option(username).filterNot(_.trim.isEmpty) ?~ "請輸入帳號"
-      _             <- Option(username).filter(hasNoDuplicateUsername) ?~ "系統內已有重覆帳號"
-      workerIDValue <- Option(workerID).filterNot(_.trim.isEmpty) ?~ "請輸入工號"
-      emailValue    <- Option(email).filterNot(_.trim.isEmpty) ?~ "請輸入電子郵件帳號"
+      usernameValue   <- Option(username).filterNot(_.trim.isEmpty) ?~ "請輸入帳號"
+      _               <- Option(username).filter(hasNoDuplicateUsername) ?~ "系統內已有重覆帳號"
+      workerIDValue   <- Option(workerID).filterNot(_.trim.isEmpty) ?~ "請輸入工號"
+      emailValue      <- Option(email).filterNot(_.trim.isEmpty) ?~ "請輸入電子郵件帳號"
       permissionValue <- Option(permission).filterNot(_.trim.isEmpty) ?~ "請選擇帳號的權限"
-      passwordValue <- Option(password).filterNot(_.trim.isEmpty) ?~ "請輸入密碼"
+      passwordValue   <- Option(password).filterNot(_.trim.isEmpty) ?~ "請輸入密碼"
       confirmPasswordValue <- Option(confirmPassword).filter(_ == passwordValue) ?~ "兩個密碼不符，請重新檢查"
     } yield {
       User.createRecord.username(usernameValue)
@@ -81,6 +89,9 @@ class UserAdd extends StatefulSnippet {
 
   }
 
+  /**
+   *  設定新增使用者的 HTML 表單
+   */
   def render = {
 
     ".permissionItem" #> Permission.findAll.map { permission =>
@@ -94,6 +105,19 @@ class UserAdd extends StatefulSnippet {
     "name=confirmPassword" #> SHtml.password(confirmPassword, confirmPassword = _) &
     "#permissionSelect" #> SHtml.onSubmit(permission = _) &
     "#submitButton" #> SHtml.onSubmitUnit(addUser _)
+  }
+
+  /**
+   *  指定 HTML 中呼叫的 Snippet 名稱要對應到哪些函式
+   *
+   *  為了讓使用者在輸入表單後，若有錯誤而無法進行時，原先輸入的值還會留在表單上，需
+   *  要使用 StatefulSnippet 的機制，也就是讓此類別繼承自 StatefulSnippet 這個 trait。
+   *
+   *  但如果是 StatefulSnippet，會需要自行指定 HTML 模板中， data-lift="ChangePassword.render" 裡
+   *  面的 "render" 對應到哪個函式。
+   */
+  def dispatch = {
+    case "render" => render
   }
 
 }

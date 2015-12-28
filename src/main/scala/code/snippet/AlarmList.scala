@@ -18,16 +18,43 @@ import java.util.Date
 import java.util.Calendar
 import scala.xml.NodeSeq
 
+/**
+ *  此類別用來顯示網頁上「維修行事曆」的資料
+ *
+ */
 class AlarmList {
 
+  /**
+   *  依照網址取得相對應的維修行事曆在資料庫中的記錄，並以 List[Alarm] 的資料結構傳回。
+   *
+   *  若是在 /dashboard 頁面，就是所有的維修行事曆項目，若是在「網站管理」－＞「維修行
+   *  事曆」的頁面中，則是只會列出相對應的製程的 Alarm 物件。
+   *
+   *  @return     依照網址決定的 Alarm 物件的 List
+   *
+   */
   private def alarms = {
     S.uri.split("/").drop(1) match {
       case Array("dashboard") => Alarm.findAll.toList.sortWith(_.machineID.get < _.machineID.get)
       case Array(_, _, step)  => Alarm.findAll("step", step).toList.sortWith(_.machineID.get < _.machineID.get)
     }
   }
+
+  /**
+   *  (List[已經要更換的 Alarm], List[尚未達到更換數的 Alarm])
+   *
+   *  urgentAlarms 會是上述 alarms 變數中已經累計良品數達到需要更換的 Alarm 物件的 List，
+   *  normalAlarms 則是 alarms 變數中尚累計良品數未達到需要更換的 Alarm 物件的 List。
+   *
+   */
   private val (urgentAlarms, normalAlarms) = alarms.partition(_.isUrgentEvent)
 
+  /**
+   *  從資料庫中刪除 Alarm 物件
+   *
+   *  @param      alarm       要刪除的 Alarm 物件
+   *  @param      value       在 HTML 上的元素的 valeue 屬性，只是為了符合 Framework 的 API 而加已，不會用到
+   */
   def deleteAlarm(alarm: Alarm)(value: String) = {
    
     alarm.delete_! match {
@@ -40,6 +67,15 @@ class AlarmList {
     }
   }
 
+  /**
+   *  在 Dashboard 主頁右邊的「更換提示」中，標記完成的對話框按下去後要執行的動作
+   *
+   *  在資料庫中將此 Alarm 物件設為已更換。
+   *
+   *  @param    alarm     要標記為已更換的 Alarm 物件
+   *  @param    value     在 HTML 上的元素的 valeue 屬性，只是為了符合 Framework 的 API 而加已，不會用到
+   *  @return             此函式執行完畢後要在 Client 端執行的 JavaScript 程式碼
+   */
   def markAsDoneInPostIt(alarm: Alarm, value: String): JsCmd = {
 
     val machineIDToCounter = MachineCounter.toHashMap
@@ -58,7 +94,15 @@ class AlarmList {
     }
   }
 
-
+  /**
+   *  在「網頁管理」－＞「維修行事曆」中，標記完成的對話框按下去後要執行的動作
+   *
+   *  在資料庫中將此 Alarm 物件設為已更換。
+   *
+   *  @param    alarm     要標記為已更換的 Alarm 物件
+   *  @param    value     在 HTML 上的元素的 valeue 屬性，只是為了符合 Framework 的 API 而加已，不會用到
+   *  @return             此函式執行完畢後要在 Client 端執行的 JavaScript 程式碼
+   */
   def markAsDone(alarm: Alarm, value: String): JsCmd = {
 
     val machineIDToCounter = MachineCounter.toHashMap
@@ -80,10 +124,14 @@ class AlarmList {
     }
   }
 
+  /**
+   *  用來顯示 Dashboard 主頁右側的「零件定期更換通知」的列表
+   */
   def postIt = {
     val dateFormatter = new SimpleDateFormat("yyyy-MM-dd")
     val machineIDToCounter = MachineCounter.toHashMap
 
+    // 針對每一個 row，用此函式中中的規則以及傳入的 Alarm 物件來轉換
     def rowItem(alarm: Alarm) = {
       
       val countQty = machineIDToCounter.get(alarm.machineID.get).getOrElse(0L)
@@ -103,6 +151,7 @@ class AlarmList {
       )
     }
 
+    // 只取出已經需要更換，而且尚未更換的 Alarm 物件
     val notDoneUrgent = urgentAlarms.filterNot(_.isDone.get)
 
     notDoneUrgent.isEmpty match {
@@ -113,9 +162,13 @@ class AlarmList {
     }
   }
 
+  /**
+   *  用來顯示網頁「網站管理」－＞「維修行事曆」上的列表中的「製程」部份的標頭
+   */
   def breadcrumb = {
    
     val Array(_, _, step) = S.uri.split("/").drop(1)
+
     val machineTypeTitle = step match {
       case "step1" => "加締"
       case "step2" => "組立"
@@ -128,6 +181,9 @@ class AlarmList {
     "#machineTypeTitle *" #> machineTypeTitle
   }
 
+  /**
+   *  用來顯示網頁「網站管理」－＞「維修行事曆」上的列表
+   */
   def render = {
 
     val dateFormatter = new SimpleDateFormat("yyyy-MM-dd")
@@ -180,6 +236,10 @@ class AlarmList {
     }
   }
 
+  /**
+   *  用來建立「網頁管理」－＞「維修行事曆」－＞「製程」中的「新增」按鈕點下去
+   *  時要連到哪個網址。
+   */
   def addLink = {
     val Array(_, _, step) = S.uri.drop(1).split("/")
 

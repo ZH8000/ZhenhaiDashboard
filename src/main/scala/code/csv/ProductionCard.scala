@@ -7,35 +7,50 @@ import net.liftweb.common._
 import java.util.Date
 import java.text.SimpleDateFormat
 
+/**
+ *  此 Singleton 物件為用來產生網站上「生產管理卡」中工單號的資料的 CSV 檔
+ */
 object ProductionCard {
 
+  /**
+   *  特定工單的生產管理卡的 CSV 檔
+   *
+   *  @param      lotNo    工單號
+   *  @return              該工單號的生產管理卡的 CSV 檔
+   */
   def apply(lotNo: String) = {
     val orderStatus = OrderStatus.find("lotNo", lotNo)
 
     orderStatus match {
       case Full(record) =>
+
         val dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm")
+
+
         val requireCount = (record.inputCount.get / 1.04).toLong
 
-        val step1DoneTime = record.step1DoneTimeString
-        val step2DoneTime = record.step2DoneTimeString
-        val step3DoneTime = record.step3DoneTimeString
-        val step4DoneTime = record.step4DoneTimeString
-        val step5DoneTime = record.step5DoneTimeString
+        // 完成日期
+        val step1DoneTime = record.step1DoneTimeString      // 加締
+        val step2DoneTime = record.step2DoneTimeString      // 組立
+        val step3DoneTime = record.step3DoneTimeString      // 老化
+        val step4DoneTime = record.step4DoneTimeString      // 選別
+        val step5DoneTime = record.step5DoneTimeString      // 加工切腳
 
-        val step1StartTime = record.step1StartTimeString
-        val step2StartTime = record.step2StartTimeString
-        val step3StartTime = record.step3StartTimeString
-        val step4StartTime = record.step4StartTimeString
-        val step5StartTime = record.step5StartTimeString
+        // 接送日期
+        val step1StartTime = record.step1StartTimeString    // 加締
+        val step2StartTime = record.step2StartTimeString    // 組立
+        val step3StartTime = record.step3StartTimeString    // 老化
+        val step4StartTime = record.step4StartTimeString    // 選別
+        val step5StartTime = record.step5StartTimeString    // 加工切腳
+  
+        // 作業者
+        val step1Worker = record.step1WorkerName            // 加締 
+        val step2Worker = record.step2WorkerName            // 組立
+        val step3Worker = record.step3WorkerName            // 老化
+        val step4Worker = record.step4WorkerName            // 選別
+        val step5Worker = record.step5WorkerName            // 加工切腳
 
-        val step1Worker = record.step1WorkerName
-        val step2Worker = record.step2WorkerName
-        val step3Worker = record.step3WorkerName
-        val step4Worker = record.step4WorkerName
-        val step5Worker = record.step5WorkerName
-
-         """"製令編號","料號","客戶","規格","投入數","需求數"""" + "\n" +
+        """"製令編號","料號","客戶","規格","投入數","需求數"""" + "\n" +
         s""""${record.lotNo}","${record.partNo}","${record.customer}","${record.product}",${record.inputCount},${requireCount}""" + "\n" +
          """"工程","接送日期","接送數量","機器","作業者","完成日期"""" + "\n" +
         s""""加締卷取","$step1StartTime",${record.step1}, "${record.step1machineID}", "${step1Worker}", "${step1DoneTime}""""  + "\n" +

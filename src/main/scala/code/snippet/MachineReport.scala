@@ -5,9 +5,17 @@ import code.lib._
 import net.liftweb.util.Helpers._
 import net.liftweb.http.S
 
-
+/**
+ *  用來顯示網頁上「錯誤分析」的部份的 Snippet
+ */
 class MachineReport {
 
+  /**
+   *  依照網址來產生網頁上顯示麵包屑要用的的 List[Step] 物件
+   *
+   *  @param      uri       瀏覽器上的網址用 / 分隔後的 List
+   *  @return               代表麵包屑內容的 List[Step] 物件
+   */
   def getSteps(uri: List[String]) = uri match {
 
     case "machine" :: Nil =>
@@ -46,6 +54,9 @@ class MachineReport {
 
   }
 
+  /**
+   *  用來顯示麵包屑
+   */
   def showStepsSelector = {
     val steps = getSteps(S.uri.drop(1).split("/").toList)
 
@@ -57,6 +68,9 @@ class MachineReport {
 
   }
   
+  /**
+   *  用來顯示最底層的一頁
+   */
   def machine = {
 
     val Array(_, _, _, machineID) = S.uri.drop(1).split("/")
@@ -68,6 +82,9 @@ class MachineReport {
     showStepsSelector
   }
 
+  /**
+   *  顯示其他的頁面
+   */
   def render = {
     "#dataURL [value]" #> s"/api/json${S.uri}" &
     "#csvLink [href]" #> s"/api/csv${S.uri}" &

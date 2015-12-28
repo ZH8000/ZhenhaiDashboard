@@ -9,16 +9,29 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import scala.xml.NodeSeq
 
+/**
+ *  用來顯示網頁上的「今日工單」的 Snippet
+ */
 class TodayOrder {
 
   val dateFormatter = new SimpleDateFormat("yyyy-MM-dd")
+
+  /**
+   *  今日工單的資料
+   */ 
   val order = ProductionStatus.findAll("lastUpdatedShifted", dateFormatter.format(today.getTime)).sortWith(_.lotNo.get < _.lotNo.get)
 
+  /**
+   *  顯示「目前無今日工單資料」的錯誤訊息和隱藏 HTML 中 class="dataBlock" 元素的所有子節點
+   */
   def showEmptyBox() = {
     S.error("目前無今日工單資料")
     ".dataBlock" #> NodeSeq.Empty
   }
 
+  /**
+   *  用來顯示「今日工單」的表格
+   */
   def render = {
 
     order.isEmpty match {
@@ -38,7 +51,6 @@ class TodayOrder {
           ".partNo *" #> record.partNo &
           ".customer *" #> record.customer &
           ".product *" #> record.product &
-          ".status *" #> record.status &
           ".step1Status *" #> step1Status &
           ".step2Status *" #> step2Status &
           ".step3Status *" #> step3Status &

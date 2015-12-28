@@ -9,17 +9,34 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import scala.xml.NodeSeq
 
+/**
+ *  用來顯示「今日工單」狀態的歷史記錄
+ */
 class ProductionStatusHistory {
 
-  val Array(_, shiftDate) = S.uri.drop(1).split("/")
-  val order = ProductionStatusHistory.findAll("shiftDate", shiftDate).sortWith(_.lotNo.get < _.lotNo.get)
   val dateFormatter = new SimpleDateFormat("yyyy-MM-dd")
 
+  /**
+   *  從 URL 取出的查詢日期（工班日期）
+   */
+  val Array(_, shiftDate) = S.uri.drop(1).split("/")
+
+  /**
+   *  此工班日期中的工單狀態
+   */
+  val order = ProductionStatusHistory.findAll("shiftDate", shiftDate).sortWith(_.lotNo.get < _.lotNo.get)
+
+  /**
+   *  顯示「無此日工單資料」的錯誤訊息並隱藏 HTML 中 class="dataBlock" 的所有子節點
+   */
   def showEmptyBox() = {
-    S.error("目前無今日工單資料")
+    S.error("無此日工單資料")
     ".dataBlock" #> NodeSeq.Empty
   }
 
+  /**
+   *  顯示當天的工單狀態歷史紀錄
+   */
   def render = {
 
     order.isEmpty match {
@@ -39,7 +56,6 @@ class ProductionStatusHistory {
           ".partNo *" #> record.partNo &
           ".customer *" #> record.customer &
           ".product *" #> record.product &
-          ".status *" #> record.status &
           ".step1Status *" #> step1Status &
           ".step2Status *" #> step2Status &
           ".step3Status *" #> step3Status &

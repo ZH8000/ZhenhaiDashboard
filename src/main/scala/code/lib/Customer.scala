@@ -1,7 +1,21 @@
 package code.lib
 
+/**
+ *  用來透過「料號」取得客戶名稱的工具程式
+ */
 object Customer {
 
+  /**
+   *  從「料號」中取得客戶名稱，料號的編碼格式為 24 碼，範例如下：
+   *
+   *  THW1E331ML1012MRC3-0117A
+   *
+   *  其中第 0117 即為客戶代碼，這個函式會取出這個客戶代碼，再至
+   *  customers 這個 HashMap 中查詢其名稱
+   *
+   *  @param    partNo       原始的料號
+   *  @return                客戶名稱，若查無此客戶代碼則為 Unknown
+   */
   def fromPartNo(partNo: String) = try {
     val customerCode = partNo.substring(19, 23)
     customers.get(customerCode).getOrElse("Unknown")
@@ -9,6 +23,9 @@ object Customer {
     case e: Exception => "Unknown"
   }
 
+  /**
+   *  從客戶代碼對應到客戶名稱的 HashMap
+   */
   val customers = Map(
     "0002" -> "惠州益源",
     "0004" -> "威海集團",
@@ -138,6 +155,9 @@ object Customer {
     "0311" -> "圓方"
   )
 
+  /**
+   *  從客戶名稱對應到客戶代碼的 HashMap
+   */
   lazy val customerNameToIDs = Customer.customers.map { case(id, name) => (name, id) }.toMap
 
 }

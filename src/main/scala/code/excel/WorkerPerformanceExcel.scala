@@ -1,4 +1,4 @@
-package code.lib
+package code.excel
 
 import net.liftweb.common._
 import code.model._
@@ -12,6 +12,16 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.io.File
 
+/**
+ *  用來輸出員工效率的報表的主程式
+ *
+ *  由於此份員工效率報表需要比較大的運算資源，所以在系統上
+ *  是使用 crontab  固每每十五分鐘生成一次 cache  檔，然後
+ *  當使用者點選連結時，丟出的是此 cache 檔。
+ *
+ *  此主程式就是用來產生員工效率 Excel 報表的程式。
+ *
+ */
 object WorkerPerformanceExcel {
   private lazy val zhenhaiDB = MongoDB.zhenhaiDB
 
@@ -27,19 +37,64 @@ object WorkerPerformanceExcel {
   }
 }
 
+/**
+ *  輸出「員工效率」的 Excel 報表用的程式
+ *
+ *  @param    year      年份
+ *  @param    month     月份
+ *  @param    filepath  要輸出到哪個檔案
+ */
 class WorkerPerformanceExcel(year: Int, month: Int, filepath: String) {
   
+  /**
+   *  用來表示員工效率的物件類別
+   *
+   *  @param    shiftDate   工班日期
+   *  @param    countQty    良品數
+   */
+  case class Performance(shiftDate: String, countQty: Long)
+
+  /**
+   *  代表一張工單的記錄
+   *
+   *  @param    shiftDate   該工單的工班日期
+   *  @param    lotNo       該工單的工單號
+   *  @param    partNo      該工單的料號
+   *  @param    productCode 該工單料號中的產品尺吋
+   *  @param    machineID   該工單在哪台機器上生產
+   */
+  case class OrderCount(shiftDate: String, lotNo: String, partNo: String, productCode: String, machineID: String)
+
   val zhenhaiDB = MongoDB.zhenhaiDB
+
+  /**
+   *  記錄員工效率（生產良品數）的資料表
+   */
   val workerPerformanceTable = zhenhaiDB(f"workerPerformance-$year%4d-$month%02d")
+
+  /**
+   *  記錄員工工作時間的資料表
+   */
   val operationTimeTable = zhenhaiDB(f"operationTime-$year%4d-$month%02d")
+
+  /**
+   *  記錄員工鎖機次數的資料表
+   */
   val lockTable = zhenhaiDB(f"lock-$year%4d-$month%02d")
 
+  /**
+   *  未被刪除的員工列表
+   */
   lazy val workers = {
     val workerMongoIDs = workerPerformanceTable.distinct("workerMongoID")
     workerMongoIDs.flatMap(x => Worker.findByMongoID(x.toString)).sortWith(_.workerID.get < _.workerID.get)
   }
 
   private lazy val defaultFont = new WritableFont(WritableFont.ARIAL, 12)
+
+  /**
+   *  字串置中的格式設定
+   */
   private lazy val centeredTitleFormat = {
     val centeredTitleFormat = new WritableCellFormat(defaultFont)
     centeredTitleFormat.setAlignment(jxl.format.Alignment.CENTRE)
@@ -48,6 +103,9 @@ class WorkerPerformanceExcel(year: Int, month: Int, filepath: String) {
     centeredTitleFormat
   }
 
+  /**
+   *  百分比置中的格式設定
+   */
   private lazy val centeredPercentFormat = {
     val centeredNumberFormat = new WritableCellFormat(defaultFont, new jxl.write.NumberFormat("0.00%"))
     centeredNumberFormat.setAlignment(jxl.format.Alignment.CENTRE)
@@ -56,6 +114,9 @@ class WorkerPerformanceExcel(year: Int, month: Int, filepath: String) {
     centeredNumberFormat
   }
 
+  /**
+   *  數字置中的格式設定
+   */
   private lazy val centeredNumberFormat = {
     val centeredNumberFormat = new WritableCellFormat(defaultFont, new jxl.write.NumberFormat("#,##0"))
     centeredNumberFormat.setAlignment(jxl.format.Alignment.CENTRE)
@@ -64,6 +125,9 @@ class WorkerPerformanceExcel(year: Int, month: Int, filepath: String) {
     centeredNumberFormat
   }
 
+  /**
+   *  數字置中且背景為灰色的格式設定
+   */
   private lazy val greyBackgroundFormat = {
     val greyBackgroundFormat = new WritableCellFormat(defaultFont, new jxl.write.NumberFormat("#,##0"))
     greyBackgroundFormat.setBackground(jxl.format.Colour.GRAY_25)
@@ -73,6 +137,9 @@ class WorkerPerformanceExcel(year: Int, month: Int, filepath: String) {
     greyBackgroundFormat
   }
 
+  /**
+   *  數字置中且背景為綠色的格式設定
+   */
   private lazy val greenBackgroundFormat = {
     val greenBackgroundFormat = new WritableCellFormat(defaultFont, new jxl.write.NumberFormat("#,##0"))
     greenBackgroundFormat.setBackground(jxl.format.Colour.LIGHT_GREEN)
@@ -82,8 +149,12 @@ class WorkerPerformanceExcel(year: Int, month: Int, filepath: String) {
     greenBackgroundFormat
   }
 
-  case class Performance(shiftDate: String, countQty: Long)
-
+  /**
+   *  取得某個員工的該月份的效能記錄
+   *
+   *  @param    workerMongoID   員工在 MongoDB 中的 Primary Key 的值
+   *  @return                   該員工
+   */
   def getWorkerPerformance(workerMongoID: String): List[Performance] = {
     val records = workerPerformanceTable.find(DBObject("workerMongoID" -> workerMongoID)).map { record =>
       Performance(record.get("shiftDate").toString, record.get("countQty").toString.toLong)
@@ -91,14 +162,24 @@ class WorkerPerformanceExcel(year: Int, month: Int, filepath: String) {
     records.toList.sortWith(_.shiftDate < _.shiftDate)
   }
 
+  /**
+   *  取得 operationTime 資料表中，某一筆記錄的工作時間（秒）
+   *
+   *  @param    record      operationTime 資料表中的某筆資料
+   *  @return               該筆資料的工作時間（結束時間－開始時間）
+   */
   def getOperationTime(record: DBObject) = {
     record.get("currentTimestamp").toString.toLong - record.get("startTimestamp").toString.toLong
   }
 
-
-  case class OrderCount(shiftDate: String, lotNo: String, partNo: String, productCode: String, machineID: String)
-
-  def getStandardPerformance(date: String, workerMongoID: String) = {
+  /**
+   *  取得某員工在某一天的效率記錄
+   *
+   *  @param    date              工班日期
+   *  @param    workerMongoID     該員工在 MongoDB 中的 ID
+   *  @return                     該員工的 (日管理標準量, 日效率標準量, 總嫁動時間)
+   */
+  def getWorkerPerformance(date: String, workerMongoID: String) = {
     val data = operationTimeTable.find(DBObject("shiftDate" -> date, "workerID" -> workerMongoID)).toList
     val operationTimeInMinutes = data.map(record => getOperationTime(record)).sum / 60
     val distinctOrders = data.map { record => 
@@ -123,7 +204,13 @@ class WorkerPerformanceExcel(year: Int, month: Int, filepath: String) {
     (managementCount, performanceCount, operationTimeInMinutes)
   }
 
-  
+  /**
+   *  取得某員工在某天的「平均效率」
+   *
+   *  @param    date              工班日期
+   *  @param    workerMongoID     該員工在 MongoDB 中的 ID
+   *  @return                     該員工在該日期的平均效率，若無法計算則為 None
+   */
   def getAveragePeformance(workerMongoID: String, date: String): Option[Double] = {
     case class OperationTimeWithCount(machineID: String, lotNo: String, partNo: String, productCode: String)
 
@@ -157,18 +244,27 @@ class WorkerPerformanceExcel(year: Int, month: Int, filepath: String) {
     }
   }
 
+  /**
+   *  建立 Excel 報表中的員工效率矩陣
+   *
+   *  @param    sheet      要寫到 Excel 中的哪個 Sheet 中
+   */
   def createMatrix(sheet: WritableSheet) {
+
     var rowCount = 3
 
+    // 針對每一個員工
     workers.foreach { worker =>
 
       
       val performanceOfDates = getWorkerPerformance(worker.id.get.toString)
       val startRow = rowCount
 
+      // 針對該員工每一個有工作記錄的日期
       performanceOfDates.foreach { performance =>
 
-        val (standard, standardPerformance, operationTime) = getStandardPerformance(performance.shiftDate, worker.id.toString)
+        // 計算該員工的效率並填到相對應的 Excel 欄中
+        val (standard, standardPerformance, operationTime) = getWorkerPerformance(performance.shiftDate, worker.id.toString)
         
         val workerIDCell = new Label(0, rowCount, worker.workerID.get, centeredTitleFormat)
         val workerNameCell = new Label(1, rowCount, worker.name.get, centeredTitleFormat)
@@ -177,8 +273,6 @@ class WorkerPerformanceExcel(year: Int, month: Int, filepath: String) {
         val standardPerformanceCell = new Number(4, rowCount, standardPerformance, centeredNumberFormat)
         val countQtyCell = new Number(5, rowCount, performance.countQty, centeredNumberFormat)
         val operationTimeCell = new Number(6, rowCount, operationTime, centeredNumberFormat)
-
-        getStandardPerformance(performance.shiftDate, worker.id.toString)
 
         val lockCount = lockTable.count(MongoDBObject("shiftDate" -> performance.shiftDate, "workerMongoID" -> worker.id.toString))
         val lockTimeCell = new Number(7, rowCount, lockCount * 10, centeredNumberFormat)
@@ -263,6 +357,11 @@ class WorkerPerformanceExcel(year: Int, month: Int, filepath: String) {
     
   }
 
+  /**
+   *  建立 Excel 報表中的員工效的標頭
+   *
+   *  @param    sheet      要寫到 Excel 中的哪個 Sheet 中
+   */
   def createDocumentTitleRow(sheet: WritableSheet) {
     val dateFormatter = new SimpleDateFormat("yyyy/mm/dd")
     val sheetTitleCell = new Label(5, 0, s"個人效率期間表", centeredTitleFormat)
@@ -281,9 +380,11 @@ class WorkerPerformanceExcel(year: Int, month: Int, filepath: String) {
     sheet.addCell(new Label(8, 2, "稼動 %", centeredTitleFormat))
     sheet.addCell(new Label(9, 2, "數量效率 %", centeredTitleFormat))
     sheet.addCell(new Label(10, 2, "平均效率 %", centeredTitleFormat))
-
   }
 
+  /**
+   *  輸出 Excel 到建構子中指定的 OutputStream
+   */
   def outputExcel() {
 
     val workbook = Workbook.createWorkbook(new File(filepath))
@@ -296,7 +397,5 @@ class WorkerPerformanceExcel(year: Int, month: Int, filepath: String) {
     createMatrix(sheet)
     workbook.write()
     workbook.close()
-
   }
-
 }

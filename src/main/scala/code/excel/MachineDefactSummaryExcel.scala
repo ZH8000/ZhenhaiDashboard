@@ -1,4 +1,4 @@
-package code.lib
+package code.excel
 
 import net.liftweb.common._
 import code.model._
@@ -11,16 +11,27 @@ import jxl.write._
 import java.text.SimpleDateFormat
 import java.util.Date
 
-object MachineDefactSummaryExcel {
-  private lazy val zhenhaiDB = MongoDB.zhenhaiDB
-}
-
+/**
+ *  用來產生「產量統計」－＞「機台狀況」中的 Excel 報表。
+ *
+ *  @param    year            要產生哪一年的報表
+ *  @param    month           要產生哪一月的報表
+ *  @param    date            要產生哪一天的報表
+ *  @param    shitTag         若為 "M" 則為早班的資料，若為 "N" 則為晚班的資料
+ *  @param    sortTag         排序方式（model / size / area）
+ *  @param    outputStream    要將 Excel 檔輸出到哪個 OutputStream 中
+ *
+ */
 class MachineDefactSummaryExcel(year: Int, month: Int, date: Int, shiftTag: String, sortTag: String, outputStream: OutputStream) {
 
   val dataTable = MongoDB.zhenhaiDB(f"defactSummary-$year%02d-$month%02d")
   val shiftDate = f"$year-$month%02d-$date%02d"
 
   private lazy val defaultFont = new WritableFont(WritableFont.ARIAL, 12)
+
+  /**
+   *  文字置中的格式設定
+   */
   private lazy val centeredTitleFormat = {
     val centeredTitleFormat = new WritableCellFormat(defaultFont)
     centeredTitleFormat.setAlignment(jxl.format.Alignment.CENTRE)
@@ -29,6 +40,9 @@ class MachineDefactSummaryExcel(year: Int, month: Int, date: Int, shiftTag: Stri
     centeredTitleFormat
   }
 
+  /**
+   *  百分比置中的格式設定
+   */
   private lazy val centeredPercentFormat = {
     val centeredNumberFormat = new WritableCellFormat(defaultFont, new jxl.write.NumberFormat("0.00%"))
     centeredNumberFormat.setAlignment(jxl.format.Alignment.CENTRE)
@@ -37,6 +51,9 @@ class MachineDefactSummaryExcel(year: Int, month: Int, date: Int, shiftTag: Stri
     centeredNumberFormat
   }
 
+  /**
+   *  數字置中的格式設定
+   */
   private lazy val centeredNumberFormat = {
     val centeredNumberFormat = new WritableCellFormat(defaultFont, new jxl.write.NumberFormat("#,##0"))
     centeredNumberFormat.setAlignment(jxl.format.Alignment.CENTRE)
@@ -45,6 +62,13 @@ class MachineDefactSummaryExcel(year: Int, month: Int, date: Int, shiftTag: Stri
     centeredNumberFormat
   }
 
+  /**
+   *  依照 sortTag 指定的方法排序 dataRow 的資料
+   *
+   *  @param    dataRow     要排序過的資料
+   *  @param    sortTag     排序的方式（model = 機型 / size = 尺吋 / area = 區域）
+   *  @return               排序過後的資料
+   */
   def sortData(dataRow: List[DBObject], sortTag: String) = {
     sortTag match {
       case "model" => dataRow.sortWith((x, y) => x.get("machineModel").toString < y.get("machineModel").toString)
@@ -57,6 +81,13 @@ class MachineDefactSummaryExcel(year: Int, month: Int, date: Int, shiftTag: Stri
     }
   }
 
+  /**
+   *  在 Excel 的 WorkBook 中建立一個新的 Sheet
+   *
+   *  @param      workbook      要寫到哪個 WorkBook
+   *  @param      title         該 Sheet 的標題
+   *  @return                   建立過的 Sheet
+   */
   def createSheet(workbook: WritableWorkbook, title: String) = {
     val sheet = workbook.createSheet(title, 0)
     val sheetSettings = sheet.getSettings
@@ -65,11 +96,19 @@ class MachineDefactSummaryExcel(year: Int, month: Int, date: Int, shiftTag: Stri
     sheet
   }
 
+  /**
+   *  從 shiftTag 對應到該工班時段的標題。
+   */
   val shiftTagTitle = shiftTag match {
-    case "M" => "07:00-19:00"
-    case "N" => "19:00-07:00"
+    case "M" => "07:00-19:00"   // 早班為早上七點到晚上七點
+    case "N" => "19:00-07:00"   // 晚班為晚上七點到早上七點
   }
 
+  /**
+   *  建立加締卷取的 Sheet
+   *
+   *  @param    sheet     要寫到 Excel 中的哪個 Sheet
+   */
   def createStep1SheetMatrix(sheet: WritableSheet) {
 
     val reportTitle = f"卷取機生產狀況表     $year 年 $month 月 $date 日  $shiftTagTitle"
@@ -113,7 +152,8 @@ class MachineDefactSummaryExcel(year: Int, month: Int, date: Int, shiftTag: Stri
 
       val kadouRate = standard match {
         case None => new Label(6, index + 2, "-", centeredTitleFormat)
-        case Some(standardValue) => new Number(6, index + 2, countQty.getOrElse(0L) / standard.getOrElse(0L).toDouble, centeredPercentFormat)
+        case Some(standardValue) => 
+          new Number(6, index + 2, countQty.getOrElse(0L) / standard.getOrElse(0L).toDouble, centeredPercentFormat)
       }
 
       sheet.addCell(kadouRate)
@@ -204,6 +244,11 @@ class MachineDefactSummaryExcel(year: Int, month: Int, date: Int, shiftTag: Stri
 
   }
 
+  /**
+   *  建立組立機的 Sheet
+   *
+   *  @param    sheet     要寫到 Excel 中的哪個 Sheet
+   */
   def createStep2SheetMatrix(sheet: WritableSheet) {
 
     val reportTitle = f"組立機生產狀況表     $year 年 $month 月 $date 日  $shiftTagTitle"
@@ -252,7 +297,8 @@ class MachineDefactSummaryExcel(year: Int, month: Int, date: Int, shiftTag: Stri
 
       val kadouRate = standard match {
         case None => new Label(6, index + 2, "-", centeredTitleFormat)
-        case Some(standardValue) => new Number(6, index + 2, countQty.getOrElse(0L) / standard.getOrElse(0L).toDouble, centeredPercentFormat)
+        case Some(standardValue) => 
+          new Number(6, index + 2, countQty.getOrElse(0L) / standard.getOrElse(0L).toDouble, centeredPercentFormat)
       }
 
       sheet.addCell(kadouRate)
@@ -328,6 +374,11 @@ class MachineDefactSummaryExcel(year: Int, month: Int, date: Int, shiftTag: Stri
 
   }
 
+  /**
+   *  建立老化機的 Sheet
+   *
+   *  @param    sheet     要寫到 Excel 中的哪個 Sheet
+   */
   def createStep3SheetMatrix(sheet: WritableSheet) {
 
     val reportTitle = f"老化機生產狀況表     $year 年 $month 月 $date 日  $shiftTagTitle"
@@ -378,7 +429,8 @@ class MachineDefactSummaryExcel(year: Int, month: Int, date: Int, shiftTag: Stri
 
       val kadouRate = standard match {
         case None => new Label(6, index + 2, "-", centeredTitleFormat)
-        case Some(standardValue) => new Number(6, index + 2, countQty.getOrElse(0L) / standard.getOrElse(0L).toDouble, centeredPercentFormat)
+        case Some(standardValue) => 
+          new Number(6, index + 2, countQty.getOrElse(0L) / standard.getOrElse(0L).toDouble, centeredPercentFormat)
       }
 
       sheet.addCell(kadouRate)
@@ -391,7 +443,9 @@ class MachineDefactSummaryExcel(year: Int, month: Int, date: Int, shiftTag: Stri
       val retest    = Option(record.get("retest")).map(_.toString.toLong)
       val policy = Option(record.get("policy")).map(_.toString).getOrElse("")
       val fixer = Option(record.get("fixer")).map(_.toString).getOrElse("")
-      val inaccurateTotal = Some(countQty.getOrElse(0L) + capacity.getOrElse(0L) + lose.getOrElse(0L) + lc.getOrElse(0L) + retest.getOrElse(0L))
+      val inaccurateTotal = Some(
+        countQty.getOrElse(0L) + capacity.getOrElse(0L) + lose.getOrElse(0L) + lc.getOrElse(0L) + retest.getOrElse(0L)
+      )
       val total = Option(record.get("total")).map(_.toString.toLong) orElse inaccurateTotal
 
       val okRate = total match {
@@ -481,7 +535,12 @@ class MachineDefactSummaryExcel(year: Int, month: Int, date: Int, shiftTag: Stri
 
   }
 
-
+  /**
+   *  建立 CUTTING / TAPPING 機的 Sheet
+   *
+   *  @param    sheet     要寫到 Excel 中的哪個 Sheet
+   *  @param    prefix    若為 "C" 為 CUTTING 機，若為 "T" 為 Tapping 機
+   */
   def createStep5SheetMatrix(sheet: WritableSheet, prefix: String) {
 
     val machineTitle = if (prefix == "C") "CUT" else "TP"
@@ -535,7 +594,8 @@ class MachineDefactSummaryExcel(year: Int, month: Int, date: Int, shiftTag: Stri
 
       val kadouRate = standard match {
         case None => new Label(6, index + 2, "-", centeredTitleFormat)
-        case Some(standardValue) => new Number(6, index + 2, countQty.getOrElse(0L) / standard.getOrElse(0L).toDouble, centeredPercentFormat)
+        case Some(standardValue) => 
+          new Number(6, index + 2, countQty.getOrElse(0L) / standard.getOrElse(0L).toDouble, centeredPercentFormat)
       }
 
       sheet.addCell(kadouRate)
@@ -559,7 +619,9 @@ class MachineDefactSummaryExcel(year: Int, month: Int, date: Int, shiftTag: Stri
 
   }
 
-
+  /**
+   *  輸出 Excel 檔到建構子中指定的 OutputStream
+   */
   def outputExcel() {
 
     val workbook = Workbook.createWorkbook(outputStream)

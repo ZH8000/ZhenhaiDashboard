@@ -20,13 +20,19 @@ import java.util.Calendar
 
 import net.liftweb.http.S
 
+/**
+ *  用來顯示網站上的「產量統計」－＞「人員效率」的 Snippet
+ */
 class WorkerPerformanceExcel {
 
-  private var machineIDBox: Box[String] = Empty
-  private var productCodeBox: Box[String] = Empty
-  private var managementCountBox: Box[Long] = Empty
-  private var performanceCountBox: Box[Long] = Empty
+  private var machineIDBox: Box[String] = Empty         // 用來儲存網頁下方表單傳入的「機台編號」
+  private var productCodeBox: Box[String] = Empty       // 用來儲存網頁下方表單傳入的「產品尺吋」
+  private var managementCountBox: Box[Long] = Empty     // 用來儲存網頁下方表單傳入的「日管理標準量」
+  private var performanceCountBox: Box[Long] = Empty    // 用來儲存網頁下方表單傳入的「日效率標準量」
 
+  /**
+   *  用來顯示麵包屑和開啟 Excel 的按鈕
+   */
   def detail = {
     val Array(_, _, yearString, monthString) = S.uri.drop(1).split("/")
     val year = f"${yearString.toInt}%02d"
@@ -37,6 +43,9 @@ class WorkerPerformanceExcel {
     "#downloadExcel [href]" #> s"/api/excel/workerPerformance/$year/$month.xls"
   }
 
+  /**
+   *  在 MachinePerformance 資料表新增一筆資料
+   */
   def createNewRecord() = {
     val newRecord = for {
       machineID         <- machineIDBox.filterNot(_.isEmpty)    ?~ "請選擇機台編號"
@@ -62,6 +71,12 @@ class WorkerPerformanceExcel {
 
   }
 
+  /**
+   *  檢查使用者輸入的是否是新的 (機台編號，產品尺吋) 的資料並存入資料庫
+   *
+   *  如果使用者輸八的 (機台編號，產品尺吋) 在資料庫已存在，則會顯示錯誤
+   *  訊息。
+   */
   def saveToDB() = {
     val oldRecord = for {
       machineID   <- machineIDBox.filterNot(_.isEmpty)    ?~ "請選擇機台編號"
@@ -74,12 +89,21 @@ class WorkerPerformanceExcel {
       case Empty => createNewRecord()
       case _ => S.error("無法取得資料庫資料，請稍候再試")
     }
-   
-
   }
 
+  /**
+   *  顯示網頁下方的設定表單
+   */
   def table = {
     
+    /*
+     *  用來比較兩個 MachinePeformance 物件在排序時的順位
+     *
+     *  先比機台編號，若機台編號相同再用產品尺吋來排序
+     *
+     *  @return     當 record1 小於 record2 時為 true，否則為 false
+     *
+     */
     def machineIDThenProductCode(record1: MachinePerformance, record2: MachinePerformance) = {
       if (record1.machineID == record2.machineID) {
         record1.productCode.get < record2.productCode.get
@@ -88,8 +112,17 @@ class WorkerPerformanceExcel {
       }
     }
 
+    /*
+     *  資料庫內所有的機台產能設定
+     */
     val dataList = MachinePerformance.findAll.toList.sortWith(machineIDThenProductCode)
 
+    /*
+     *  更新資料庫內的機台產能的日效率標準量設定
+     *
+     *  @param    data      要更新哪個 MachinePerformance 的日效率標準量
+     *  @param    value     新的日效率標準量的值
+     */
     def updatePeformanceCount(data: MachinePerformance)(value: String): JsCmd = {
       asLong(value).foreach { newValue =>
         data.performanceCount(newValue).saveTheRecord match {
@@ -99,6 +132,12 @@ class WorkerPerformanceExcel {
       }
     }
 
+    /*
+     *  更新資料庫內的機台產能的日管理標準量設定
+     *
+     *  @param    data      要更新哪個 MachinePerformance 的日效率標準量
+     *  @param    value     新的日效率標準量的值
+     */
     def updateManagementCount(data: MachinePerformance)(value: String): JsCmd = {
       asLong(value).foreach { newValue =>
         data.managementCount(newValue).saveTheRecord match {
@@ -108,6 +147,12 @@ class WorkerPerformanceExcel {
       }
     }
 
+    /*
+     *  刪除資料庫內的機台產能設定
+     *
+     *  @param    machineID     機台編號
+     *  @param    productCode   產品尺吋
+     */
     def deletePeformanceCount(machineID: String, productCode: String): JsCmd = {
       MachinePerformance.delete(machineID, productCode) match {
         case Full(true) => S.notice(s"已刪除 $machineID 的 $productCode 設定")
@@ -133,14 +178,15 @@ class WorkerPerformanceExcel {
 
   }
 
+  /**
+   *  用來綁定新增和修改機台產能的表單
+   */
   def editor = {
-
     "#machineList" #> SHtml.onSubmit(x => machineIDBox = Full(x))  &
     ".productCode" #> SHtml.onSubmit(x => productCodeBox = Full(x)) &
     ".managementCount" #> SHtml.onSubmit(x => managementCountBox = asLong(x)) &
     ".performanceCount" #> SHtml.onSubmit(x => performanceCountBox = asLong(x)) &
     "type=submit" #> SHtml.submit("送出", saveToDB _)
-
   }
 }
 

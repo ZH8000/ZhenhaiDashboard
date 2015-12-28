@@ -2,6 +2,7 @@ package code.snippet
 
 import code.lib._
 import code.model._
+import code.excel._
 import com.mongodb.casbah.Imports._
 import java.net.URLDecoder
 import java.text.SimpleDateFormat
@@ -15,53 +16,15 @@ import net.liftweb.http.SHtml
 import net.liftweb.util._
 import net.liftweb.util.Helpers._
 
-class KadouExcel {
-
-  def detail = {
-    val Array(_, _, yearString, monthString) = S.uri.drop(1).split("/")
-    val year = f"${yearString.toInt}%02d"
-    val month = f"${monthString.toInt}%02d"
-
-    "#currentYearMonth *" #> f"$year-$month" &
-    "#currentYearMonth [href]" #> s"/excel/kadou/$year/$month" &
-    "#downloadExcel [href]" #> s"/api/excel/kadou/$year/$month"
-  }
-
-
-  def table = {
-    val Array(_, _, yearString, monthString) = S.uri.drop(1).split("/")
-    val year = f"${yearString.toInt}%02d"
-    val month = f"${monthString.toInt}%02d"
-    val maxDate = new GregorianCalendar(year.toInt, month.toInt-1, 1).getActualMaximum(Calendar.DAY_OF_MONTH)
-
-    def updateValue(fullDate: String, step: Int)(value: String): JsCmd = {
-      println(s"====> updateVlaue($fullDate, $step)($value)")
-      asLong(value).foreach { valueInLong =>
-        KadouExcelSaved.updateValue(fullDate, step, valueInLong)
-      }
-    }
-
-    ".row" #> (1 to maxDate).map { case date =>
-
-      val fullDate = f"$year-$month-$date%02d"
-      val step1Value = KadouExcelSaved.get(fullDate, 1)
-      val step2Value = KadouExcelSaved.get(fullDate, 2)
-      val step3Value = KadouExcelSaved.get(fullDate, 3)
-      val step4Value = KadouExcelSaved.get(fullDate, 4)
-      val step5Value = KadouExcelSaved.get(fullDate, 5)
-
-      ".date *" #> fullDate &
-      ".step1"  #> SHtml.ajaxText(step1Value.map(_.toString).getOrElse(""), false, updateValue(fullDate, 1)_) &
-      ".step2"  #> SHtml.ajaxText(step2Value.map(_.toString).getOrElse(""), false, updateValue(fullDate, 2)_) &
-      ".step3"  #> SHtml.ajaxText(step3Value.map(_.toString).getOrElse(""), false, updateValue(fullDate, 3)_) &
-      ".step4"  #> SHtml.ajaxText(step4Value.map(_.toString).getOrElse(""), false, updateValue(fullDate, 4)_) &
-      ".step5"  #> SHtml.ajaxText(step4Value.map(_.toString).getOrElse(""), false, updateValue(fullDate, 5)_)
-    }
-  }
-}
-
+/**
+ *  用來顯示網頁上「產量統計」－＞「重點統計」頁面的 Snippet
+ *
+ */
 class MonthlyExcel {
 
+  /**
+   *  用來顯示最後一頁中上方的麵包屑和開啟 Excel 按鈕的 Snippet
+   */
   def detail = {
     val Array(_, _, yearString, monthString, capacityRange) = S.uri.drop(1).split("/")
     val year = f"${yearString.toInt}%02d"
@@ -74,6 +37,9 @@ class MonthlyExcel {
     "#downloadExcel [href]" #> s"/api/excel/monthly/$year/$month/$capacityRange.xls"
   }
 
+  /**
+   *  用來顯示第二層裡選擇電容容量大小的按鈕
+   */
   def month = {
     val Array(_, _, yearString, monthString) = S.uri.drop(1).split("/")
     val year = f"${yearString.toInt}%02d"
@@ -84,11 +50,12 @@ class MonthlyExcel {
     "#smallCapacityButton [href]" #> s"/excel/monthly/$year/$month/5 - 8" &
     "#middleCapacityButton [href]" #> s"/excel/monthly/$year/$month/10 - 12.5" &
     "#largeCapacityButton [href]" #> s"/excel/monthly/$year/$month/16 - 18"
-
   }
 
+  /**
+   *  用來顯示下方的設定的表格
+   */
   def table = {
-
 
     val Array(_, _, yearString, monthString, capacityRangeURL) = S.uri.drop(1).split("/")
     val capacityRange = URLDecoder.decode(capacityRangeURL, "UTF-8")

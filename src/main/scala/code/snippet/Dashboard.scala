@@ -14,9 +14,15 @@ import java.text.SimpleDateFormat
 
 import net.liftweb.http.S
 
+/**
+ *  用來顯示 Dashboard 主頁與「產量統計」中動態內容的 Snippet
+ */
 class Dashboard {
 
 
+  /**
+   *  系統內最舊的紀錄與最新的紀錄的日期
+   */
   lazy val (minDate, maxDate) = {
 
     val dateFormatter = new SimpleDateFormat("yyyy-MM-dd")
@@ -37,6 +43,9 @@ class Dashboard {
     }
   }
 
+  /**
+   *  用來依照網站的網址來決定「機台狀態」按鈕的連結
+   */
   def aliveLink = {
     if (S.hostAndPath contains "221.4.141.146") {
       "#aliveButton [href]" #> "http://221.4.141.146:8080/pic" 
@@ -46,6 +55,9 @@ class Dashboard {
     }
   }
 
+  /**
+   *  用來設定「產量統計」中選擇月份的對話框的設定
+   */
   def monthPicker = {
     "#maxYear [value]" #> maxDate.substring(0, 4) &
     "#maxMonth [value]" #> maxDate.substring(5, 7) &
@@ -53,6 +65,9 @@ class Dashboard {
     "#minMonth [value]" #> minDate.substring(5, 7)
   }
 
+  /**
+   *  設定「產量統計」中的九宮格的連結
+   */
   def reportLink = {
     import java.util.Calendar
 
@@ -70,6 +85,9 @@ class Dashboard {
     "#machineDefactButton [href]" #> f"/machineDefactSummary/$currentYear/$currentMonth%02d/$currentDate%02d"
   }
 
+  /**
+   *  用來設定「產量統計」中選擇年份的對話框的設定
+   */
   def yearSelector = {
 
     val range = (minDate.substring(0, 4).toInt to maxDate.substring(0, 4).toInt).reverse
@@ -80,18 +98,6 @@ class Dashboard {
       "option [onclick]" #> s"window.location='/monthly/$year'"
     }
   }
-
-  def alertLink = {
-
-    val alertTable = MongoDB.zhenhaiDB("alert")
-    val firstAlert = alertTable.headOption
-
-    firstAlert.isEmpty match {
-      case true => "a [class+]" #> "disabled"
-      case false => "a [href]" #> "/alert"
-    }
-  }
-  
 }
 
 

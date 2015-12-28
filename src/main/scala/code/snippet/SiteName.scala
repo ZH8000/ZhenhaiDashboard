@@ -3,6 +3,9 @@ package code.snippet
 import net.liftweb.http.S
 import net.liftweb.util.Helpers._
 
+/**
+ *  用來設定網頁右上角的廠區名稱的 Snippet
+ */
 class SiteName {
 
   def siteName = S.hostName match {
@@ -11,6 +14,9 @@ class SiteName {
     case _ => "台灣電容器"
   }
 
+  /**
+   *  顯示廠區名稱
+   */
   def render = {
     "*" #> siteName
   }

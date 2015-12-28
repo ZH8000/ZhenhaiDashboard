@@ -1,350 +1,96 @@
 package bootstrap.liftweb
 
-import code.lib._
 import code.model._
 import com.mongodb.MongoClient
 import javax.mail.{Authenticator,PasswordAuthentication}
-import net.liftweb.common.{Full, Empty}
+import net.liftweb.common.Full
 import net.liftweb.http._
 import net.liftweb.http.LiftRules
 import net.liftweb.http.Req
 import net.liftweb.http.S
-import net.liftweb.http.Templates
 import net.liftweb.mongodb.MongoDB
-import net.liftweb.sitemap._
-import net.liftweb.sitemap.Loc.EarlyResponse
-import net.liftweb.sitemap.Loc.If
-import net.liftweb.sitemap.Loc.Template
-import net.liftweb.sitemap.Loc.Unless
 import net.liftweb.util.BasicTypesHelpers._
 import net.liftweb.util.DefaultConnectionIdentifier
 import net.liftweb.util.Props.RunModes
 import net.liftweb.util.{Props, Mailer}
-import scala.xml.NodeSeq
 
+/**
+ *  此物件用來設定 Lift 框架的基本參數和資料庫連線等
+ */
 class Boot 
 {
-  private def getTemplate(path: String) = Template(() => Templates(path.split("/").toList) openOr NodeSeq.Empty)
-  private def needLogin = If(() => User.isLoggedIn, () => S.redirectTo("/", () => S.error("請先登入")))
-  private def hasPermission(permission: PermissionContent.Value) = If(
-    () => { User.CurrentUser.get.map(_.hasPermission(permission)).openOr(false) }, 
-    () => S.redirectTo("/", () => S.error("權限不足"))
-  )
-
-  private def redirectToDashboardIfLoggedIn = If(() => !User.isLoggedIn, () => S.redirectTo("/dashboard"))
-  private def logout = EarlyResponse{ () =>
-    User.isLoggedIn match {
-      case false => Full(NotFoundResponse("NotFound"))
-      case true => 
-        User.CurrentUser(Empty)
-        S.redirectTo("/", () => S.notice("已登出"))
-    }
-  }
-
-  val editWorkerMenu = Menu.param[Worker]("EditWorker", "EditWorker", id => Worker.find(id), worker => worker.id.get.toString)
-  val editUserMenu = Menu.param[User]("EditUser", "EditUser", id => User.find(id), user => user.id.get.toString)
- 
-  val editAlarmMenu = Menu.param[Alarm]("EditAlarm", "EditAlarm", id => Alarm.find(id), alarm => alarm.id.get.toString)
-  def workerMenu(menuID: String) = Menu.param[Worker](menuID, menuID, id => Worker.find(id), worker => worker.id.get.toString)
-
-
-  val siteMap = SiteMap(
-    Menu("assets") / "test" / **,
-    Menu("Home") / "index" >> redirectToDashboardIfLoggedIn,
-    Menu("Logout") / "user" / "logout" >> logout,
-    Menu("ChangePassword") / "user" / "changePassword" 
-      >> needLogin
-      >> hasPermission(PermissionContent.ManagementAccount),
-    Menu("Dashboard") / "dashboard" >> needLogin,
-    Menu("ViewDetail") / "viewDetail" >> needLogin,
-
-    Menu("ViewDetail") / "excel" / "monthly" / "index" >> needLogin,
-    Menu("ExcelMonthlyRange") / "excel" / "monthly" / * / * >> getTemplate("excel/monthly/capacityRange") >> needLogin,
-    Menu("ExcelMonthlyDetail") / "excel" / "monthly" / * / * / * >> getTemplate("excel/monthly/detail") >> needLogin,
-    Menu("DailyMorning") / "excel" / "morning" / * / * >> getTemplate("excel/morning/detail") >> needLogin,
-    Menu("WorkerPerformance") / "excel" / "workerPerformance" / * / * >> getTemplate("excel/workerPerformance/detail") >> needLogin,
-    Menu("Kadou") / "excel" / "kadou" / * / * >> getTemplate("excel/kadou/detail") >> needLogin,
-
-    Menu("RawDataMachineList") / "rawData" / * >> getTemplate("rawData/machineList") >> needLogin,
-    Menu("RawDataDetaiList") / "rawData" / * / * >> getTemplate("rawData/detailList") >> needLogin,
-
-    Menu("DefactSummaryIndex") / "machineDefactSummary" / * / * / * >> getTemplate("machineDefactSummary/index") >> needLogin,
-    Menu("DefactSummarySort") / "machineDefactSummary" / * / * / * / * >> getTemplate("machineDefactSummary/sort") >> needLogin,
-    Menu("DefactSummaryDetail") / "machineDefactSummary" / * / * / * / * / * >> getTemplate("machineDefactSummary/detail") >> needLogin,
-
-    Menu("Alert") / "alert" / "index" >> needLogin,
-    Menu("Alert") / "alert" / "strangeQty" >> needLogin,
-    Menu("Alert") / "alert" / "alertDate" >> needLogin,
-    Menu("Alert") / "alert" / "alert" / * >> getTemplate("alert/alert") >> needLogin,
-    Menu("Alive") / "alive",
-    Menu("Capacity1") / "capacity" 
-      >> getTemplate("capacity/overview") 
-      >> needLogin 
-      >> hasPermission(PermissionContent.ReportCapacity),
-    Menu("Capacity2") / "capacity" / * 
-      >> getTemplate("capacity/overview") 
-      >> needLogin 
-      >> hasPermission(PermissionContent.ReportCapacity),
-    Menu("Capacity3") / "capacity" / * / * 
-      >> getTemplate("capacity/overview") 
-      >> needLogin
-      >> hasPermission(PermissionContent.ReportCapacity),
-    Menu("Capacity4") / "capacity" / * / * / * / * 
-      >> getTemplate("capacity/overview") 
-      >> needLogin
-      >> hasPermission(PermissionContent.ReportCapacity),
-    Menu("Capacity5") / "capacity" / * / * / * / * / * 
-      >> getTemplate("capacity/overview") 
-      >> needLogin
-      >> hasPermission(PermissionContent.ReportCapacity),
-    Menu("Capacity6") / "capacity" / * / * / * / * / * / * 
-      >> getTemplate("capacity/overview") 
-      >> needLogin
-      >> hasPermission(PermissionContent.ReportCapacity),
-    Menu("Capacity7") / "capacity" / * / * / * / * / * / * / * 
-      >> getTemplate("capacity/machine") 
-      >> needLogin
-      >> hasPermission(PermissionContent.ReportCapacity),
- 
-    Menu("Total1") / "total" 
-      >> getTemplate("total/overview") 
-      >> needLogin
-      >> hasPermission(PermissionContent.ReportPhi),
-    Menu("Total2") / "total" / * 
-      >> getTemplate("total/overview") 
-      >> needLogin
-      >> hasPermission(PermissionContent.ReportPhi),
-    Menu("Total3") / "total" / * / * 
-      >> getTemplate("total/overview") 
-      >> needLogin
-      >> hasPermission(PermissionContent.ReportPhi),
-    Menu("Total3") / "total" / * / * / * 
-      >> getTemplate("total/overview") 
-      >> needLogin
-      >> hasPermission(PermissionContent.ReportPhi),
-    Menu("Total4") / "total" / * / * / * / * 
-      >> getTemplate("total/overview") 
-      >> needLogin
-      >> hasPermission(PermissionContent.ReportPhi),
-    Menu("Total5") / "total" / * / * / * / * / * 
-      >> getTemplate("total/overview") 
-      >> needLogin
-      >> hasPermission(PermissionContent.ReportPhi),
-    Menu("Total6") / "total" / * / * / * / * / * / * 
-      >> getTemplate("total/overview") 
-      >> needLogin
-      >> hasPermission(PermissionContent.ReportPhi),
-    Menu("Total7") / "total" / * / * / * / * / * / * / * 
-      >> getTemplate("total/machine") 
-      >> needLogin
-      >> hasPermission(PermissionContent.ReportPhi),
- 
-    Menu("Monthly1") / "monthly" / *
-      >> getTemplate("monthly/overview") 
-      >> needLogin
-      >> hasPermission(PermissionContent.ReportMonthly),
-    Menu("Monthly2") / "monthly" / * / * 
-      >> getTemplate("monthly/overview") 
-      >> needLogin
-      >> hasPermission(PermissionContent.ReportMonthly),
-    Menu("Monthly3") / "monthly" / * / * / * 
-      >> getTemplate("monthly/overview") 
-      >> needLogin
-      >> hasPermission(PermissionContent.ReportMonthly),
-    Menu("Monthly4") / "monthly" / * / * / * / * 
-      >> getTemplate("monthly/overview") 
-      >> needLogin
-      >> hasPermission(PermissionContent.ReportMonthly),
-    Menu("Monthly5") / "monthly" / * / * / * / * / * 
-      >> getTemplate("monthly/overview") 
-      >> needLogin
-      >> hasPermission(PermissionContent.ReportMonthly),
-    Menu("Monthly6") / "monthly" / * / * / * / * / * / * 
-      >> getTemplate("monthly/machine") 
-      >> needLogin
-      >> hasPermission(PermissionContent.ReportMonthly),
-
-    Menu("Daily1") / "daily" / * / * 
-      >> getTemplate("daily/overview") 
-      >> needLogin
-      >> hasPermission(PermissionContent.ReportDaily),
-    Menu("Daily2") / "daily" / * / * / * 
-      >> getTemplate("daily/overview") 
-      >> needLogin
-      >> hasPermission(PermissionContent.ReportDaily),
-    Menu("Daily3") / "daily" / * / * / * / * 
-      >> getTemplate("daily/overview") 
-      >> needLogin
-      >> hasPermission(PermissionContent.ReportDaily),
-    Menu("Daily4") / "daily" / * / * / * / * / * 
-      >> getTemplate("daily/machine") 
-      >> needLogin
-      >> hasPermission(PermissionContent.ReportDaily),
- 
-    Menu("Machine1") / "machine" 
-      >> getTemplate("machine/index") 
-      >> needLogin
-      >> hasPermission(PermissionContent.ReportBug),
-    Menu("Machine2") / "machine" / * 
-      >> getTemplate("machine/overview") 
-      >> needLogin
-      >> hasPermission(PermissionContent.ReportBug),
-    Menu("Machine3") / "machine" / * / * 
-      >> getTemplate("machine/overview") 
-      >> needLogin
-      >> hasPermission(PermissionContent.ReportBug),
-    Menu("Machine4") / "machine" / * / * / * 
-      >> getTemplate("machine/detail") 
-      >> needLogin
-      >> hasPermission(PermissionContent.ReportBug),
- 
-    Menu("Managemen1") / "management" / "index" 
-      >> needLogin
-      >> hasPermission(PermissionContent.ManagementWorker),
-    Menu("Managemen2") / "management" / "workers" / "add" 
-      >> needLogin
-      >> hasPermission(PermissionContent.ManagementWorker),
-    Menu("Managemen3") / "management" / "workers" / "index" 
-      >> needLogin
-      >> hasPermission(PermissionContent.ManagementWorker),
-    Menu("Managemen4") / "management" / "workers" / "barcode" 
-      >> needLogin
-      >> Worker.barcodePDF
-      >> hasPermission(PermissionContent.ManagementWorker),
-    editWorkerMenu / "management" / "workers" / "edit" / * 
-      >> getTemplate("management/workers/edit") 
-      >> needLogin
-      >> hasPermission(PermissionContent.ManagementWorker),
-
-    Menu("Managemen6") / "management" / "alarms" / "index" 
-      >> needLogin
-      >> hasPermission(PermissionContent.ManagementAlarm),
-    Menu("Managemen6") / "management" / "alarms" / * 
-      >> getTemplate("management/alarms/list") 
-      >> needLogin
-      >> hasPermission(PermissionContent.ManagementAlarm),
-    Menu("Managemen5") / "management" / "alarms" / * / "add" 
-      >> getTemplate("management/alarms/add") 
-      >> needLogin
-      >> hasPermission(PermissionContent.ManagementAlarm),
-
-    editAlarmMenu / "management" / "alarms" / "edit" / * 
-      >> getTemplate("management/alarms/edit") 
-      >> needLogin
-      >> hasPermission(PermissionContent.ManagementAlarm),
- 
-    Menu("Managemen7") / "management" / "account" / "index" 
-      >> needLogin
-      >> hasPermission(PermissionContent.ManagementAccount),
-    Menu("Managemen8") / "management" / "account" / "add" 
-      >> needLogin
-      >> hasPermission(PermissionContent.ManagementAccount),
-    Menu("Managemen8") / "management" / "account" / "addPermission" 
-      >> needLogin
-      >> hasPermission(PermissionContent.ManagementAccount),
-    editUserMenu / "management" / "account" / "edit" / * 
-      >> getTemplate("management/account/edit") 
-      >> needLogin
-      >> hasPermission(PermissionContent.ManagementAccount),
-
-    Menu("Workers") / "workers" / "index" 
-      >> needLogin
-      >> hasPermission(PermissionContent.ManagementWorker),
-    Menu("Workers1") / "workers" / * 
-      >> getTemplate("workers/worker") 
-      >> needLogin
-      >> hasPermission(PermissionContent.ManagementWorker),
-    Menu("Workers2") / "workers" / * / * 
-      >> getTemplate("workers/weekly") 
-      >> needLogin
-      >> hasPermission(PermissionContent.ManagementWorker),
-    Menu("Workers3") / "workers" / * / * / * 
-      >> getTemplate("workers/daily") 
-      >> needLogin
-      >> hasPermission(PermissionContent.ManagementWorker),
-    Menu("Workers4") / "workers" / * / * / * / * 
-      >> getTemplate("workers/detail") 
-      >> needLogin
-      >> hasPermission(PermissionContent.ManagementWorker),
- 
-    Menu("machineLevel") / "management" / "machineLevel" 
-      >> needLogin
-      >> hasPermission(PermissionContent.ManagementMachineLevel),
-    Menu("TodayOrder") / "todayOrder" 
-      >> needLogin
-      >> hasPermission(PermissionContent.ReportTodayOrder),
-
-    Menu("ProductionStatusHistory") / "productionStatusHistory" / *
-      >> needLogin
-      >> hasPermission(PermissionContent.ReportTodayOrder)
-      >> getTemplate("productionStatusHistory") >> needLogin,
-
-
-    Menu("OrderStatus") / "orderStatus" / "index"
-      >> needLogin
-      >> hasPermission(PermissionContent.ReportOrderStatus),
-    Menu("OrderStatusDetail") / "orderStatus" / *
-      >> getTemplate("orderStatus/dateCard")
-      >> needLogin
-      >> hasPermission(PermissionContent.ReportOrderStatus),
-    Menu("OrderStatusDetail") / "orderStatus" / * / *
-      >> getTemplate("orderStatus/detail")
-      >> needLogin
-      >> hasPermission(PermissionContent.ReportOrderStatus),
-
-    Menu("MachineMaintenance") / "maintenanceLog" / "index"
-      >> needLogin
-      >> hasPermission(PermissionContent.ReportMaintainLog),
-    Menu("MachineMaintenanceDetail") / "maintenanceLog" / *
-      >> getTemplate("maintenanceLog/detail")
-      >> needLogin
-      >> hasPermission(PermissionContent.ReportMaintainLog),
-
-    Menu("Managemen4") / "management" / "maintenanceCodePDF" 
-      >> needLogin
-      >> MaintenanceCode.barcodePDF
-      >> hasPermission(PermissionContent.ReportMaintainLog),
-
-    Menu("ProductionCard") / "productionCard"  / "index"
-      >> needLogin
-      >> hasPermission(PermissionContent.ReportOrderStatus),
-    Menu("ProductionCard2") / "productionCard"  / *
-      >> getTemplate("productionCard/detail")
-      >> needLogin
-      >> hasPermission(PermissionContent.ReportOrderStatus),
-
-    Menu("Announcement") / "management" / "announcement" 
-      >> needLogin
-      >> hasPermission(PermissionContent.ManagementAnnouncement)
-  )
-
+  /**
+   *  此函式用來確保 REST API 只有在使用者是登入的情況下
+   *  可以存取。
+   *
+   *  只有在被 case 序述式定義到的 Req 物件（代表了 HTTP Reqeust），
+   *  才能夠存取被這個函式守護的 REST API。
+   */
   val ensureLogin: PartialFunction[Req, Unit] = {
-    case req if User.isLoggedIn =>
+    case req if User.isLoggedIn =>  // 送出 HTTP 的 Request 時使用者已登入 
   }
 
+  /**
+   *  客製化的 HTTP 錯誤頁面
+   *
+   *  此函式會到 webapp/template-hidden/ 資料夾中取得名稱為「錯誤代碼.html」
+   *  的檔案做為該錯誤的 HTTP Request 的反回頁面。
+   *
+   *  @param    req       HTTP Reqeust 物件
+   *  @param    code      HTTP 錯誤代碼
+   *  @return             客製化的 HTTP 錯誤頁面
+   */
   def errorPageResponse(req: Req, code: Int) = {
     val content = S.render(<lift:embed what={code.toString} />, req.request)
     XmlResponse(content.head, code, "text/html", req.cookies)
   }
 
+  /**
+   *  設定網頁伺服器啟動時的初始化設定
+   */
   def boot 
   {
+    // 設定 MongoDB 資料庫連線
     MongoDB.defineDb(DefaultConnectionIdentifier, new MongoClient, code.model.MongoDB.DatabaseName)
 
-    // Force the request to be UTF-8
-    LiftRules.early.append(_.setCharacterEncoding("UTF-8"))
+    // 強迫文字使用 UTF-8 編碼
+    LiftRules.early.append(_.setCharacterEncoding("UTF-8"))     
+
+    // 程式碼都位於 code 這個 package 下
     LiftRules.addToPackages("code")
-    LiftRules.setSiteMap(siteMap)
+
+    // 設定此網站的所有網址，與權限控管，詳見 SiteMapDefine.scala 檔案
+    LiftRules.setSiteMap(SiteMapDefine.siteMap)
+
+    // 設定 JsonRestAPI / CsvRestAPI / ExcelRestAPI 三個 REST API 物件，
+    // 且這三個 REST API 物件都需要在使用者是登入的情況下才能用。
+    //
+    // 此處的 REST API 主要為網頁上產生 JSON / CSV / Excel 檔所使用。
     LiftRules.dispatch.append(ensureLogin guard JsonRestAPI)
     LiftRules.dispatch.append(ensureLogin guard CsvRestAPI)
     LiftRules.dispatch.append(ensureLogin guard ExcelRestAPI)
+
+    // 設定 MachineStatusRestAPI，這個 API 是蘇州廠新版的 RaspberryPi
+    // 機上盒需要從 Server 上取回資料時，會透過這個 REST API 物件中
+    // 定義的網址來取得
     LiftRules.dispatch.append(MachineStatusRestAPI)
 
+    // 設定 404 NotFound 的客制化頁面
     LiftRules.uriNotFound.prepend({
-      case (req,failure) => NotFoundAsResponse(errorPageResponse(req, 404))
+      case (request, failure) => NotFoundAsResponse(errorPageResponse(request, 404))
     })
 
+    // 設定如何定義「使用者已登入」的測試條件
+    //
+    // 此處的條件為若 User.CurrentUser 這個 Session 變數若已被設定（非空值），
+    // 則視為使用者已登入。
     LiftRules.loggedInTest = Full(() => !User.CurrentUser.get.isEmpty)
+
+    // 設定當網站程式發發生錯誤時如何處理
+    //
+    // 此處的設定為若在 Production 模式下，若程式發生錯誤，則將錯誤的 Exception
+    // 記錄到 Jetty 的 log 檔中，並且顯示 webapp/template-hidden/500.html 的
+    // HTML 模板。
     LiftRules.exceptionHandler.prepend {
       case (runMode, req, exception) if runMode == RunModes.Production =>
         println(runMode)
@@ -355,12 +101,20 @@ class Boot
         errorPageResponse(req, 500)
     }
 
+    // 設定郵件伺服器的認證方式
+    //
+    // 設定檔位於 src/main/resource/production.default.props 這個檔案，
+    // 設定檔的格式如下：
+    //
+    // mail.smtp.host=smtp.example.org
+    // mail.user=使用者名稱
+    // mail.password=使用者密碼
+    //
     Mailer.authenticator = for {
-      user <- Props.get("mail.user")
-      pass <- Props.get("mail.password")
+      user <- Props.get("mail.user")        // 若設定檔中有設定 mail.user 變數，則指定到 user 變數並繼續
+      pass <- Props.get("mail.password")    // 若設定檔中有設定 mail.password 變數，則指定到 pass 變數並反回下面 new 出來的物件
     } yield new Authenticator {
-      override def getPasswordAuthentication =
-        new PasswordAuthentication(user,pass)
+      override def getPasswordAuthentication = new PasswordAuthentication(user,pass)
     }
   }
 }

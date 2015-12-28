@@ -11,36 +11,48 @@ import scala.xml.NodeSeq
 import net.liftweb.http.SHtml
 import net.liftweb.common._
 
+/**
+ *  用來處理網頁上「生產管理卡」的 Snippet
+ *  
+ */
 class ProductionCard {
 
-  private var searchBox: String = _
+  private var searchBox: String = _     // 用來記錄網頁上工單號搜尋框的內容
 
+  /**
+   *  用來顯示「查無此製令編號」的錯誤訊息，並隱藏 HTML 中 class="dataBlock" 元素下的所有子節點
+   */
   def showEmptyBox() = {
     S.error("查無此製令編號")
     ".dataBlock" #> NodeSeq.Empty
   }
 
-  def monthList = {
-    val monthList = LotDate.monthList
-    monthList.isEmpty match {
-      case true  => showEmptyBox()
-      case false =>
-        ".cardDate" #> monthList.map { date =>
-          "a [href]" #> s"/productionCard/$date" &
-          "a *"      #> date.toString
-        }
-    }
-  }
-
+  /**
+   *  當使用者輸入工單號後用來轉址的函式
+   */
   def process() {
     val searchBox = S.param("lotNo").getOrElse("")
     S.redirectTo(s"/productionCard/$searchBox")
   }
 
+  /**
+   *  設定搜尋框的「查詢」按鈕按下去後要執行的動作
+   */
   def search = {
     "type=submit" #> SHtml.onSubmitUnit(process)
   }
 
+  /**
+   *  設定查詢結果頁面中的麵包屑上的工單號
+   */
+  def lotNo = {
+    val Array(_, lotNo) = S.uri.split("/").drop(1)
+    ".lotNo *" #> lotNo
+  }
+
+  /**
+   *  用來顯示生產管理卡的表格
+   */
   def renderTable(orderStatus: code.model.OrderStatus) = {
 
     val requireCount = (orderStatus.inputCount.get / 1.04).toLong
@@ -80,6 +92,9 @@ class ProductionCard {
     ".step5DoneDate *" #> orderStatus.step5DoneTimeString
   }
 
+  /**
+   *  用來從網址取出工單號並顯示生產管理卡表格
+   */
   def render = {
 
     val Array(_, lotNo) = S.uri.split("/").drop(1)

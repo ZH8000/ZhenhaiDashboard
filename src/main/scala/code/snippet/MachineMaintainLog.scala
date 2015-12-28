@@ -10,14 +10,31 @@ import net.liftweb.util._
 import scala.xml.NodeSeq
 import com.mongodb.casbah.Imports._
 
+/**
+ *  用來顯示網頁上「維修記錄」的頁面的 Snippet
+ */ 
 class MachineMaintainLog {
 
-
+  /**
+   *  顯示「無維修紀錄」的訊息，並將 HTML 中 class="dataBlock" 以下的子節點隱藏
+   */
   def showEmptyBox() = {
     S.error("目前無機台維修記錄")
     ".dataBlock" #> NodeSeq.Empty
   }
 
+  /**
+   *  設定麵包屑上的日期
+   */
+  def dateLink = {
+    val Array(_, date) = S.uri.drop(1).split("/")
+
+    ".date *" #> date
+  }
+
+  /**
+   *  在日期列表上顯示有維修紀錄的日期列表
+   */
   def dateList = {
     ".maintenanceDate" #> MachineMaintainLog.dateList.map { date =>
       "a [href]" #> s"/maintenanceLog/$date" &
@@ -25,6 +42,11 @@ class MachineMaintainLog {
     }
   }
 
+  /**
+   *  顯示特定日期的維修紀錄
+   *
+   *  日期的部份由網址取出，網址的格式為 /maintenanceLog/yyyy-MM-dd
+   */
   def render = {
 
     val Array(_, date) = S.uri.drop(1).split("/")

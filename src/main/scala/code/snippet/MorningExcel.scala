@@ -17,8 +17,14 @@ import java.util.Calendar
 
 import net.liftweb.http.S
 
+/**
+ *  用來顯示「產量統計」－＞「晨間檢討」的頁面的 Snippet
+ */
 class MorningExcel {
 
+  /**
+   *  用來顯示上方的麵包屑和開啟 Excel 的按鈕
+   */
   def detail = {
     val Array(_, _, yearString, monthString) = S.uri.drop(1).split("/")
     val year = f"${yearString.toInt}%02d"
@@ -29,6 +35,9 @@ class MorningExcel {
     "#downloadExcel [href]" #> s"/api/excel/morning/$year/$month.xls"
   }
 
+  /**
+   *  用來顯示下方的設定區的編輯表格
+   */
   def editor = {
 
     val Array(_, _, yearString, monthString) = S.uri.drop(1).split("/")
