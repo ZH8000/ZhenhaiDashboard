@@ -76,7 +76,7 @@ class AlarmEdit(alarm: Alarm) {
    */
   private def process(): JsCmd = {
 
-    /**
+    /*
      *  將 yyyy-MM-dd 格式的日期字串轉成 java.util.Date 物件
      *
      *  @param    date      yyyy-MM-dd 格式的日期字串

@@ -11,8 +11,20 @@ import net.liftweb.http.js.JsCmd
 import net.liftweb.util.Helpers._
 import net.liftweb.util._
 
+/**
+ *  用來處理網頁上「網站管理」－＞「機台生產均線」設定頁面的 Snippet
+ *
+ */
 class MachineLevelEditor {
 
+  /**
+   *  更新資料庫裡某機台的生產均線設定
+   *
+   *  @param    machineLevel      原本的生產均線的 Record 物件
+   *  @param    field             要設定哪個均線（A / B / C）
+   *  @param    value             新的值
+   *  @return                     設定完成後要在瀏覽器上執行什麼 JavaScript，目前沒有做任何事
+   */
   def updateLevel(machineLevel: MachineLevel, field: String)(value: String): JsCmd = value.trim.isEmpty match {
     case true => Noop
     case false =>
@@ -41,11 +53,12 @@ class MachineLevelEditor {
       Noop
   }
 
+  /**
+   *  用來顯示設定用的表格
+   */
   def render = {
 
     val sortedMachineList = MachineInfo.machineList.sortWith(_ < _)
-
-    
 
     ".machineLevelRow" #> sortedMachineList.map { machineID =>
 

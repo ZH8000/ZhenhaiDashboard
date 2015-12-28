@@ -6,8 +6,21 @@ import com.mongodb.casbah.Imports._
 
 import net.liftweb.util.Helpers._
 
+/**
+ *  用來顯示特定日期中特定機台統計網頁下方的事件統計列表
+ *
+ */
 object EventSummaryTable {
   
+  /**
+   *  用來顯示事件列表
+   *
+   *  @param      year        年
+   *  @param      month       月
+   *  @param      date        日
+   *  @param      machineID   機台編號
+   *  @return                 用來設定 HTML 的 Binding
+   */
   def apply(year: Int, month: Int, date: Int, machineID: String) = {
 
     val machineLevelBox = MachineLevel.find("machineID", machineID)
@@ -57,6 +70,5 @@ object EventSummaryTable {
       ".eventCount *" #> event.count
     }
  }
-
 }
 

@@ -98,19 +98,6 @@ class Dashboard {
       "option [onclick]" #> s"window.location='/monthly/$year'"
     }
   }
-
-
-  def alertLink = {
-
-    val alertTable = MongoDB.zhenhaiDB("alert")
-    val firstAlert = alertTable.headOption
-
-    firstAlert.isEmpty match {
-      case true => "a [class+]" #> "disabled"
-      case false => "a [href]" #> "/alert"
-    }
-  }
-  
 }
 
 

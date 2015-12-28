@@ -16,13 +16,25 @@ import net.liftweb.http.SHtml
 import net.liftweb.util._
 import net.liftweb.util.Helpers._
 
+/**
+ *  用來顯示「產量統計」－＞「生產狀況」下方的
+ */
 class MachineDefactSummary {
 
+  /**
+   *  從網址取出的「年／月／日」字串
+   */
   val Array(_, yearString, monthString, dateString, _*) = S.uri.drop(1).split("/")
 
   val dataTable = MongoDB.zhenhaiDB(s"defactSummary-$yearString-$monthString")
   val shiftDate = s"$yearString-$monthString-$dateString"
 
+  /**
+   *  依照網址來產生網頁上顯示麵包屑要用的的 List[Step] 物件
+   *
+   *  @param      uri       瀏覽器上的網址用 / 分隔後的 List
+   *  @return               代表麵包屑內容的 List[Step] 物件
+   */
   def getSteps(uri: List[String]) = uri match {
 
     case "machineDefactSummary" :: year :: month :: date :: Nil =>
@@ -76,6 +88,9 @@ class MachineDefactSummary {
     case _ => Nil
   }
 
+  /**
+   *  用來顯示麵包屑
+   */
   def showStepsSelector = {
     val steps = getSteps(S.uri.drop(1).split("/").toList)
 
@@ -87,12 +102,18 @@ class MachineDefactSummary {
 
   }
 
+  /**
+   *  用來設定早晚班的按鈕的連結位置
+   */
   def shiftLink = {
 
     "#morningShift [href]" #> s"/machineDefactSummary/$yearString/$monthString/$dateString/M" &
     "#nightShift [href]" #> s"/machineDefactSummary/$yearString/$monthString/$dateString/N"
   }
 
+  /**
+   *  用來設定排序方式的按鈕的連結位置
+   */
   def sortLink = {
 
     val Array(_, yearString, monthString, dateString, shiftLink) = S.uri.drop(1).split("/")
@@ -102,6 +123,15 @@ class MachineDefactSummary {
     "#sortByArea [href]" #> s"/machineDefactSummary/$yearString/$monthString/$dateString/$shiftLink/area"
   }
 
+  /**
+   *  更新資料庫內某個日期的某機台的「改善對策」的值
+   *
+   *  @param    shiftDate     工班日期
+   *  @param    shiftTag      早晚班（M = 早班 / N = 晚班）
+   *  @param    machineID     機台編號
+   *  @param    value         從 HTML 傳入的「改善對策」的值
+   *  @return                 執行完此函式要在瀏覽器執行的 JavaScript，目前沒做任何事
+   */
   def updatePolicy(shiftDate: String, shiftTag: String, machineID: String)(value: String): JsCmd = {
     val query = 
       MongoDBObject(
@@ -114,6 +144,15 @@ class MachineDefactSummary {
     Noop
   }
 
+  /**
+   *  更新資料庫內某個日期的某機台的「負責人」的值
+   *
+   *  @param    shiftDate     工班日期
+   *  @param    shiftTag      早晚班（M = 早班 / N = 晚班）
+   *  @param    machineID     機台編號
+   *  @param    value         從 HTML 傳入的「負責人」的值
+   *  @return                 執行完此函式要在瀏覽器執行的 JavaScript，目前沒做任何事
+   */
   def updateFixer(shiftDate: String, shiftTag: String, machineID: String)(value: String): JsCmd = {
     val query = 
       MongoDBObject(
@@ -126,6 +165,13 @@ class MachineDefactSummary {
     Noop
   }
 
+  /**
+   *  將系統內的記錄依照 sortTag 的方式排序
+   *
+   *  @param      dataRow       要排序的資料
+   *  @param      sortTag       排序方式（model = 機台型號 / size = 產品尺吋 / area = 區域）
+   *  @return                   排序過後的資料
+   */
   def sortData(dataRow: List[DBObject], sortTag: String) = {
     sortTag match {
       case "model" => dataRow.sortWith((x, y) => x.get("machineModel").toString < y.get("machineModel").toString)
@@ -138,6 +184,13 @@ class MachineDefactSummary {
     }
   }
 
+  /**
+   *  用來顯示「加締機」的表格
+   *
+   *  @param    shiftTag      早晚班標記（M = 早班 / N = 晚班）
+   *  @param    sortTag       排序方式（model = 機台型號 / size = 產品尺吋 / area = 區域）
+   *  @return                 顯示的規則
+   */
   def step1Rows(shiftTag: String, sortTag: String) = {
 
     val dataRow = dataTable.find(MongoDBObject("shiftDate" -> shiftDate, "shift" -> shiftTag, "machineType" -> 1)).toList
@@ -244,6 +297,13 @@ class MachineDefactSummary {
     }
   }
 
+  /**
+   *  用來顯示「組立」的表格
+   *
+   *  @param    shiftTag      早晚班標記（M = 早班 / N = 晚班）
+   *  @param    sortTag       排序方式（model = 機台型號 / size = 產品尺吋 / area = 區域）
+   *  @return                 顯示的規則
+   */
   def step2Rows(shiftTag: String, sortTag: String) = {
 
     val dataRow = dataTable.find(
@@ -336,6 +396,13 @@ class MachineDefactSummary {
     }
   }
 
+  /**
+   *  用來顯示「老化」的表格
+   *
+   *  @param    shiftTag      早晚班標記（M = 早班 / N = 晚班）
+   *  @param    sortTag       排序方式（model = 機台型號 / size = 產品尺吋 / area = 區域）
+   *  @return                 顯示的規則
+   */
   def step3Rows(shiftTag: String, sortTag: String) = {
 
     val dataRow = dataTable.find(
@@ -437,6 +504,14 @@ class MachineDefactSummary {
     }
   }
 
+  /**
+   *  用來顯示「CUTTING ／ TAPPING」的表格
+   *
+   *  @param    shiftTag      早晚班標記（M = 早班 / N = 晚班）
+   *  @param    sortTag       排序方式（model = 機台型號 / size = 產品尺吋 / area = 區域）
+   *  @param    prefix        哪種類型的機台（C = CUTTING / T = TAPPING）
+   *  @return                 顯示的規則
+   */
   def step5Rows(shiftTag: String, sortTag: String, prefix: String) = {
 
     val dataRow = dataTable.find(
@@ -485,7 +560,9 @@ class MachineDefactSummary {
     }
   }
 
-
+  /**
+   *  合併了「加締／組立／老化／加工切腳」的整個網頁的顯示規則
+   */
   def render = {
 
     val Array(_, yearString, monthString, dateString, shiftTag, sortTag) = S.uri.drop(1).split("/")
