@@ -1,15 +1,12 @@
 package code.snippet
 
-import code.model._
 import code.lib._
-
-import net.liftweb.http.S
-import net.liftweb.util.Helpers._
-import net.liftweb.util._
-import java.text.SimpleDateFormat
-import scala.xml.NodeSeq
-import net.liftweb.http.SHtml
+import code.model._
 import net.liftweb.common._
+import net.liftweb.http.{S, SHtml}
+import net.liftweb.util.Helpers._
+
+import scala.xml.NodeSeq
 
 /**
  *  用來處理網頁上「生產管理卡」的 Snippet

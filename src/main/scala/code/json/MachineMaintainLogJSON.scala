@@ -1,9 +1,9 @@
 package code.json
 
-import code.model._
-
 import java.text.SimpleDateFormat
 import java.util.Date
+
+import code.model._
 
 /**
  *  用來產生「維修紀錄」中的 JSON 格式的資料

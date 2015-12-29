@@ -1,17 +1,13 @@
 package code.snippet
 
-import code.model._
-
-import net.liftweb.http.S
-import net.liftweb.http.SHtml
-
-import net.liftweb.util.Helpers._
-import net.liftweb.util._
-
 import java.text.SimpleDateFormat
 import java.util.Date
+
+import code.model._
+import net.liftweb.http.S
+import net.liftweb.util.Helpers._
+
 import scala.xml.NodeSeq
-import code.lib._
  
 /**
  *  用來顯示 /alert/ 裡的「異常數量」的記錄的表格

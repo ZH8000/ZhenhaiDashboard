@@ -1,13 +1,11 @@
 package code.model
 
-import code.lib._
-
-import net.liftweb.mongodb.record.MongoRecord
-import net.liftweb.mongodb.record.MongoMetaRecord
-import net.liftweb.mongodb.record.field._
-import net.liftweb.record.field._
 import java.text.SimpleDateFormat
 import java.util.Date
+
+import net.liftweb.mongodb.record.{MongoMetaRecord, MongoRecord}
+import net.liftweb.mongodb.record.field._
+import net.liftweb.record.field._
 
 /**
  *  網狀上計算「訂單狀單」和「今日工單」用的資料表

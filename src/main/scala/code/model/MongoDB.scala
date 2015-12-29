@@ -1,7 +1,6 @@
 package code.model
 
 import com.mongodb.casbah.Imports._
-import net.liftweb.util.Props
 
 /**
  *  MongoDB 資料庫設定

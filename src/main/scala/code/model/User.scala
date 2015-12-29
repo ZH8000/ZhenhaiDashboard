@@ -1,17 +1,11 @@
 package code.model
 
-import com.mongodb.casbah.Imports._
-
-import net.liftweb.util.BCrypt
-import net.liftweb.common.{Box, Full, Empty, Failure}
+import code.lib._
+import net.liftweb.common.{Box, Empty}
 import net.liftweb.http.SessionVar
-import net.liftweb.mongodb.record.MongoRecord
-import net.liftweb.mongodb.record.MongoMetaRecord
+import net.liftweb.mongodb.record.{MongoMetaRecord, MongoRecord}
 import net.liftweb.mongodb.record.field._
 import net.liftweb.record.field._
-
-import code.lib._
-import net.liftweb.http.S
 
 /**
  *  此資料表記錄使用的帳號密碼

@@ -1,16 +1,10 @@
 package code.snippet
 
 import code.model._
-import code.lib._
-
-import net.liftweb.http.S
-import net.liftweb.http.SHtml
-import net.liftweb.http.StatefulSnippet
-
-import net.liftweb.util.Helpers._
-import net.liftweb.util._
 import net.liftweb.common.Box._
 import net.liftweb.common._
+import net.liftweb.http.{S, SHtml, StatefulSnippet}
+import net.liftweb.util.Helpers._
 
 /**
  *  用來處理「網站管理」－＞「帳號管理」－＞「帳號」－＞「編輯」的表單的 Snippet

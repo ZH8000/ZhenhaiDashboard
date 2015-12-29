@@ -1,18 +1,15 @@
 package bootstrap.liftweb
 
+import javax.mail.{Authenticator, PasswordAuthentication}
+
 import code.model._
 import com.mongodb.MongoClient
-import javax.mail.{Authenticator,PasswordAuthentication}
 import net.liftweb.common.Full
-import net.liftweb.http._
-import net.liftweb.http.LiftRules
-import net.liftweb.http.Req
-import net.liftweb.http.S
+import net.liftweb.http.{LiftRules, Req, S, _}
 import net.liftweb.mongodb.MongoDB
 import net.liftweb.util.BasicTypesHelpers._
-import net.liftweb.util.DefaultConnectionIdentifier
 import net.liftweb.util.Props.RunModes
-import net.liftweb.util.{Props, Mailer}
+import net.liftweb.util.{DefaultConnectionIdentifier, Mailer, Props}
 
 /**
  *  此物件用來設定 Lift 框架的基本參數和資料庫連線等

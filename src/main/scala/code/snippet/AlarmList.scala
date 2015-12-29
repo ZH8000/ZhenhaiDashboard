@@ -1,21 +1,17 @@
 package code.snippet
 
-import code.model._
-
-import net.liftweb.common.Full
-import net.liftweb.http.S
-import net.liftweb.http.SHtml
-
-import net.liftweb.util.Helpers._
-import net.liftweb.util._
-import net.liftweb.http.js.JsCmds._
-import net.liftweb.http.js.JE._
-import net.liftweb.http.js.JsCmd
-import net.liftweb.http.js.jquery.JqJsCmds.Hide
-
 import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Calendar
+
+import code.model._
+import net.liftweb.common.Full
+import net.liftweb.http.{S, SHtml}
+import net.liftweb.http.js.JE._
+import net.liftweb.http.js.JsCmd
+import net.liftweb.http.js.JsCmds._
+import net.liftweb.http.js.jquery.JqJsCmds.Hide
+import net.liftweb.util.Helpers._
+
 import scala.xml.NodeSeq
 
 /**

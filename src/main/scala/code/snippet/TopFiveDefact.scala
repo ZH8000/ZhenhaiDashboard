@@ -1,15 +1,10 @@
 package code.snippet
 
-import code.model._
-import code.lib._
-
-import net.liftweb.http.S
-import net.liftweb.util.Helpers._
-import net.liftweb.util._
-
-import scala.xml.NodeSeq
-import scala.collection.JavaConversions._
 import java.text.SimpleDateFormat
+
+import code.lib._
+import code.model._
+import net.liftweb.util.Helpers._
 
 /**
  *  顯示網頁上「錯誤分析」右側的「今日五大不良原因」的列表

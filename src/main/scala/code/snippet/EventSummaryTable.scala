@@ -1,9 +1,8 @@
 package code.snippet
 
-import code.model._
 import code.lib._
+import code.model._
 import com.mongodb.casbah.Imports._
-
 import net.liftweb.util.Helpers._
 
 /**

@@ -1,21 +1,12 @@
 package code.snippet
 
-import code.model._
+import java.util.{Calendar, GregorianCalendar}
+
 import code.lib._
-
-import com.mongodb.casbah.Imports._
-import net.liftweb.util.Helpers._
-import net.liftweb.util._
-import net.liftweb.http.SHtml
+import code.model._
+import net.liftweb.http.{S, SHtml}
 import net.liftweb.http.js.JsCmd
-import net.liftweb.common._
-
-import java.util.Date
-import java.text.SimpleDateFormat
-import java.util.GregorianCalendar
-import java.util.Calendar
-
-import net.liftweb.http.S
+import net.liftweb.util.Helpers._
 
 /**
  *  用來顯示「產量統計」－＞「晨間檢討」的頁面的 Snippet

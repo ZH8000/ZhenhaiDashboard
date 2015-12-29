@@ -1,12 +1,8 @@
 package code.snippet
 
 import code.model._
-
-import net.liftweb.common.{Box, Full, Empty, Failure}
-
-import net.liftweb.http.S
-import net.liftweb.http.SHtml
-
+import net.liftweb.common.{Empty, Failure, Full}
+import net.liftweb.http.{S, SHtml}
 import net.liftweb.util.Helpers._
 
 /**

@@ -1,13 +1,9 @@
 package code.snippet
 
 import code.model._
-import code.lib._
-
-import net.liftweb.http.S
 import net.liftweb.http.SHtml
-import net.liftweb.util.Helpers._
-import net.liftweb.util._
 import net.liftweb.http.js.JE._
+import net.liftweb.util.Helpers._
 
 /**
  *  「網站管理」－＞「帳號管理」中的使用者列表的 Snippet

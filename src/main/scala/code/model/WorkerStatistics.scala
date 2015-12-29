@@ -1,13 +1,6 @@
 package code.model
 
-import code.model._
 import code.lib._
-
-import net.liftweb.json._
-import net.liftweb.json.JsonDSL._
-
-import java.util.Calendar
-import java.text.SimpleDateFormat
 
 /**
  *  用來取得「依人員」中的相關統資料的 Singleton 物件

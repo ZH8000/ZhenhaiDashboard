@@ -2,8 +2,7 @@ package bootstrap.liftweb
 
 import code.model._
 import com.mongodb.casbah.Imports._
-import net.liftweb.http._
-import net.liftweb.http.PlainTextResponse
+import net.liftweb.http.{PlainTextResponse, _}
 import net.liftweb.http.rest.RestHelper
 
 /**

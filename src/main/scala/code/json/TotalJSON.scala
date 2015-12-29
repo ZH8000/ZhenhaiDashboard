@@ -1,15 +1,11 @@
 package code.json
 
-import code.model._
 import code.lib._
-
-import net.liftweb.json._
-import net.liftweb.json.JsonDSL._
-import net.liftweb.util.Helpers._
-
-import scala.collection.mutable.HashMap
-
+import code.model._
 import com.mongodb.casbah.Imports._
+import net.liftweb.json.JsonDSL._
+import net.liftweb.json._
+import net.liftweb.util.Helpers._
 
 /**
  *  用來產生「產量統計」－＞「依φ別」中的 JSON 格式的資料

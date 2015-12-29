@@ -1,12 +1,12 @@
 package code.snippet
 
-import code.model._
-
-import net.liftweb.http.S
-import net.liftweb.util.Helpers._
-import net.liftweb.util._
 import java.text.SimpleDateFormat
 import java.util.Date
+
+import code.model._
+import net.liftweb.http.S
+import net.liftweb.util.Helpers._
+
 import scala.xml.NodeSeq
 
 /**

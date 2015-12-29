@@ -1,17 +1,11 @@
 package code.model
 
-import com.mongodb.casbah.Imports._
-
-import net.liftweb.util.BCrypt
-import net.liftweb.common.{Box, Full, Empty, Failure}
-import net.liftweb.http.SessionVar
-import net.liftweb.mongodb.record.MongoRecord
-import net.liftweb.mongodb.record.MongoMetaRecord
+import code.lib._
+import net.liftweb.common.Full
+import net.liftweb.http.S
+import net.liftweb.mongodb.record.{MongoMetaRecord, MongoRecord}
 import net.liftweb.mongodb.record.field._
 import net.liftweb.record.field._
-
-import code.lib._
-import net.liftweb.http.S
 
 /**
  *  此資料表記錄網頁上使用者可以使用哪些權限群組

@@ -1,16 +1,13 @@
 package code.model
 
-import com.mongodb.casbah.Imports._
-
 import code.lib._
-
-import net.liftweb.mongodb.record.MongoRecord
-import net.liftweb.mongodb.record.MongoMetaRecord
+import com.mongodb.casbah.Imports._
+import net.liftweb.common._
+import net.liftweb.http.OutputStreamResponse
+import net.liftweb.mongodb.record.{MongoMetaRecord, MongoRecord}
 import net.liftweb.mongodb.record.field._
 import net.liftweb.record.field._
 import net.liftweb.sitemap.Loc._
-import net.liftweb.http.OutputStreamResponse
-import net.liftweb.common._
 import net.liftweb.util.Helpers._
 
 /**
@@ -128,8 +125,7 @@ class Worker extends MongoRecord[Worker] with ObjectIdPk[Worker] {
    *  依照到職日期計算的年資
    */
   def workingYears: Int = {
-    import org.joda.time.Days
-    import org.joda.time.DateTime
+    import org.joda.time.{DateTime, Days}
     val daysBetween = Days.daysBetween(new DateTime(onBoardDate.get), new DateTime(now)).getDays
     daysBetween match {
       case day if day <= 0 => 1

@@ -1,16 +1,15 @@
 package code.snippet
 
-import code.model._
-import code.lib._
+import java.text.SimpleDateFormat
 
-import net.liftweb.common.{Box, Full, Empty, Failure}
-import net.liftweb.http.js.JsCmds._
+import code.lib._
+import code.model._
+import net.liftweb.common.{Box, Empty, Failure, Full}
+import net.liftweb.http.{S, SHtml}
 import net.liftweb.http.js.JE._
 import net.liftweb.http.js.JsCmd
-import net.liftweb.http.S
-import net.liftweb.http.SHtml
+import net.liftweb.http.js.JsCmds._
 import net.liftweb.util.Helpers._
-import java.text.SimpleDateFormat
 
 /**
  *  新增「維修行事曆」中的項目

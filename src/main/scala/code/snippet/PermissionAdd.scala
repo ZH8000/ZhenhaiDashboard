@@ -1,16 +1,11 @@
 package code.snippet
 
-import code.model._
 import code.lib._
-
-import net.liftweb.http.S
-import net.liftweb.http.SHtml
-import net.liftweb.http.StatefulSnippet
-
-import net.liftweb.util.Helpers._
-import net.liftweb.util._
+import code.model._
 import net.liftweb.common.Box._
 import net.liftweb.common._
+import net.liftweb.http.{S, SHtml, StatefulSnippet}
+import net.liftweb.util.Helpers._
 
 /**
  *  用來處理新增權限至權限群組的 Snippet

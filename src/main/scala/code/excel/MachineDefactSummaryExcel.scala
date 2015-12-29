@@ -1,15 +1,11 @@
 package code.excel
 
-import net.liftweb.common._
+import java.io.OutputStream
+
 import code.model._
 import com.mongodb.casbah.Imports._
-import java.util.Calendar
-import java.util.GregorianCalendar
-import java.io.OutputStream
 import jxl._
 import jxl.write._
-import java.text.SimpleDateFormat
-import java.util.Date
 
 /**
  *  用來產生「產量統計」－＞「機台狀況」中的 Excel 報表。

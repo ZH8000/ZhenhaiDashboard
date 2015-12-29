@@ -1,13 +1,10 @@
 package code.json
 
 import code.lib._
-
+import com.mongodb.casbah.Imports._
 import net.liftweb.json._
-import net.liftweb.json.JsonDSL._
 
 import scala.math.Ordering
-
-import com.mongodb.casbah.Imports._
 
 
 /**

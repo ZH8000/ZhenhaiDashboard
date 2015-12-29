@@ -1,12 +1,9 @@
 package code.model
 
 import code.lib._
-
-import net.liftweb.mongodb.record.MongoRecord
-import net.liftweb.mongodb.record.MongoMetaRecord
+import net.liftweb.mongodb.record.{MongoMetaRecord, MongoRecord}
 import net.liftweb.mongodb.record.field._
 import net.liftweb.record.field._
-import net.liftweb.common._
 
 /**
  *  記錄生產紀錄歷史的資料表

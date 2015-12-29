@@ -1,15 +1,10 @@
 package code.snippet
 
-import code.lib._
-
-import net.liftweb.util.Helpers._
-import net.liftweb.http.SHtml
-import net.liftweb.http.SessionVar
+import net.liftweb.http.{SHtml, SessionVar}
+import net.liftweb.http.js.JE._
 import net.liftweb.http.js.JsCmd
 import net.liftweb.http.js.JsCmds._
-import net.liftweb.http.js.JE._
-
-import net.liftweb.util._
+import net.liftweb.util.Helpers._
 
 /**
  *  用來記錄使用者設定背景顏色的 Session 變數

@@ -1,14 +1,11 @@
 package code.snippet
 
-import code.json._
 import code.model._
-import code.lib._
-
+import com.mongodb.casbah.Imports._
 import net.liftweb.http.S
 import net.liftweb.util.Helpers._
-import net.liftweb.util._
+
 import scala.xml.NodeSeq
-import com.mongodb.casbah.Imports._
 
 /**
  *  用來處理 /rawData/yyyy-MM-dd 網址中的機台列表與 raw data 表格

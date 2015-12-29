@@ -1,15 +1,12 @@
 package code.snippet
 
-import code.model._
 import code.lib._
-
+import code.model._
 import net.liftweb.common._
-import net.liftweb.http.S
-import net.liftweb.http.SHtml
-import net.liftweb.http.js.JsCmds._
+import net.liftweb.http.{S, SHtml}
 import net.liftweb.http.js.JsCmd
+import net.liftweb.http.js.JsCmds._
 import net.liftweb.util.Helpers._
-import net.liftweb.util._
 
 /**
  *  用來處理網頁上「網站管理」－＞「機台生產均線」設定頁面的 Snippet

@@ -1,12 +1,10 @@
 package code.model
 
 import code.lib._
-
-import net.liftweb.mongodb.record.MongoRecord
-import net.liftweb.mongodb.record.MongoMetaRecord
+import net.liftweb.common._
+import net.liftweb.mongodb.record.{MongoMetaRecord, MongoRecord}
 import net.liftweb.mongodb.record.field._
 import net.liftweb.record.field._
-import net.liftweb.common._
 
 /**
  *  此資料表儲存網站上用來顯示「今日工單」的資料表

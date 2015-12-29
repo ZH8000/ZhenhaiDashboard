@@ -1,14 +1,10 @@
 package code.model
 
-import code.lib._
-
-import net.liftweb.mongodb.record.MongoRecord
-import net.liftweb.mongodb.record.MongoMetaRecord
+import net.liftweb.common._
+import net.liftweb.json.JsonDSL._
+import net.liftweb.mongodb.record.{MongoMetaRecord, MongoRecord}
 import net.liftweb.mongodb.record.field._
 import net.liftweb.record.field._
-
-import net.liftweb.json.JsonDSL._
-import net.liftweb.common._
 
 /**
  *  「每日晨間報表」中，記錄 Excel 中需由台容填寫的欄位的設定值

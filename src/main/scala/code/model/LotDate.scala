@@ -1,13 +1,9 @@
 package code.model
 
-import com.mongodb.casbah.Imports._
-
-import code.lib._
-
-import net.liftweb.mongodb.record.MongoRecord
-import net.liftweb.mongodb.record.MongoMetaRecord
+import net.liftweb.mongodb.record.{MongoMetaRecord, MongoRecord}
 import net.liftweb.mongodb.record.field._
 import net.liftweb.record.field._
+
 import scala.collection.JavaConversions._
 
 /**

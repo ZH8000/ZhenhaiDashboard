@@ -1,17 +1,9 @@
 package code.snippet
 
 import code.model._
-
-import net.liftweb.common.{Box, Full, Empty, Failure}
-
-import net.liftweb.http.S
-import net.liftweb.http.SHtml
-import net.liftweb.http.StatefulSnippet
-
+import net.liftweb.common.{Failure, Full}
+import net.liftweb.http.{S, SHtml, StatefulSnippet}
 import net.liftweb.util.Helpers._
-import java.util.Date
-import java.text.SimpleDateFormat
-import scala.util.Try
 
 /**
  *  處理「更改密碼」頁面的表單

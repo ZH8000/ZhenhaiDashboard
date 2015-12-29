@@ -1,15 +1,13 @@
 package code.snippet
 
+import java.text.SimpleDateFormat
+
 import code.model._
-
 import net.liftweb.common.Full
-import net.liftweb.http.S
-import net.liftweb.http.SHtml
-
-import net.liftweb.util.Helpers._
+import net.liftweb.http.{S, SHtml}
 import net.liftweb.http.js.JsCmds._
 import net.liftweb.http.js.jquery.JqJsCmds._
-import java.text.SimpleDateFormat
+import net.liftweb.util.Helpers._
 
 /**
  *  用來顯示員工列表的 Snippet

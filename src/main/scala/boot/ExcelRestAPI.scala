@@ -1,18 +1,13 @@
 package bootstrap.liftweb
 
-import code.csv._
-import code.excel._
-import code.lib._
-
-import net.liftweb.http.rest.RestHelper
-import net.liftweb.http.PlainTextResponse
-import net.liftweb.http.OutputStreamResponse
-import net.liftweb.http.InMemoryResponse
-import net.liftweb.http.NotFoundResponse
-import net.liftweb.http.RedirectResponse
-import net.liftweb.util.BasicTypesHelpers.AsInt
 import java.io._
 import java.nio.file.{Files, Paths}
+
+import code.excel._
+import code.lib._
+import net.liftweb.http.{InMemoryResponse, OutputStreamResponse, RedirectResponse}
+import net.liftweb.http.rest.RestHelper
+import net.liftweb.util.BasicTypesHelpers.AsInt
 
 /**
  *  Excel 的 REST API 設定

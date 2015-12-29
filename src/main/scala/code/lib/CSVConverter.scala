@@ -1,6 +1,5 @@
 package code.lib
 
-import net.liftweb.json.JsonDSL._
 import net.liftweb.json._
 
 /**

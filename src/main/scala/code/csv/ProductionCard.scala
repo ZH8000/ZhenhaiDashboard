@@ -1,11 +1,9 @@
 package code.csv
 
-import code.model._
-import code.json._
-
-import net.liftweb.common._
-import java.util.Date
 import java.text.SimpleDateFormat
+
+import code.model._
+import net.liftweb.common._
 
 /**
  *  此 Singleton 物件為用來產生網站上「生產管理卡」中工單號的資料的 CSV 檔

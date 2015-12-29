@@ -1,24 +1,12 @@
 package code.snippet
 
 import code.model._
-import code.lib._
-
-import com.mongodb.casbah.Imports._
-import net.liftweb.util.Helpers._
-import net.liftweb.util._
-import net.liftweb.http.SHtml
+import net.liftweb.common._
+import net.liftweb.http.{S, SHtml}
+import net.liftweb.http.js.JE._
 import net.liftweb.http.js.JsCmd
 import net.liftweb.http.js.JsCmds._
-import net.liftweb.http.js.JE._
-
-import net.liftweb.common._
-
-import java.util.Date
-import java.text.SimpleDateFormat
-import java.util.GregorianCalendar
-import java.util.Calendar
-
-import net.liftweb.http.S
+import net.liftweb.util.Helpers._
 
 /**
  *  用來顯示網站上的「產量統計」－＞「人員效率」的 Snippet

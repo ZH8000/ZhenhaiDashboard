@@ -2,13 +2,9 @@ package code.json
 
 import code.lib._
 import code.model._
-
-import net.liftweb.json._
-import net.liftweb.json.JsonDSL._
-
-import scala.collection.mutable.HashMap
-
 import com.mongodb.casbah.Imports._
+import net.liftweb.json.JsonDSL._
+import net.liftweb.json._
 
 /**
  *  用來產生「產量統計」－＞「日報表」中的 JSON 格式的資料

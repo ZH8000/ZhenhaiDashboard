@@ -1,19 +1,12 @@
 package code.snippet
 
-import code.lib._
-import code.model._
-import code.excel._
-import com.mongodb.casbah.Imports._
 import java.net.URLDecoder
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.GregorianCalendar
-import net.liftweb.common._
+import java.util.{Calendar, GregorianCalendar}
+
+import code.excel._
+import code.model._
+import net.liftweb.http.{S, SHtml}
 import net.liftweb.http.js.JsCmd
-import net.liftweb.http.S
-import net.liftweb.http.SHtml
-import net.liftweb.util._
 import net.liftweb.util.Helpers._
 
 /**

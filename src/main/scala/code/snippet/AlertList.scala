@@ -1,17 +1,12 @@
 package code.snippet
 
-import code.model._
 import code.lib._
-
+import code.model._
 import net.liftweb.http.S
-import net.liftweb.http.SHtml
 import net.liftweb.util.Helpers._
-import net.liftweb.util._
-import net.liftweb.http.js.JE._
-import net.liftweb.http.js.JsCmds
 
-import scala.xml.NodeSeq
 import scala.collection.JavaConversions._
+import scala.xml.NodeSeq
 
 /**
  *  用來顯示 {{{/alert/}}} 此網中的動態資料的 Snippet

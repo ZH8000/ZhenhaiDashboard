@@ -1,14 +1,10 @@
 package code.model
 
-import code.lib._
-
-import net.liftweb.mongodb.record.MongoRecord
-import net.liftweb.mongodb.record.MongoMetaRecord
+import net.liftweb.common._
+import net.liftweb.json.JsonDSL._
+import net.liftweb.mongodb.record.{MongoMetaRecord, MongoRecord}
 import net.liftweb.mongodb.record.field._
 import net.liftweb.record.field._
-
-import net.liftweb.json.JsonDSL._
-import net.liftweb.common._
 
 /**
  *  用來儲存「產量統計」－＞「重點統計」中網頁下面輸入表格的資料

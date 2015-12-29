@@ -1,18 +1,12 @@
 package code.snippet
 
-import code.model._
-import code.lib._
-
-import com.mongodb.casbah.Imports._
-import net.liftweb.util.Helpers._
-import net.liftweb.util._
-import net.liftweb.http.SHtml
-import net.liftweb.http.js.JsCmd
-
-import java.util.Date
 import java.text.SimpleDateFormat
+import java.util.Date
 
+import code.model._
+import com.mongodb.casbah.Imports._
 import net.liftweb.http.S
+import net.liftweb.util.Helpers._
 
 /**
  *  用來顯示 Dashboard 主頁與「產量統計」中動態內容的 Snippet

@@ -1,8 +1,8 @@
 package bootstrap.liftweb
 
 import code.json._
-import net.liftweb.http.rest.RestHelper
 import net.liftweb.http.JsonResponse
+import net.liftweb.http.rest.RestHelper
 import net.liftweb.util.BasicTypesHelpers.AsInt
 
 /**

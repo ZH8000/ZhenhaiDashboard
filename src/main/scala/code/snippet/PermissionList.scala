@@ -1,19 +1,11 @@
 package code.snippet
 
-import code.model._
 import code.lib._
-
-import net.liftweb.http.S
+import code.model._
 import net.liftweb.http.SHtml
-import net.liftweb.util.Helpers._
-import net.liftweb.util._
 import net.liftweb.http.js.JE._
 import net.liftweb.http.js.JsCmds
-
-
-import scala.xml.NodeSeq
-import scala.collection.JavaConversions._
-import java.text.SimpleDateFormat
+import net.liftweb.util.Helpers._
 
 /**
  *  用來顯示網頁上「網站管理」－＞「帳號管理」－＞「權限」的列表

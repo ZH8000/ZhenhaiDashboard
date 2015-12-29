@@ -1,9 +1,8 @@
 package code.snippet
 
 import code.lib._
-
-import net.liftweb.util.Helpers._
 import net.liftweb.http.S
+import net.liftweb.util.Helpers._
 
 /**
  *  用來顯示「產量統計」－＞「依容量」中的動態內容

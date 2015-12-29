@@ -1,11 +1,8 @@
 package code.snippet
 
 import code.lib._
-import code.model._
-import com.mongodb.casbah.Imports._
-
-import net.liftweb.util.Helpers._
 import net.liftweb.http.S
+import net.liftweb.util.Helpers._
 
 /**
  *  用來顯示「產量統計」－＞「月報表」的 Snippet

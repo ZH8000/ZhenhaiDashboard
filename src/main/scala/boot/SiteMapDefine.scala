@@ -2,14 +2,11 @@ package bootstrap.liftweb
 
 import code.lib._
 import code.model._
-import net.liftweb.common.{Full, Empty}
-import net.liftweb.http._
-import net.liftweb.http.S
-import net.liftweb.http.Templates
+import net.liftweb.common.{Empty, Full}
+import net.liftweb.http.{S, Templates, _}
+import net.liftweb.sitemap.Loc.{EarlyResponse, If, Template}
 import net.liftweb.sitemap._
-import net.liftweb.sitemap.Loc.EarlyResponse
-import net.liftweb.sitemap.Loc.If
-import net.liftweb.sitemap.Loc.Template
+
 import scala.xml.NodeSeq
 
 /**

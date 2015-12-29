@@ -1,11 +1,10 @@
 package code.snippet
 
-import code.model._
 import code.lib._
-import code.json._
-
+import code.model._
 import net.liftweb.http.S
 import net.liftweb.util.Helpers._
+
 import scala.xml.NodeSeq
 
 /**

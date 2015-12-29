@@ -1,10 +1,10 @@
 package code.excel
 
+import java.io.OutputStream
+import java.util.{Calendar, GregorianCalendar}
+
 import code.model._
 import com.mongodb.casbah.Imports._
-import java.util.Calendar
-import java.util.GregorianCalendar
-import java.io.OutputStream
 import jxl._
 import jxl.write._
 

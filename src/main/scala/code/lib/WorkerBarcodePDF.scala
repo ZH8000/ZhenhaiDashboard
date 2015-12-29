@@ -1,9 +1,10 @@
 package code.lib
 
+import java.io._
+
 import code.model._
 import com.itextpdf.text._
 import com.itextpdf.text.pdf._
-import java.io._
 
 /**
  *  產生員工編號

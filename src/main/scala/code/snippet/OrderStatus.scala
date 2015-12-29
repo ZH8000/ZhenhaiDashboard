@@ -1,15 +1,13 @@
 package code.snippet
 
-import code.model._
 import code.lib._
-
+import code.model._
 import net.liftweb.http.S
-import net.liftweb.util.Helpers._
-import net.liftweb.util._
-import java.text.SimpleDateFormat
-import scala.xml.NodeSeq
-import scala.collection.JavaConversions._
 import net.liftweb.json.JsonDSL._
+import net.liftweb.util.Helpers._
+
+import scala.collection.JavaConversions._
+import scala.xml.NodeSeq
 
 /**
  *  用來顯示網頁上「訂單狀態」的 Snippet

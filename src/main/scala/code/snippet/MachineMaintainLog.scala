@@ -1,14 +1,12 @@
 package code.snippet
 
 import code.json._
-import code.model._
 import code.lib._
-
+import code.model._
 import net.liftweb.http.S
 import net.liftweb.util.Helpers._
-import net.liftweb.util._
+
 import scala.xml.NodeSeq
-import com.mongodb.casbah.Imports._
 
 /**
  *  用來顯示網頁上「維修記錄」的頁面的 Snippet

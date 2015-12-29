@@ -1,17 +1,12 @@
 package code.snippet
 
-import code.model._
-
-import net.liftweb.common.{Box, Full, Empty, Failure}
-
-import net.liftweb.http.S
-import net.liftweb.http.SHtml
-import net.liftweb.http.StatefulSnippet
-
-import net.liftweb.util.Helpers._
-import java.util.Date
 import java.text.SimpleDateFormat
-import scala.util.Try
+import java.util.Date
+
+import code.model._
+import net.liftweb.common.{Box, Empty, Failure, Full}
+import net.liftweb.http.{S, SHtml, StatefulSnippet}
+import net.liftweb.util.Helpers._
 
 /**
  *  處理「網站管理」－＞「員工列表」中新增員工的部份

@@ -1,9 +1,8 @@
 package code.snippet
 
 import code.lib._
-
-import net.liftweb.util.Helpers._
 import net.liftweb.http.S
+import net.liftweb.util.Helpers._
 
 /**
  *  用來顯示網頁上「錯誤分析」的部份的 Snippet

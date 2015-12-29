@@ -1,14 +1,8 @@
 package code.snippet
 
-import code.model._
-import code.lib._
-
-import net.liftweb.http.S
-import net.liftweb.http.SHtml
+import code.model.{Announcement => MAnnouncement, _}
+import net.liftweb.http.{S, SHtml}
 import net.liftweb.util.Helpers._
-import net.liftweb.util._
-import net.liftweb.http.js.JE._
-import code.model.{Announcement => MAnnouncement}
 
 /**
  *  用來顯示與更新跑馬燈公告的 Snippet
@@ -60,7 +54,7 @@ class Announcement {
   def render = {
     
     val announcementList: List[String] = for {
-      announcement <- Announcement.findAll.headOption.toList
+      announcement <- MAnnouncement.findAll.headOption.toList
       announcementContent <- announcement.content.get.toList
       announcementLine <- announcementContent.split("\n").toList
     } yield announcementLine

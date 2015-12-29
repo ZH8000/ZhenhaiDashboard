@@ -1,16 +1,14 @@
 package code.excel
 
-import net.liftweb.common._
-import code.model._
-import com.mongodb.casbah.Imports._
-import java.util.Calendar
-import java.util.GregorianCalendar
-import java.io.OutputStream
-import jxl._
-import jxl.write._
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
-import java.io.File
+
+import code.model._
+import com.mongodb.casbah.Imports._
+import jxl._
+import jxl.write._
+import net.liftweb.common._
 
 /**
  *  用來輸出員工效率的報表的主程式
