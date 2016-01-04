@@ -4,6 +4,7 @@ import javax.mail.{Authenticator, PasswordAuthentication}
 
 import code.model._
 import com.mongodb.MongoClient
+import com.mongodb.MongoClientURI
 import net.liftweb.common.Full
 import net.liftweb.http.{LiftRules, Req, S, _}
 import net.liftweb.mongodb.MongoDB
@@ -48,7 +49,7 @@ class Boot
   def boot 
   {
     // 設定 MongoDB 資料庫連線
-    MongoDB.defineDb(DefaultConnectionIdentifier, new MongoClient, code.model.MongoDB.DatabaseName)
+    MongoDB.defineDb(DefaultConnectionIdentifier, new MongoClient(code.model.MongoDB.DatabaseURI), code.model.MongoDB.DatabaseName)
 
     // 強迫文字使用 UTF-8 編碼
     LiftRules.early.append(_.setCharacterEncoding("UTF-8"))     
