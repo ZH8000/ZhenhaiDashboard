@@ -131,10 +131,11 @@ class AlarmList {
     def rowItem(alarm: Alarm) = {
       
       val countQty = machineIDToCounter.get(alarm.machineID.get).getOrElse(0L)
+      val lastReplacedCount = alarm.lastReplaceCount.get
 
       ".item [id]" #> s"row-${alarm.id}" &
       ".machineID *" #> alarm.machineID &
-      ".countQty *" #> countQty &
+      ".countQty *" #> (countQty - lastReplacedCount) &
       ".countdownQty *" #> alarm.countdownQty &
       ".desc *" #> alarm.description &
       ".machineID [id]"    #> s"machineID-${alarm.id}" &
