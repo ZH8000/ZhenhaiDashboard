@@ -73,6 +73,8 @@ class Boot
     // 定義的網址來取得
     LiftRules.dispatch.append(MachineStatusRestAPI)
 
+    LiftRules.explicitlyParsedSuffixes += "csv"
+
     // 設定 404 NotFound 的客制化頁面
     LiftRules.uriNotFound.prepend({
       case (request, failure) => NotFoundAsResponse(errorPageResponse(request, 404))

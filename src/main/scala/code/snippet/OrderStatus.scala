@@ -89,7 +89,7 @@ class OrderStatus {
 
         val customerName = getCustomerName(customer)
 
-        "#csvURL [href]" #> s"/api/csv/orderStatus/$date" &
+        "#csvURL [href]" #> s"/api/csv/orderStatus/$date.csv" &
         ".stepCustomer *" #> customerName &
         ".stepCustomer [href]" #> s"/orderStatus/$customer" &
         ".stepMonth *" #> date &

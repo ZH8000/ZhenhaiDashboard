@@ -92,7 +92,7 @@ class DailyReport {
     "#month [value]" #> month &
     "#date [value]" #> date &
     "#dataURL [value]" #> s"/api/json${S.uri}" &
-    "#csvURL [href]" #> s"/api/csv${S.uri}" &
+    "#csvURL [href]" #> s"/api/csv${S.uri}.csv" &
     showStepsSelector
   }
 
@@ -101,7 +101,7 @@ class DailyReport {
    */
   def render = {
     "#dataURL [value]" #> s"/api/json${S.uri}" &
-    "#csvURL [href]" #> s"/api/csv${S.uri}" &
+    "#csvURL [href]" #> s"/api/csv${S.uri}.csv" &
     showStepsSelector
   }
 

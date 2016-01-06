@@ -77,7 +77,7 @@ class MachineReport {
     "#machineID [value]" #> machineID &
     "#tableDataURL [value]" #> s"/api/json${S.uri}/table" &
     "#pieChartDataURL [value]" #> s"/api/json${S.uri}/pie" &
-    "#csvLink [href]" #> s"/api/csv${S.uri}" &
+    "#csvLink [href]" #> s"/api/csv${S.uri}.csv" &
     showStepsSelector
   }
 
@@ -86,7 +86,7 @@ class MachineReport {
    */
   def render = {
     "#dataURL [value]" #> s"/api/json${S.uri}" &
-    "#csvLink [href]" #> s"/api/csv${S.uri}" &
+    "#csvLink [href]" #> s"/api/csv${S.uri}.csv" &
     showStepsSelector
   }
 

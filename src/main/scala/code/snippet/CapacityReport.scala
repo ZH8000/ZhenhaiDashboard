@@ -142,7 +142,7 @@ class CapacityReport {
     "#week [value]" #> week &
     "#date [value]" #> date &
     "#dataURL [value]" #> s"/api/json${S.uri}" &
-    "#csvURL [href]" #> s"/api/csv${S.uri}" &
+    "#csvURL [href]" #> s"/api/csv${S.uri}.csv" &
     showStepsSelector
   }
 
@@ -151,7 +151,7 @@ class CapacityReport {
    */
   def render = {
     "#dataURL [value]" #> s"/api/json${S.uri}" &
-    "#csvURL [href]" #> s"/api/csv${S.uri}" &
+    "#csvURL [href]" #> s"/api/csv${S.uri}.csv" &
     showStepsSelector
   }
 

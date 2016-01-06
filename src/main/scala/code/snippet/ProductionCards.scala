@@ -55,7 +55,7 @@ class ProductionCard {
     val requireCount = (orderStatus.inputCount.get / 1.04).toLong
     val customer = Customer.fromPartNo(orderStatus.partNo.get)
 
-    "#exportCSV [href]" #> s"/api/csv/productionCard/${orderStatus.lotNo}" &
+    "#exportCSV [href]" #> s"/api/csv/productionCard/${orderStatus.lotNo}.csv" &
     ".lotNo *" #> orderStatus.lotNo &
     ".partNo *" #> orderStatus.partNo &
     ".product *" #> orderStatus.product &

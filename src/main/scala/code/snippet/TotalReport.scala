@@ -141,7 +141,7 @@ class TotalReport {
     "#week [value]" #> week &
     "#date [value]" #> date &
     "#dataURL [value]" #> s"/api/json${S.uri}" &
-    "#csvURL [href]" #> s"/api/csv${S.uri}" &
+    "#csvURL [href]" #> s"/api/csv${S.uri}.csv" &
     showStepsSelector
   }
 
@@ -150,7 +150,7 @@ class TotalReport {
    */
   def render = {
     "#dataURL [value]" #> s"/api/json${S.uri}" &
-    "#csvURL [href]" #> s"/api/csv${S.uri}" &
+    "#csvURL [href]" #> s"/api/csv${S.uri}.csv" &
     showStepsSelector
   }
 

@@ -53,7 +53,7 @@ class MachineMaintainLog {
     logs.isEmpty match {
       case true  => showEmptyBox()
       case false =>
-        "#csvURL [href]" #> s"/api/csv/maintenanceLog/${date}" &
+        "#csvURL [href]" #> s"/api/csv/maintenanceLog/${date}.csv" &
         ".row" #> logs.zipWithIndex.map { case (record, counter) =>
 
           val machineInfoHolder = MachineInfo.idTable.get(record.machineID)
