@@ -149,3 +149,14 @@ html, body {
 .ui.paddingTop.grid {
   padding-top:60px; padding-bottom:20px;
 }
+
+div.ui.fixedColumn.column {
+  margin-bottom: 50px !important;
+  position: fixed !important; 
+  z-index: 10 !important; 
+  padding-right: 8em !important;
+}
+
+div.ui.below.column {
+  margin-top: 5em !important;
+}
