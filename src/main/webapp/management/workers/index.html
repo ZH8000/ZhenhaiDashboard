@@ -1,65 +1,69 @@
 <div data-lift="Surround?with=default;at=content">
   <div class="ui page grid">
 
-    <div class="column">
+    <div class="column" data-lift="WorkerList">
+      <form method="post" action="/management/workers/barcode">
+        <a href="/management/workers/barcode" class="ui right floated labled icon primary button"><i class="barcode icon"></i> 產生全部員工條碼</a>
+        <button type="submit" class="ui right floated labled icon primary button printSelectedBarcode"><i class="barcode icon"></i> 產生選取的員工條碼</button>
+        <a href="/management/workers/add" class="ui right floated labled icon primary button"><i class="plus icon"></i> 新增員工資料</a>
 
-       <a href="/management/workers/barcode" class="ui right floated labled icon primary button"><i class="barcode icon"></i> 產生員工條碼</a>
-       <a href="/management/workers/add" class="ui right floated labled icon primary button"><i class="plus icon"></i> 新增員工資料</a>
+        <div style="clear: both; margin-bottom: 20px"></div>
 
-       <div style="clear: both; margin-bottom: 20px"></div>
+        <div data-lift="lift:msgs?showAll=true">
+          <lift:error_msg class="ui red sys message"></lift:error_msg>
+          <lift:warning_msg class="ui yellow sys message"></lift:warning_msg>
+          <lift:notice_msg class="ui green sys message"></lift:notice_msg>
+        </div>
 
-       <div data-lift="lift:msgs?showAll=true">
-         <lift:error_msg class="ui red sys message"></lift:error_msg>
-         <lift:warning_msg class="ui yellow sys message"></lift:warning_msg>
-         <lift:notice_msg class="ui green sys message"></lift:notice_msg>
-       </div>
+        <div id="tab" style="margin-top: 1em;">
+          <div class="">
+            <div class="ui top attached tabular menu">
+              <a class="departmentItem item" data-tab="departmentName">departmentName</a>
+            </div>
+        
+            <div class="workerTable ui bottom attached tab segment" data-tab="">
+              <table class="ui celled table">
+                <thead>
+                  <tr>
+                    <th class="ui center aligned">印條碼</th>
+                    <th class="ui center aligned">姓名</th>
+                    <th class="ui center aligned">工號</th>
+                    <th class="ui center aligned">組別</th>
+                    <th class="ui center aligned">入廠時間</th>
+                    <th class="ui center aligned">年資</th>
+                    <th class="ui center aligned">員工類別</th>
+                    <th class="ui center aligned">動作</th>
+                  </tr>
+                  <tr id="" class="workerRow">
+                    <td class="ui center aligned"><input type="checkbox" class="barcodeCheckbox" name="workerID" /></td>
+                    <td class="ui center aligned workerName"></td>
+                    <td class="ui center aligned workerID"></td>
+                    <td class="ui center aligned workerTeam"></td>
+                    <td class="ui center aligned workerOnBoardDate">2014-11-22</td>
+                    <td class="ui center aligned"><span class="workingYears">10</span> 年</td>
+                    <td class="workerType"></td>
+                    <td>
+                      <div class="ui small buttons">
+                        <a href="/management/workers/edit/" class="editLink ui icon button"><i class="ui edit icon"></i> 編輯</a>
+                        <div class="or"></div>
+                        <a href="javascript: void(0)" class="ui icon button deleteLink"><i class="ui trash icon"></i> 刪除</a>
+                        <div class="or"></div>
+                        <a href="javascript: void(0)" class="ui icon button barcodeLink"><i class="ui barcode icon"></i> 印條碼</a>
+                      </div>
+                    </td>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table>
+            </div>
 
-       <div id="tab" style="margin-top: 1em;" data-lift="WorkerList">
-         <div class="">
-           <div class="ui top attached tabular menu">
-             <a class="departmentItem item" data-tab="departmentName">departmentName</a>
-           </div>
-       
-           <div class="workerTable ui bottom attached tab segment" data-tab="">
-             <table class="ui celled table">
-               <thead>
-                 <tr>
-                   <th class="ui center aligned">姓名</th>
-                   <th class="ui center aligned">工號</th>
-                   <th class="ui center aligned">組別</th>
-                   <th class="ui center aligned">入廠時間</th>
-                   <th class="ui center aligned">年資</th>
-                   <th class="ui center aligned">員工類別</th>
-                   <th class="ui center aligned">動作</th>
-                 </tr>
-                 <tr id="" class="workerRow">
-                   <td class="ui center aligned workerName"></td>
-                   <td class="ui center aligned workerID"></td>
-                   <td class="ui center aligned workerTeam"></td>
-                   <td class="ui center aligned workerOnBoardDate">2014-11-22</td>
-                   <td class="ui center aligned"><span class="workingYears">10</span> 年</td>
-                   <td class="workerType"></td>
-                   <td>
-                     <div class="ui small buttons">
-                       <a href="/management/workers/edit/" class="editLink ui icon button"><i class="ui edit icon"></i> 編輯</a>
-                       <div class="or"></div>
-                       <a href="javascript: void(0)" class="ui icon button deleteLink"><i class="ui trash icon"></i> 刪除</a>
-                       <div class="or"></div>
-                       <a href="javascript: void(0)" class="ui icon button barcodeLink"><i class="ui barcode icon"></i> 印條碼</a>
-                     </div>
-                   </td>
-                 </tr>
-               </thead>
-               <tbody>
-               </tbody>
-             </table>
-           </div>
-
-         </div>
-         <script>
-           $('#tab .menu .item').tab({context: $('#tab')});
-         </script>
-       </div>
+          </div>
+          <script>
+            $('#tab .menu .item').tab({context: $('#tab')});
+          </script>
+        </div>
+      </form>
     </div>
   </div>
 </div>

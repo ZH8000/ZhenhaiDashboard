@@ -73,11 +73,14 @@ object Worker extends Worker with MongoMetaRecord[Worker] {
    *  輸出員工編號條碼的 PDF
    */
   def barcodePDF = new EarlyResponse(() => {
-    S.param("workerID") match {
-      case Full(workerID) =>
-        Full(OutputStreamResponse(WorkerBarcodePDF.createPDF(List(workerID))_, -1, List("Content-Type" -> "application/pdf")))
-      case _ => 
-        Full(OutputStreamResponse(WorkerBarcodePDF.createPDF _, -1, List("Content-Type" -> "application/pdf")))
+    if (S.post_?) {
+      val workerIDList = S.params("workerID")
+      Full(OutputStreamResponse(WorkerBarcodePDF.createPDF(workerIDList)_, -1, List("Content-Type" -> "application/pdf")))
+    } else {
+      S.params("workerID") match {
+        case Nil       => Full(OutputStreamResponse(WorkerBarcodePDF.createPDF _, -1, List("Content-Type" -> "application/pdf")))
+        case workerIDs => Full(OutputStreamResponse(WorkerBarcodePDF.createPDF(workerIDs)_, -1, List("Content-Type" -> "application/pdf")))
+      }
     }
   })
 

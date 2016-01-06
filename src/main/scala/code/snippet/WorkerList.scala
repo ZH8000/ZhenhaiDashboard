@@ -44,6 +44,19 @@ class WorkerList {
     }
   }
 
+  private var workers = Set.empty[String]
+
+  def updateBarcodeList(workerID: String)(isChecked: Boolean) = {
+    
+    if (isChecked) {
+      workers += workerID
+    } else {
+      workers -= workerID
+    }
+
+    println(workers)
+  }
+
   /**
    *  用來顯示員工列表
    */
@@ -64,6 +77,7 @@ class WorkerList {
         ".workerType *" #> worker.workerTypeTitle &
         ".editLink [href]" #> s"/management/workers/edit/${worker.id}" &
         ".deleteLink [onclick]" #> SHtml.onEventIf(s"確定要刪除【${worker.name}】嗎？", deleteWorker(worker)_) &
+        ".barcodeCheckbox [value]" #> worker.id.toString &
         ".barcodeLink [href]" #> s"/management/workers/barcode?workerID=${worker.id}"
       }
     } &
