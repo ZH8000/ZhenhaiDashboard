@@ -4,6 +4,7 @@ import code.lib._
 import com.mongodb.casbah.Imports._
 import net.liftweb.common._
 import net.liftweb.http.OutputStreamResponse
+import net.liftweb.http.S
 import net.liftweb.mongodb.record.{MongoMetaRecord, MongoRecord}
 import net.liftweb.mongodb.record.field._
 import net.liftweb.record.field._
@@ -71,9 +72,15 @@ object Worker extends Worker with MongoMetaRecord[Worker] {
   /**
    *  輸出員工編號條碼的 PDF
    */
-  def barcodePDF = new EarlyResponse(() => 
-    Full(OutputStreamResponse(WorkerBarcodePDF.createPDF _, -1, List("Content-Type" -> "application/pdf")))
-  )
+  def barcodePDF = new EarlyResponse(() => {
+    S.param("workerID") match {
+      case Full(workerID) =>
+        Full(OutputStreamResponse(WorkerBarcodePDF.createPDF(List(workerID))_, -1, List("Content-Type" -> "application/pdf")))
+      case _ => 
+        Full(OutputStreamResponse(WorkerBarcodePDF.createPDF _, -1, List("Content-Type" -> "application/pdf")))
+    }
+  })
+
 }
 
 /**

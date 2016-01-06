@@ -63,7 +63,8 @@ class WorkerList {
         ".workingYears *" #> f"${worker.workingYears}" &
         ".workerType *" #> worker.workerTypeTitle &
         ".editLink [href]" #> s"/management/workers/edit/${worker.id}" &
-        ".deleteLink [onclick]" #> SHtml.onEventIf(s"確定要刪除【${worker.name}】嗎？", deleteWorker(worker)_)
+        ".deleteLink [onclick]" #> SHtml.onEventIf(s"確定要刪除【${worker.name}】嗎？", deleteWorker(worker)_) &
+        ".barcodeLink [href]" #> s"/management/workers/barcode?workerID=${worker.id}"
       }
     } &
     ".departmentItem" #> departments.zipWithIndex.map { case (department, index) => 

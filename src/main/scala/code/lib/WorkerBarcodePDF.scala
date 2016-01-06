@@ -52,6 +52,30 @@ object WorkerBarcodePDF {
   }
 
   /**
+   *  建立定定員工編號的 PDF 檔並輸出到 OutputStream 中
+   *
+   *  @param    outputStream      要把 PDF 檔輸出到哪個 OutputStream 中
+   */
+  def createPDF(workerID: scala.collection.immutable.List[String])(outputStream: OutputStream) = {
+    val document = new Document(PageSize.A4, 20, 20, 0, 0)
+    val pdfWriter = PdfWriter.getInstance(document, outputStream)
+    val table = new PdfPTable(2)
+    val workers = Worker.findAll("isDeleted", false).filter(worker => workerID contains worker.id.toString)
+
+    table.setWidthPercentage(95)
+
+    document.open()
+    document.newPage()
+
+    pdfWriter.setPageEmpty(false)
+    workers.foreach ( worker => table.addCell(createBarcodeLabel(worker, pdfWriter)) )
+    table.completeRow()
+
+    document.add(table)
+    document.close()
+  }
+
+  /**
    *  建立員工編號的 PDF 檔並輸出到 OutputStream 中
    *
    *  @param    outputStream      要把 PDF 檔輸出到哪個 OutputStream 中
