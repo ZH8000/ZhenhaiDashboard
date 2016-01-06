@@ -361,7 +361,7 @@ class WorkerPerformanceExcel(year: Int, month: Int, filepath: String) {
    *  @param    sheet      要寫到 Excel 中的哪個 Sheet 中
    */
   def createDocumentTitleRow(sheet: WritableSheet) {
-    val dateFormatter = new SimpleDateFormat("yyyy/mm/dd")
+    val dateFormatter = new SimpleDateFormat("yyyy/MM/dd")
     val sheetTitleCell = new Label(5, 0, s"個人效率期間表", centeredTitleFormat)
     val createDate = new Label(0, 1, dateFormatter.format(new Date), centeredTitleFormat)
 
