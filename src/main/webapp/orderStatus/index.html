@@ -1,39 +1,37 @@
 <div data-lift="Surround?with=default;at=content">
   <div class="center aligned one column ui grid">
-    <div class="column" data-lift="LazyLoad?template=loading">
-      <div class="one column ui grid" data-lift="OrderStatus.customerList">
-        <div class="column">
-
+    <div class="column">
+      <div data-lift="LazyLoad?template=loading">
+        <div class="column" data-lift="OrderStatus.customerList">
           <div data-lift="lift:msgs?showAll=true">
             <lift:error_msg class="ui red sys message"></lift:error_msg>
             <lift:warning_msg class="ui yellow sys message"></lift:warning_msg>
             <lift:notice_msg class="ui green sys message"></lift:notice_msg>
           </div>
-        </div>
-        <div class="dataBlock">
-          <div class="ui center aligned column">
-            <div class="ui three steps">
-              <a href="/orderStatus/" class="ui step active">訂單狀態</a>
-              <a href="#" class="ui step">客戶</a>
-              <a href="#" class="ui step">月份</a>
+          <div class="dataBlock ui one column grid">
+            <div class="ui fixedColumn center aligned column">
+              <div class="ui three steps">
+                <a href="/orderStatus/" class="ui step active">訂單狀態</a>
+                <a href="#" class="ui step">客戶</a>
+                <a href="#" class="ui step">月份</a>
+              </div>
             </div>
-          </div>
-          <div class="column">
-            <div class="dataBlock ui six column grid" style="margin-top: 1em;">
-              <div class="cardCustomer column">
-                <div class="ui cards">
-                  <div class="card">
-                    <div class="content">
-                      <a class="ui center aligned name header">公司一</a>
+            <div class="ui below column">
+              <div class="dataBlock ui six column grid" style="margin-top: 1em;">
+                <div class="cardCustomer column">
+                  <div class="ui cards">
+                    <div class="card">
+                      <div class="content">
+                        <a class="ui center aligned name header">公司一</a>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-	    </div>
+	      </div>
+            </div>
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </div>
