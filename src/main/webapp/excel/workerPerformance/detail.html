@@ -51,7 +51,7 @@
 
   <div class="ui one column page grid">
     <div class="column">
-      <table class="ui celled stripped table" data-lift="WorkerPerformanceExcel.table">
+      <table id="dataTable" class="ui celled stripped table" data-lift="WorkerPerformanceExcel.table">
         <thead>
           <tr><th>機台編號</th><th>產品尺寸</th><th>日管理標準量</th><th>日效率標準量</th><th>動作</th></tr>
         </thead>
@@ -65,6 +65,9 @@
           </tr>
         </tbody>
       </table>
+      <script>
+         $('#dataTable').floatThead({scrollingTop: 50});
+      </script>
     </div>
   </div>
 </div>
