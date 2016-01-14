@@ -6,7 +6,7 @@
         <lift:warning_msg class="ui yellow sys message"></lift:warning_msg>
         <lift:notice_msg class="ui green sys message"></lift:notice_msg>
       </div>
-      <table class="ui celled table">
+      <table class="ui celled table" id="dataTable">
         <thead>
           <tr>
             <th class="ui center aligned">機台</th>
@@ -24,6 +24,9 @@
            </tr>
         </tbody>
       </table>
+      <script>
+      $('#dataTable').floatThead({scrollingTop: 50});
+      </script>
     </div>
   </div>
 </div>

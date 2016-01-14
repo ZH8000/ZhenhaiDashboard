@@ -51,7 +51,7 @@
           <div style="margin-bottom: 1em;"></div>
 	  <div class="dataBlock">
             <div style="margin-left: 1em;">製表日期：<span class="tableDate">2012-02-13</span></div>
-            <table class="ui celled table segment">
+            <table class="ui celled table" id="dataTable">
               <thead>
                 <tr>
                   <th class="ui center aligned">製令編號</th>
@@ -79,6 +79,10 @@
                 </tr>
               </tbody>
             </table>
+            <script>
+              $('#dataTable').floatThead({scrollingTop: 105});
+            </script>
+
 	  </div>
         </div>
       </div>

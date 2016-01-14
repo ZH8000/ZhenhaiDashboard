@@ -21,6 +21,7 @@ class MachineDefactSummary {
   val dataTable = MongoDB.zhenhaiDB(s"defactSummary-$yearString-$monthString")
   val shiftDate = s"$yearString-$monthString-$dateString"
 
+
   /**
    *  依照網址來產生網頁上顯示麵包屑要用的的 List[Step] 物件
    *
@@ -185,6 +186,8 @@ class MachineDefactSummary {
    */
   def step1Rows(shiftTag: String, sortTag: String) = {
 
+
+  
     val dataRow = dataTable.find(MongoDBObject("shiftDate" -> shiftDate, "shift" -> shiftTag, "machineType" -> 1)).toList
     val sortedData = sortData(dataRow, sortTag)
 

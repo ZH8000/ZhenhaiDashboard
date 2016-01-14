@@ -33,7 +33,7 @@
             <div data-lift="embed?what=loading"></div>
           </div>
 
-          <table class="ui celled table hidden segment" id="detailTable">
+          <table class="ui celled table hidden" id="detailTable">
             <thead>
               <tr>
                 <th data-sort="string">時間 <i id="arrow0" class="ui sort icon"></i></th>
@@ -46,6 +46,9 @@
               <tr><td>00:00</td><td>13</td><td>5</td></tr>
             </tbody>
           </table>
+          <script>
+            $('#detailTable').floatThead({scrollingTop: 105});
+          </script>
         </div>
       </div>
     </div>

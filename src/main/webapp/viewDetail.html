@@ -33,7 +33,9 @@
             <div style="margin-top: 0.5em">日報表</div>
           </a>
           <div style="margin-top: 1em">
-            請選擇月份：<input type="text" id="monthPicker" size="10"/>
+            請選擇月份：
+            <input type="text" size="10" id="monthText" placeholder="YYYY-MM"/>
+            <button id="monthPicker" size="10">...</button>
           </div>
         </div>
         <div class="column">
@@ -42,7 +44,9 @@
             <div style="margin-top: 0.5em">重點統計</div>
           </a>
           <div style="margin-top: 1em">
-            請選擇月份：<input type="text" id="monthlyMonthPicker" size="10"/>
+            請選擇月份：
+            <input type="text" size="10" id="monthlyMonthText" placeholder="YYYY-MM"/>
+            <button id="monthlyMonthPicker">...</button>
           </div>
         </div>
 
@@ -52,7 +56,9 @@
             <div style="margin-top: 0.5em">晨間檢討</div>
           </a>
           <div style="margin-top: 1em">
-            請選擇月份：<input type="text" id="morningMonthPicker" size="10"/>
+            請選擇月份：
+            <input type="text" size="10" id="morningMonth" placeholder="YYYY-MM"/>
+            <button id="morningMonthPicker" size="10">...</button>
           </div>
         </div>
         <div class="column">
@@ -61,7 +67,9 @@
             <div style="margin-top: 0.5em">人員效率</div>
           </a>
           <div style="margin-top: 1em">
-            請選擇月份：<input type="text" id="workerPerformanceMonthPicker" size="10"/>
+            請選擇月份：
+            <input type="text" size="10" id="workerPerformanceMonth" placeholder="YYYY-MM"/>
+            <button id="workerPerformanceMonthPicker" size="10">...</button>
           </div>
         </div>
         <div class="column">
@@ -70,7 +78,9 @@
             <div style="margin-top: 0.5em">稼動率</div>
           </a>
           <div style="margin-top: 1em">
-            請選擇月份：<input type="text" id="kadouTableMonthPicker" size="10"/>
+            請選擇月份：
+            <input type="text" size="10" id="kadouMonth" placeholder="YYYY-MM"/>
+            <button id="kadouTableMonthPicker" size="10">...</button>
           </div>
         </div>
 
@@ -80,7 +90,8 @@
             <div style="margin-top: 0.5em">生產狀況</div>
           </a>
           <div style="margin-top: 1em">
-            請選擇日期：<input type="text" id="machineDefactDatePicker" size="10"/>
+            請選擇日期：
+            <input type="text" id="machineDefactDatePicker" size="10" placeholder="YYYY-MM-DD"/>
           </div>
         </div>
 
@@ -101,8 +112,49 @@
       setupMonthChooser("#workerPerformanceMonthPicker", $("#maxYear").val(), $("#maxMonth").val(), $("#minYear").val(), $("#minMonth").val(), "/excel/workerPerformance");
       setupMonthChooser("#kadouTableMonthPicker", $("#maxYear").val(), $("#maxMonth").val(), $("#minYear").val(), $("#minMonth").val(), "/excel/kadou");
       $( "#machineDefactDatePicker" ).datepicker({
+        showOn: "button",
+        buttonText: "...",
         dateFormat: "yy-mm-dd",
         onSelect: function(dateText, inst) {
+          window.location = "/machineDefactSummary/" + dateText.split("-").join("/");
+        }
+      });
+
+      $('#monthText').keyup(function (e) {
+        if (e.keyCode == 13) {
+          var dateText = $('#monthText').val();
+          window.location = "/daily/" + dateText.split("-").join("/");
+        }
+      });
+
+      $('#monthlyMonthText').keyup(function (e) {
+        if (e.keyCode == 13) {
+          var dateText = $('#monthlyMonthText').val();
+          window.location = "/excel/monthly/" + dateText.split("-").join("/");
+        }
+      });
+
+      $('#morningMonth').keyup(function (e) {
+        if (e.keyCode == 13) {
+          var dateText = $('#morningMonth').val();
+          window.location = "/excel/morning/" + dateText.split("-").join("/");
+        }
+      });
+      $('#workerPerformanceMonth').keyup(function (e) {
+        if (e.keyCode == 13) {
+          var dateText = $('#workerPerformanceMonth').val();
+          window.location = "/excel/workerPerformance/" + dateText.split("-").join("/");
+        }
+      });
+      $('#kadouMonth').keyup(function (e) {
+        if (e.keyCode == 13) {
+          var dateText = $('#kadouMonth').val();
+          window.location = "/excel/kadou/" + dateText.split("-").join("/");
+        }
+      });
+      $('#machineDefactDatePicker').keyup(function (e) {
+        if (e.keyCode == 13) {
+          var dateText = $('#machineDefactDatePicker').val();
           window.location = "/machineDefactSummary/" + dateText.split("-").join("/");
         }
       });

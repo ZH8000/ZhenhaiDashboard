@@ -34,6 +34,8 @@
                     <th class="ui center aligned">員工類別</th>
                     <th class="ui center aligned">動作</th>
                   </tr>
+                </thead>
+                <tbody>
                   <tr id="" class="workerRow">
                     <td class="ui center aligned"><input type="checkbox" class="barcodeCheckbox" name="workerID" /></td>
                     <td class="ui center aligned workerName"></td>
@@ -52,8 +54,7 @@
                       </div>
                     </td>
                   </tr>
-                </thead>
-                <tbody>
+
                 </tbody>
               </table>
             </div>
@@ -61,6 +62,13 @@
           </div>
           <script>
             $('#tab .menu .item').tab({context: $('#tab')});
+            var tableCount = $('.table').length
+            for (i = 0; i < tableCount; i++) {
+              $('#workerTable' + i).floatThead({scrollingTop: 50});
+            }
+            function onSelectTab(i) {
+              $('#workerTable' + i).floatThead('reflow');
+            }
           </script>
         </div>
       </form>

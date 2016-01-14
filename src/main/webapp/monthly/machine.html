@@ -57,7 +57,7 @@
               <div style="float: right; padding-bottom: 1em;">
                 生產均線：<span class="levelA">LevelA</span> / <span class="levelB">LevelB</span> / <span class="levelC">LevelC</span>
               </div>
-              <table class="ui celled table segment">
+              <table class="ui celled table" id="summaryTable">
                 <thead>
                   <tr>
                     <th>事件</th>
@@ -69,12 +69,15 @@
                   <tr class="eventRow"><td class="eventName">EventName</td><td class="eventCount">67890</td></tr>
                 </tbody>
               </table>
+              <script>
+                $('#summaryTable').floatThead({scrollingTop: 105});
+              </script>
             </div>
           </div>
 
           <h3 class="ui dividing header">詳細資料</h3>
 
-          <table class="ui celled table segment">
+          <table class="ui celled table" id="detailTable">
             <thead>
               <tr>
                 <th>時間</th>
@@ -246,6 +249,7 @@
           drawBarChart(".barChart", toBarChartData(data.dataSet));
 
           $(".data").show();
+          $('#detailTable').floatThead({scrollingTop: 105});
 
         }).error(function() {
           $('#notFoundBlock').show();

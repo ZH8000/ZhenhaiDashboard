@@ -14,13 +14,13 @@
       </div>
 
       <div class="ui top attached tabular menu" style="padding-top: 2em;">
-        <div class="active item" data-tab="account">帳號</div>
-        <div class="item" data-tab="permission">權限</div>
+        <div onClick="onSelectTab();" class="active item" data-tab="account">帳號</div>
+        <div onClick="onSelectTab();" class="item" data-tab="permission">權限</div>
       </div>
 
       <div class="ui bottom attached active tab segment" data-tab="account">
         <div id="tab" style="margin-top: 1em;">
-          <table class="ui celled table">
+          <table class="ui celled table" id="userTable">
             <thead>
               <tr>
                 <th class="ui center aligned">帳號</th>
@@ -50,7 +50,7 @@
       <div class="ui bottom attached tab segment" data-tab="permission">
  
         <div id="tab" style="margin-top: 1em;">
-          <table class="ui celled table">
+          <table class="ui celled table" id="permissionTable">
             <thead>
               <tr>
                 <th class="ui center aligned">權限名稱</th>
@@ -85,7 +85,14 @@
 
       </div>
       <script>
-$('.menu .item').tab();
+        $('.menu .item').tab();
+        $('#userTable').floatThead({scrollingTop: 50});
+        $('#permissionTable').floatThead({scrollingTop: 50});
+        function onSelectTab() {
+          console.log('on tab select...');
+          $('#userTable').floatThead('reflow');
+          $('#permissionTable').floatThead('reflow');
+        }
       </script>
     </div>
   </div>

@@ -21,7 +21,7 @@
               <div style="clear: both" />
             </div>
             <div class="column">
-              <table class="ui celled table segment">
+              <table class="ui celled table" id="dataTable">
                 <thead>
                   <tr>
                     <th class="ui center aligned">製令編號</th>
@@ -106,6 +106,7 @@
             </div>
             <script>
               $('.progress').progress({showActivity: false});
+              $('#dataTable').floatThead({scrollingTop: 105});
             </script>
 
           </div>

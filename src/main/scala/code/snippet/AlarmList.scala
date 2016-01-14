@@ -195,6 +195,7 @@ class AlarmList {
       ".countQty *" #> countQty &
       ".machineID *" #> machineID &
       ".countQtyWan *" #> s"%.1f".format(wanQty) &
+      ".table [id]" #> s"machineTable-${machineID}" &
       ".alarmRow" #> alarms.view
                            .filter(_.machineID.get == machineID)
                            .sortWith(_.countdownQty.get < _.countdownQty.get)

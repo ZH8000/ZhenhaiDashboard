@@ -65,6 +65,7 @@ class WorkerList {
     val dateFormatter = new SimpleDateFormat("yyyy-MM-dd")
 
     ".workerTable" #> departments.zipWithIndex.map { case(department, index) =>
+      ".table [id]" #> s"workerTable${index}" &
       ".workerTable [data-tab]" #> department &
       ".workerTable [class+]" #> (if (index == 0) "active" else "") &
       ".workerRow" #> departmentToWorkers(department).map { worker =>
@@ -84,7 +85,8 @@ class WorkerList {
     ".departmentItem" #> departments.zipWithIndex.map { case (department, index) => 
       ".departmentItem *" #> department &
       ".departmentItem [data-tab]" #> department &
-      ".departmentItem [class+]" #> (if (index == 0) "active" else "")
+      ".departmentItem [class+]" #> (if (index == 0) "active" else "") &
+      ".departmentItem [onClick]" #> s"onSelectTab($index);"
     }
   }
 }

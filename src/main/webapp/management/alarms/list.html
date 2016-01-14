@@ -22,7 +22,7 @@
        </div>
 
        <div class="ui segment">
-         <table class="ui celled table" data-lift="AlarmList">
+         <table class="ui celled table" data-lift="AlarmList" id="machineTable">
            <thead>
              <tr>
                <th class="collapsing">機台</th>
@@ -38,7 +38,7 @@
                 <td class="collapsing countQtyWan"></td>
                 <td>
                   <div>
-                  <table class="ui celled striped table">
+                  <table class="ui celled striped machineInner table">
                     <thead>
                       <tr>
                         <th>更換循環</th>
@@ -89,6 +89,7 @@
             $('#doneCheckboxHolder-' + alarmID).text("Ｖ");
          }
 
+         $('#machineTable').floatThead({scrollingTop: 105});
        </script>
 
     </div>

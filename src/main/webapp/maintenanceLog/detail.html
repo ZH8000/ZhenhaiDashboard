@@ -23,7 +23,7 @@
               <div style="clear: both" />
             </div>
 
-            <table class="ui celled table segment">
+            <table class="ui celled table" id="dataTable">
               <thead>
                 <tr>
                   <th class="ui center aligned">編號</th>
@@ -53,6 +53,9 @@
                 </tr>
               </tbody>
             </table>
+            <script>
+              $('#dataTable').floatThead({scrollingTop: 105});
+            </script>
 	  </div>
         </div>
       </div>
