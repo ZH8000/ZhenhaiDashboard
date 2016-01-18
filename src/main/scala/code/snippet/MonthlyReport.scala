@@ -1,8 +1,11 @@
 package code.snippet
 
 import code.lib._
+import code.model._
 import net.liftweb.http.S
 import net.liftweb.util.Helpers._
+import net.liftweb.common._
+import scala.xml.NodeSeq
 
 /**
  *  用來顯示「產量統計」－＞「月報表」的 Snippet
@@ -116,6 +119,10 @@ class MonthlyReport {
   def machine = {
 
     val Array(_, year, step, month, week, date, machineID) = S.uri.drop(1).split("/")
+    val machineLevelBox = MachineLevel.find("machineID", machineID)
+    val levelA = machineLevelBox.map(_.levelA.get)
+    val levelB = machineLevelBox.map(_.levelB.get)
+    val levelC = machineLevelBox.map(_.levelC.get)
 
     "#step [value]" #> step &
     "#productMachine [value]" #> machineID &
@@ -125,6 +132,12 @@ class MonthlyReport {
     "#date [value]" #> date &
     "#dataURL [value]" #> s"/api/json${S.uri}" &
     "#csvURL [href]" #> s"/api/csv${S.uri}.csv" &
+    "#levelA [value]" #> levelA.map(_.toString).getOrElse("") &
+    "#levelB [value]" #> levelB.map(_.toString).getOrElse("") &
+    "#levelC [value]" #> levelC.map(_.toString).getOrElse("") &
+    "#levelAExample" #> levelA.map { levelValue => ".levelAValue *" #> levelValue } &
+    "#levelBExample" #> levelB.map { levelValue => ".levelBValue *" #> levelValue } &
+    "#levelCExample" #> levelC.map { levelValue => ".levelCValue *" #> levelValue } &
     showStepsSelector
   }
 

@@ -1,8 +1,11 @@
 package code.snippet
 
 import code.lib._
+import code.model._
 import net.liftweb.http.S
 import net.liftweb.util.Helpers._
+import net.liftweb.common._
+import scala.xml.NodeSeq
 
 /**
  *  用來顯示網頁上「產量統計」－＞「依φ別」的部份的 Snippet
@@ -126,12 +129,17 @@ class TotalReport {
 
   }
   
+
   /**
    *  用來顯示最後一頁機台詳細統計紀錄
    */
   def machine = {
 
     val Array(_, step, productName, year, month, week, date, machineID) = S.uri.drop(1).split("/")
+    val machineLevelBox = MachineLevel.find("machineID", machineID)
+    val levelA = machineLevelBox.map(_.levelA.get)
+    val levelB = machineLevelBox.map(_.levelB.get)
+    val levelC = machineLevelBox.map(_.levelC.get)
 
     "#step [value]" #> step &
     "#productName [value]" #> productName &
@@ -142,6 +150,12 @@ class TotalReport {
     "#date [value]" #> date &
     "#dataURL [value]" #> s"/api/json${S.uri}" &
     "#csvURL [href]" #> s"/api/csv${S.uri}.csv" &
+    "#levelA [value]" #> levelA.map(_.toString).getOrElse("") &
+    "#levelB [value]" #> levelB.map(_.toString).getOrElse("") &
+    "#levelC [value]" #> levelC.map(_.toString).getOrElse("") &
+    "#levelAExample" #> levelA.map { levelValue => ".levelAValue *" #> levelValue } &
+    "#levelBExample" #> levelB.map { levelValue => ".levelBValue *" #> levelValue } &
+    "#levelCExample" #> levelC.map { levelValue => ".levelCValue *" #> levelValue } &
     showStepsSelector
   }
 

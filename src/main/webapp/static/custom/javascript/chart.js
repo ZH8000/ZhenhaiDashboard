@@ -21,6 +21,9 @@
  *   - options.topMargin
  *   - options.extractValue
  *   - options.extractName
+ *   - options.levelA
+ *   - options.levelB
+ *   - options.levelC
  *
  */
 function barChart(options) {
@@ -52,6 +55,10 @@ function barChart(options) {
       return options.extractValue(data); 
     }
 
+    function calculateLineYPosition(data) {
+      return options.totalHeight - scalar(data) - options.bottomMargin-10;
+    }
+
     function calculateRectYPosition(data) {
       return options.totalHeight - scalar(getDataValue(data)) - options.bottomMargin-10;
     }
@@ -65,8 +72,14 @@ function barChart(options) {
     var maximalY = options.totalHeight - 
   		 (options.bottomMargin + options.topMargin + 10);
 
+    var domainMax = d3.max(dataSet, options.extractValue)
+
+    if (options.levelA && (parseInt(options.levelA) / 12) > domainMax) {
+      domainMax = parseInt(options.levelA) / 12
+    }
+
     var scalar = d3.scale.linear().
-                    domain([0, d3.max(dataSet, options.extractValue)]).
+                    domain([0, domainMax]).
                     range([minimalY, maximalY - 80]);
 
     var chart = d3.select(selection).
@@ -109,6 +122,20 @@ function barChart(options) {
         attr("dx", "35px").
         text(options.extractName)
 
+    if (options.levelA && options.levelA > 0) {
+      var lineY = calculateLineYPosition(parseInt(options.levelA) / 12);
+      chart.append("rect").attr("x", 0).attr("y", lineY).attr("width", totalWidth).attr("height", 1).attr("style", "fill:rgb(255,0,255);stroke:rgb(255,0,255)")
+    }
+
+    if (options.levelB && options.levelB > 0) {
+      var lineY = calculateLineYPosition(parseInt(options.levelB) / 12);
+      chart.append("rect").attr("x", 0).attr("y", lineY).attr("width", totalWidth).attr("height", 1).attr("style", "fill:rgb(255,0,0);stroke:rgb(255,0,0)")
+    }
+
+    if (options.levelC && options.levelC > 0) {
+      var lineY = calculateLineYPosition(parseInt(options.levelC) / 12);
+      chart.append("rect").attr("x", 0).attr("y", lineY).attr("width", totalWidth).attr("height", 1).attr("style", "fill:rgb(0,255,0);stroke:rgb(0,255,0)")
+    }
   }
 
   return draw;
