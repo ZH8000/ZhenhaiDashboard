@@ -50,7 +50,10 @@ class ProductionStatusHistory {
           val step3Status = ProductionStatus.getStatus(orderStatusHolder, 3, record.step3Status.get)
           val step4Status = ProductionStatus.getStatus(orderStatusHolder, 4, record.step4Status.get)
           val step5Status = ProductionStatus.getStatus(orderStatusHolder, 5, record.step5Status.get)
+          val lotNoEncoded = urlEncode(record.lotNo.get)
+          val productionCardURL = s"/productionCard/$lotNoEncoded"
 
+          ".lotNo [href]" #> productionCardURL &
           ".lotNo *" #> record.lotNo &
           ".partNo *" #> record.partNo &
           ".customer *" #> record.customer &

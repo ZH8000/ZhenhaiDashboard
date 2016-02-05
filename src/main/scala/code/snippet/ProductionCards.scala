@@ -28,7 +28,7 @@ class ProductionCard {
    *  當使用者輸入工單號後用來轉址的函式
    */
   def process() {
-    val searchBox = S.param("lotNo").getOrElse("")
+    val searchBox = urlEncode(S.param("lotNo").getOrElse(""))
     S.redirectTo(s"/productionCard/$searchBox")
   }
 
@@ -43,7 +43,8 @@ class ProductionCard {
    *  設定查詢結果頁面中的麵包屑上的工單號
    */
   def lotNo = {
-    val Array(_, lotNo) = S.uri.split("/").drop(1)
+    val Array(_, lotNoEncoded) = S.uri.split("/").drop(1)
+    val lotNo = urlDecode(lotNoEncoded)
     ".lotNo *" #> lotNo
   }
 
@@ -94,7 +95,8 @@ class ProductionCard {
    */
   def render = {
 
-    val Array(_, lotNo) = S.uri.split("/").drop(1)
+    val Array(_, lotNoEncoded) = S.uri.split("/").drop(1)
+    val lotNo = urlDecode(lotNoEncoded)
     val orderStatusBox = OrderStatus.find("lotNo", lotNo)
 
     orderStatusBox match {
