@@ -535,7 +535,7 @@
   <script>
    $('.menu .item').tab();
    $('.ui.accordion').accordion();
-   $('#table1').floatThead({scrollingTop: 105});
+   $('#table1').floatThead({scrollingTop: 135});
 
    function selectTab(tab) {
      console.log('tab:' + tab);
@@ -544,7 +544,7 @@
      $('#table3').floatThead('destroy');
      $('#table4').floatThead('destroy');
      $('#table5').floatThead('destroy');
-     $('#table' + tab).floatThead({scrollingTop: 105});
+     $('#table' + tab).floatThead({scrollingTop: 135});
      $('#table' + tab).floatThead('reflow');
    }
 
