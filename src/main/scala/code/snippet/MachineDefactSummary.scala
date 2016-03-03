@@ -342,7 +342,7 @@ class MachineDefactSummary {
       val insertRate = total match {
         case None => "-"
         case Some(totalValue) =>
-          val rate = ((totalValue - defactD.getOrElse(0L) - white.getOrElse(0L) - countQty.getOrElse(0L)) / totalValue.toDouble)
+          val rate = ((totalValue - defactD.getOrElse(0L) - white.getOrElse(0L) - countQty.getOrElse(0L)) / totalValue.toDouble) * 100
           f"$rate%.2f %%"
       }
 

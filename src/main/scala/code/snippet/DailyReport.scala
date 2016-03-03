@@ -103,9 +103,9 @@ class DailyReport {
     "#levelA [value]" #> levelA.map(_.toString).getOrElse("") &
     "#levelB [value]" #> levelB.map(_.toString).getOrElse("") &
     "#levelC [value]" #> levelC.map(_.toString).getOrElse("") &
-    "#levelAExample" #> levelA.map { levelValue => ".levelAValue *" #> levelValue } &
-    "#levelBExample" #> levelB.map { levelValue => ".levelBValue *" #> levelValue } &
-    "#levelCExample" #> levelC.map { levelValue => ".levelCValue *" #> levelValue } &
+    "#levelAExample" #> levelA.map { levelValue => ".levelAValue *" #> (levelValue / 12) } &
+    "#levelBExample" #> levelB.map { levelValue => ".levelBValue *" #> (levelValue / 12) } &
+    "#levelCExample" #> levelC.map { levelValue => ".levelCValue *" #> (levelValue / 12) } &
     showStepsSelector
   }
 

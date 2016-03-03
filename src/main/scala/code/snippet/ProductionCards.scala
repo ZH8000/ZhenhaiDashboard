@@ -53,7 +53,7 @@ class ProductionCard {
    */
   def renderTable(orderStatus: code.model.OrderStatus) = {
 
-    val requireCount = (orderStatus.inputCount.get / 1.04).toLong
+    val requireCount = (orderStatus.inputCount.get / 1.03).toLong
     val customer = Customer.fromPartNo(orderStatus.partNo.get)
 
     "#exportCSV [href]" #> s"/api/csv/productionCard/${orderStatus.lotNo}.csv" &

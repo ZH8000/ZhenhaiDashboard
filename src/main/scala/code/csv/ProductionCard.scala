@@ -25,7 +25,7 @@ object ProductionCard {
         val dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm")
 
 
-        val requireCount = (record.inputCount.get / 1.04).toLong
+        val requireCount = (record.inputCount.get / 1.03).toLong
 
         // 完成日期
         val step1DoneTime = record.step1DoneTimeString      // 加締
