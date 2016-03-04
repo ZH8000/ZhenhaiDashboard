@@ -80,10 +80,24 @@ class ProductionCard {
       "-"
     }
 
+    val productCode = orderStatus.productCode
+    val productCost = ProductCost.getProductCost(productCode)
+    val step1LossMoney = productCost.map(_ * step1LossCount).map(_.toString).getOrElse("未設定單位損耗金額")
+    val step2LossMoney = productCost.map(_ * step2LossCount).map(_.toString).getOrElse("未設定單位損耗金額")
+    val step3LossMoney = productCost.map(_ * step3LossCount).map(_.toString).getOrElse("未設定單位損耗金額")
+    val step4LossMoney = productCost.map(_ * step4LossCount).map(_.toString).getOrElse("未設定單位損耗金額")
+    val step5LossMoney = productCost.map(_ * step5LossCount).map(_.toString).getOrElse("未設定單位損耗金額")
+    val totalLossMoney = (orderStatus.step5.get > 0) match {
+      case true if productCost.isEmpty   => "未設定單位損耗金額"
+      case true if productCost.isDefined => (orderStatus.inputCount.get - orderStatus.step5.get) * productCost.openOrThrowException("")
+      case false => "-"
+    }
+
     "#exportCSV [href]" #> s"/api/csv/productionCard/${orderStatus.lotNo}.csv" &
     ".lotNo *" #> orderStatus.lotNo &
     ".partNo *" #> orderStatus.partNo &
-    ".product *" #> orderStatus.product &
+    ".productCode *" #> orderStatus.productCode &
+    ".productTitle *" #> orderStatus.productTitle &
     ".inputCount *" #> orderStatus.inputCount &
     ".requireCount *" #> requireCount &
     ".customer *" #> customer &
@@ -122,10 +136,15 @@ class ProductionCard {
     ".step3LossRate *" #> step3LossRate &
     ".step4LossRate *" #> step4LossRate &
     ".step5LossRate *" #> step5LossRate &
+    ".step1LossMoney *" #> step1LossMoney.toString &
+    ".step2LossMoney *" #> step2LossMoney.toString &
+    ".step3LossMoney *" #> step3LossMoney.toString &
+    ".step4LossMoney *" #> step4LossMoney.toString &
+    ".step5LossMoney *" #> step5LossMoney.toString &
     ".totalLossCount *" #> totalLossCount &
     ".totalLossRate *" #> totalLossRate &
+    ".totalLossMoney *" #> totalLossMoney.toString &
     ".unknownReasonLoss *" #> unknownReasonLoss.toString
-
   }
 
   /**

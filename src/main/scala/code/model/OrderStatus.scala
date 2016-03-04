@@ -6,6 +6,7 @@ import java.util.Date
 import net.liftweb.mongodb.record.{MongoMetaRecord, MongoRecord}
 import net.liftweb.mongodb.record.field._
 import net.liftweb.record.field._
+import scala.util.Try
 
 /**
  *  網狀上計算「訂單狀單」和「今日工單」用的資料表
@@ -144,9 +145,14 @@ class OrderStatus extends MongoRecord[OrderStatus] with ObjectIdPk[OrderStatus] 
   val partNo = new StringField(this, 100)
 
   /**
-   *  產品尺吋
+   *  產品尺吋代碼
    */
-  val product = new StringField(this, 20)
+  def productCode = Try{partNo.get.substring(10, 15)}.getOrElse("Unknown")
+
+  /**
+   *  產品尺吋代碼
+   */
+  def productTitle = ProductCost.getProductTitle(productCode)
 
   /**
    *  投入量（比真正的需求量多 4%）

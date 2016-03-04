@@ -21,6 +21,14 @@ object ProductCost extends ProductCost with MongoMetaRecord[ProductCost] {
     this.find(("productCode" -> productCode)).map(_.delete_!)
   }
 
+  def getProductTitle(productCode: String) = {
+    this.find(("productCode" -> productCode)).map(_.productTitle.get).getOrElse("Unknown")
+  }
+
+  def getProductCost(productCode: String): Box[BigDecimal] = {
+    this.find(("productCode" -> productCode)).map(_.productCost.get)
+  }
+
 }
 
 class ProductCost extends MongoRecord[ProductCost] with ObjectIdPk[ProductCost] {

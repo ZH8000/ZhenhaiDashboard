@@ -25,7 +25,7 @@ object OrderStatusCSV {
       // 條碼上的所需生產數量，為真實需求量的 1.03 倍，所以需要將其轉換成為真實的需求數量
       val requireCount = (record.inputCount.get - (record.inputCount.get * 0.03)).toLong
 
-      s""""${record.lotNo}","${record.customer}","${record.product}",${record.inputCount},$requireCount,${record.step1},""" + 
+      s""""${record.lotNo}","${record.customer}","${record.productTitle}",${record.inputCount},$requireCount,${record.step1},""" + 
       s"""${record.step2},${record.step3},${record.step4},${record.step5}"""
     }
 

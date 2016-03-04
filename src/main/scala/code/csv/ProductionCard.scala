@@ -49,7 +49,7 @@ object ProductionCard {
         val step5Worker = record.step5WorkerName            // 加工切腳
 
         """"製令編號","料號","客戶","規格","投入數","需求數"""" + "\n" +
-        s""""${record.lotNo}","${record.partNo}","${record.customer}","${record.product}",${record.inputCount},${requireCount}""" + "\n" +
+        s""""${record.lotNo}","${record.partNo}","${record.customer}","${record.productTitle}",${record.inputCount},${requireCount}""" + "\n" +
          """"工程","接送日期","接送數量","機器","作業者","完成日期"""" + "\n" +
         s""""加締卷取","$step1StartTime",${record.step1}, "${record.step1machineID}", "${step1Worker}", "${step1DoneTime}""""  + "\n" +
         s""""組立","$step2StartTime",${record.step2}, "${record.step2machineID}", "${step2Worker}", "${step2DoneTime}""""  + "\n" +
