@@ -8,7 +8,7 @@
     </div>
 
     <div class="ui below column">
-      <div class="one column ui page grid" data-lift="LazyLoad?template=loading">
+      <div class="one column ui grid">
 
         <div class="column" data-lift="ProductionCard">
 
@@ -30,6 +30,10 @@
                   <th class="ui center aligned">規格</th>
                   <th class="ui center aligned">投入數</th>
                   <th class="ui center aligned">需求數</th>
+                  <th class="ui center aligned"></th>
+                  <th class="ui center aligned">損耗總數</th>
+                  <th class="ui center aligned">總損耗率</th>
+                  <th class="ui center aligned">損耗總金額（RMB）</th>
                 </tr>
               </thead>
               <tbody id="table">
@@ -40,63 +44,97 @@
                   <td class="ui collapsing center aligned product">規格</td>
                   <td class="ui collapsing center aligned inputCount">投入數</td>
                   <td class="ui collapsing center aligned requireCount">需求數</td>
+                  <td class="ui collapsing center aligned"></td>
+                  <td class="ui collapsing center aligned totalLossCount">損耗總數</td>
+                  <td class="ui collapsing center aligned totalLossRate">總損耗率</td>
+                  <td class="ui collapsing center aligned totalLossMoney">損耗總金額（RMB）</td>
                 </tr>
               </tbody>
               <thead>
                 <tr>
                   <th class="ui center aligned">工程</th>
                   <th class="ui center aligned">接送日期</th>
-                  <th class="ui center aligned">接送數量</th>
+                  <th class="ui center aligned">上一站良品數</th>
                   <th class="ui center aligned">機器</th>
                   <th class="ui center aligned">作業者</th>
                   <th class="ui center aligned">完成日期</th>
+                  <th class="ui center aligned">良品數</th>
+                  <th class="ui center aligned">損耗數量</th>
+                  <th class="ui center aligned">損耗率</th>
+                  <th class="ui center aligned">損耗金額（RMB）</th>
                 </tr>
               </thead>
               <tbody id="table">
                 <tr class="row">
                   <td class="ui collapsing center aligned step1Name">加締卷取</td>
                   <td class="ui collapsing center aligned step1Date">2014-11-11</td>
-                  <td class="ui collapsing center aligned step1Count">1000</td>
+                  <td class="ui collapsing center aligned inputCount">1000</td>
                   <td class="ui collapsing center aligned step1Machine">A12</td>
                   <td class="ui collapsing center aligned step1Worker">Worker</td>
                   <td class="ui collapsing center aligned step1DoneDate">DoneDate</td>
+                  <td class="ui collapsing center aligned step1Count"></td>
+                  <td class="ui collapsing center aligned step1LossCount">損耗總數</td>
+                  <td class="ui collapsing center aligned step1LossRate">總損耗率</td>
+                  <td class="ui collapsing center aligned step1LossMoney">損耗總金額（RMB）</td>
                 </tr>
                 <tr class="row">
                   <td class="ui collapsing center aligned step2Name">組立</td>
                   <td class="ui collapsing center aligned step2Date">2014-11-11</td>
-                  <td class="ui collapsing center aligned step2Count">1000</td>
+                  <td class="ui collapsing center aligned step1Count">1000</td>
                   <td class="ui collapsing center aligned step2Machine">A12</td>
                   <td class="ui collapsing center aligned step2Worker">Worker</td>
                   <td class="ui collapsing center aligned step2DoneDate">DoneDate</td>
+                  <td class="ui collapsing center aligned step2Count"></td>
+                  <td class="ui collapsing center aligned step2LossCount">損耗總數</td>
+                  <td class="ui collapsing center aligned step2LossRate">總損耗率</td>
+                  <td class="ui collapsing center aligned step2LossMoney">損耗總金額（RMB）</td>
                 </tr>
                 <tr class="row">
                   <td class="ui collapsing center aligned step3Name">老化</td>
                   <td class="ui collapsing center aligned step3Date">2014-11-11</td>
-                  <td class="ui collapsing center aligned step3Count">1000</td>
+                  <td class="ui collapsing center aligned step2Count">1000</td>
                   <td class="ui collapsing center aligned step3Machine">A12</td>
                   <td class="ui collapsing center aligned step3Worker">Worker</td>
                   <td class="ui collapsing center aligned step3DoneDate">DoneDate</td>
+                  <td class="ui collapsing center aligned step3Count"></td>
+                  <td class="ui collapsing center aligned step3LossCount">損耗總數</td>
+                  <td class="ui collapsing center aligned step3LossRate">總損耗率</td>
+                  <td class="ui collapsing center aligned step3LossMoney">損耗總金額（RMB）</td>
                 </tr>
                 <tr class="row">
                   <td class="ui collapsing center aligned step4Name">選別</td>
                   <td class="ui collapsing center aligned step4Date">2014-11-11</td>
-                  <td class="ui collapsing center aligned step4Count">1000</td>
+                  <td class="ui collapsing center aligned step3Count">1000</td>
                   <td class="ui collapsing center aligned step4Machine">A12</td>
                   <td class="ui collapsing center aligned step4Worker">Worker</td>
                   <td class="ui collapsing center aligned step4DoneDate">DoneDate</td>
+                  <td class="ui collapsing center aligned step4Count"></td>
+                  <td class="ui collapsing center aligned step4LossCount">損耗總數</td>
+                  <td class="ui collapsing center aligned step4LossRate">總損耗率</td>
+                  <td class="ui collapsing center aligned step4LossMoney">損耗總金額（RMB）</td>
                 </tr>
                 <tr class="row">
                   <td class="ui collapsing center aligned step5Name">加工</td>
                   <td class="ui collapsing center aligned step5Date">2014-11-11</td>
-                  <td class="ui collapsing center aligned step5Count">1000</td>
+                  <td class="ui collapsing center aligned"><span class="step3Count">1000</span>＊</td>
                   <td class="ui collapsing center aligned step5Machine">A12</td>
                   <td class="ui collapsing center aligned step5Worker">Worker</td>
                   <td class="ui collapsing center aligned step5DoneDate">DoneDate</td>
+                  <td class="ui collapsing center aligned step5Count"></td>
+                  <td class="ui collapsing center aligned step5LossCount">損耗總數</td>
+                  <td class="ui collapsing center aligned step5LossRate">總損耗率</td>
+                  <td class="ui collapsing center aligned step5LossMoney">損耗總金額（RMB）</td>
+                </tr>
+                <tr class="row">
+                  <td colspan="6" class="ui collapsing center aligned step5Name"></td>
+                  <td class="ui collapsing center aligned">不明損耗</td>
+                  <td class="ui collapsing center aligned unknownReasonLoss">損耗總數</td>
+                  <td colspan="2" class="ui collapsing center aligned"></td>
                 </tr>
 
               </tbody>
-
             </table>
+            <div>＊選別機未裝機，以「老化機」之良品數做為上一站良品數計算</div>
             <script>
               $('.progress').progress({showActivity: false});
             </script>

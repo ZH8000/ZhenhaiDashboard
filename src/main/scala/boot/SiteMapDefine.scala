@@ -357,6 +357,9 @@ object SiteMapDefine {
       >> getTemplate("management/account/edit") 
       >> needLogin
       >> hasPermission(PermissionContent.ManagementAccount),
+    Menu("Managemen9") / "management" / "productCost" 
+      >> needLogin
+      >> hasPermission(PermissionContent.ManagementAccount),
 
     Menu("Workers") / "workers" / "index" 
       >> needLogin
