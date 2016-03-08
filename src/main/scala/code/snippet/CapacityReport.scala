@@ -6,6 +6,8 @@ import net.liftweb.http.S
 import net.liftweb.util.Helpers._
 import net.liftweb.common._
 import scala.xml.NodeSeq
+import java.text.SimpleDateFormat
+import java.util.Date
 
 /**
  *  用來顯示「產量統計」－＞「依容量」中的動態內容
@@ -174,6 +176,27 @@ class CapacityReport {
   def summary = {
     val Array(_, step, capacity, year, month, week, date, machineID) = S.uri.drop(1).split("/")
     EventSummaryTable(year.toInt, month.toInt, date.toInt, machineID)
+  }
+
+  /**
+   *  用來最後一層機台狀態頁顯示今日工單列表
+   */
+  def lotNoList = {
+    val dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+    val Array(_, step, capacity, year, month, week, date, machineID) = S.uri.drop(1).split("/")
+    val shiftDate = "%d-%02d-%02d".format(year.toInt, month.toInt, date.toInt)
+    val lotNoList = DailyLotNoPartNo.findBy(machineID, shiftDate)
+
+    ".dataRow" #> lotNoList.map { record =>
+      val urlEncodedLotNo = urlEncode(record.lotNo.get)
+      val productionCardURL = s"/productionCard/$urlEncodedLotNo"
+
+      ".lotNo *" #> record.lotNo &
+      ".lotNo [href]" #> productionCardURL &
+      ".partNo *" #> record.partNo &
+      ".lastStatus *" #> MachineStatusMapping.getDescription(record.lastStatus.get) &
+      ".lastUpdated *" #> dateFormatter.format(new Date(record.lastUpdated.get * 1000))
+    }
   }
 
 

@@ -72,6 +72,31 @@
         </div>
         <div class="hidden grid data">
           <div data-lift="LazyLoad?template=loading">
+            <div data-lift="CapacityReport.lotNoList">
+              <h3 class="ui dividing header">今日工單</h3>
+              <table id="lotNoTable" class="ui celled table">
+                <thead>
+                  <tr>
+                    <th>工單號</th>
+                    <th>料號</th>
+                    <th>最後狀態</th>
+                    <th>最後更新時間</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="dataRow">
+                    <td><a href="#" class="lotNo">1234</a></td>
+                    <td class="partNo">XXXXXXX</td>
+                    <td class="lastStatus">生產中</td>
+                    <td class="lastUpdated">2012-12-11 00:12:33</td>
+                  </tr>
+                </tbody>
+              </table>
+              <script>
+                $('#lotNoTable').floatThead({scrollingTop: 135});
+              </script>
+            </div>
+
             <div data-lift="CapacityReport.summary">
               <h3 class="ui dividing header">統計資料</h3>
               <div style="float: right; padding-bottom: 1em;">
