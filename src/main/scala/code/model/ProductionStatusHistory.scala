@@ -4,6 +4,7 @@ import code.lib._
 import net.liftweb.mongodb.record.{MongoMetaRecord, MongoRecord}
 import net.liftweb.mongodb.record.field._
 import net.liftweb.record.field._
+import scala.util.Try
 
 /**
  *  記錄生產紀錄歷史的資料表
@@ -39,7 +40,7 @@ class ProductionStatusHistory extends MongoRecord[ProductionStatusHistory] with 
   /**
    *  產品尺吋
    */
-  val product = new StringField(this, 100)
+  //val product = new StringField(this, 100)
 
   /**
    *  加締機的狀態
@@ -75,5 +76,24 @@ class ProductionStatusHistory extends MongoRecord[ProductionStatusHistory] with 
    *  從料號取得的客戶名稱
    */
   def customer = Customer.fromPartNo(partNo.get)
+
+
+  /**
+   *  從料號中取得 φ 別
+   *
+   *  φ 別位於料號的第 11 至 14 碼，前兩碼為直徑，後兩碼為高度
+   */
+  def getProductFromBarcode(): Try[String] = Try {
+    val radius = partNo.get.substring(10,12).toInt
+    val height = partNo.get.substring(12,14).toInt
+    radius + "x" + height
+  }
+
+  /**
+   *  產品尺吋
+   */
+  def product = getProductFromBarcode().getOrElse("Unknown")
+
+
 }
 

@@ -5,6 +5,7 @@ import net.liftweb.common._
 import net.liftweb.mongodb.record.{MongoMetaRecord, MongoRecord}
 import net.liftweb.mongodb.record.field._
 import net.liftweb.record.field._
+import scala.util._
 
 /**
  *  此資料表儲存網站上用來顯示「今日工單」的資料表
@@ -75,11 +76,6 @@ class ProductionStatus extends MongoRecord[ProductionStatus] with ObjectIdPk[Pro
   val lotNo = new StringField(this, 100)
 
   /**
-   *  產品尺吋
-   */
-  val product = new StringField(this, 100)
-
-  /**
    *  加締機的狀態
    */
   val step1Status = new IntField(this, -1)
@@ -118,5 +114,22 @@ class ProductionStatus extends MongoRecord[ProductionStatus] with ObjectIdPk[Pro
    *  從料號取出的客戶名稱
    */
   def customer = Customer.fromPartNo(partNo.get)
+
+  /**
+   *  從料號中取得 φ 別
+   *
+   *  φ 別位於料號的第 11 至 14 碼，前兩碼為直徑，後兩碼為高度
+   */
+  def getProductFromBarcode(): Try[String] = Try {
+    val radius = partNo.get.substring(10,12).toInt
+    val height = partNo.get.substring(12,14).toInt
+    radius + "x" + height
+  }
+
+  /**
+   *  產品尺吋
+   */
+  def product = getProductFromBarcode().getOrElse("Unknown")
+
 }
 
