@@ -8,22 +8,22 @@ import net.liftweb.json.JsonDSL._
 
 import scala.collection.JavaConversions._
 
-object DefactByLotAndPart extends DefactByLotAndPart with MongoMetaRecord[DefactByLotAndPart] {
+object DefactByLotNo extends DefactByLotNo with MongoMetaRecord[DefactByLotNo] {
   /**
    *  此資料表在 MongoDB 中的名稱
    */
-  override def collectionName = "defactByLotAndPart"
+  override def collectionName = "defactByLotNo"
 
   def getCount(lotNo: String, machineID: String): Box[Long] = {
     this.find((("lotNo" -> lotNo) ~ ("mach_id" -> machineID))).map(_.event_qty.get.toLong)
   }
 }
 
-class DefactByLotAndPart extends MongoRecord[DefactByLotAndPart] with ObjectIdPk[DefactByLotAndPart] {
+class DefactByLotNo extends MongoRecord[DefactByLotNo] with ObjectIdPk[DefactByLotNo] {
   /**
    *  此資料表對應到哪個 MongoMetaRecord
    */
-  def meta = DefactByLotAndPart
+  def meta = DefactByLotNo
 
   /**
    *  工單號

@@ -55,16 +55,23 @@ class ProductionCard {
 
     val requireCount = (orderStatus.inputCount.get / 1.03).toLong
     val customer = Customer.fromPartNo(orderStatus.partNo.get)
-    val step1LossCount = DefactByLotAndPart.getCount(orderStatus.lotNo.get, orderStatus.step1machineID.get).getOrElse(0L)
-    val step2LossCount = DefactByLotAndPart.getCount(orderStatus.lotNo.get, orderStatus.step2machineID.get).getOrElse(0L)
-    val step3LossCount = DefactByLotAndPart.getCount(orderStatus.lotNo.get, orderStatus.step3machineID.get).getOrElse(0L)
-    val step4LossCount = DefactByLotAndPart.getCount(orderStatus.lotNo.get, orderStatus.step4machineID.get).getOrElse(0L)
-    val step5LossCount = DefactByLotAndPart.getCount(orderStatus.lotNo.get, orderStatus.step5machineID.get).getOrElse(0L)
+    val step1LossCount = DefactByLotNo.getCount(orderStatus.lotNo.get, orderStatus.step1machineID.get).getOrElse(0L)
+    val step2LossCount = DefactByLotNo.getCount(orderStatus.lotNo.get, orderStatus.step2machineID.get).getOrElse(0L)
+    val step3LossCount = DefactByLotNo.getCount(orderStatus.lotNo.get, orderStatus.step3machineID.get).getOrElse(0L)
+    val step4LossCount = DefactByLotNo.getCount(orderStatus.lotNo.get, orderStatus.step4machineID.get).getOrElse(0L)
+    val step5LossCount = {
+      val isCutting = orderStatus.step5machineID.get.startsWith("T")
+      isCutting match {
+        case true  => orderStatus.step3.get.toLong - orderStatus.step5.get.toLong
+        case false => InputByLotNo.getCount(orderStatus.lotNo.get, orderStatus.step5machineID.get).getOrElse(0L) - orderStatus.step5.get.toLong
+      }
+    }
+
     val step1LossRate = if (orderStatus.step1.get > 0) { f"${(step1LossCount.toDouble / orderStatus.step1.get) * 100}%.02f %%" } else {"-"}
-    val step2LossRate = if (orderStatus.step2.get > 0) { f"${(step2LossCount.toDouble / orderStatus.step2.get) * 100}%.02f %%" } else {"-"}
-    val step3LossRate = if (orderStatus.step3.get > 0) { f"${(step3LossCount.toDouble / orderStatus.step3.get) * 100}%.02f %%" } else {"-"}
-    val step4LossRate = if (orderStatus.step4.get > 0) { f"${(step4LossCount.toDouble / orderStatus.step4.get) * 100}%.02f %%" } else {"-"}
-    val step5LossRate = if (orderStatus.step5.get > 0) { f"${(step5LossCount.toDouble / orderStatus.step5.get) * 100}%.02f %%" } else {"-"}
+    val step2LossRate = if (orderStatus.step1.get > 0 && orderStatus.step2.get > 0) { f"${(step2LossCount.toDouble / orderStatus.step1.get) * 100}%.02f %%" } else {"-"}
+    val step3LossRate = if (orderStatus.step2.get > 0 && orderStatus.step3.get > 0) { f"${(step3LossCount.toDouble / orderStatus.step2.get) * 100}%.02f %%" } else {"-"}
+    val step4LossRate = if (orderStatus.step3.get > 0 && orderStatus.step4.get > 0) { f"${(step4LossCount.toDouble / orderStatus.step3.get) * 100}%.02f %%" } else {"-"}
+    val step5LossRate = if (orderStatus.step4.get > 0 && orderStatus.step5.get > 0) { f"${(step5LossCount.toDouble / orderStatus.step3.get) * 100}%.02f %%" } else {"-"}
     val totalLossCount = if (orderStatus.step5.get > 0) { (orderStatus.inputCount.get - orderStatus.step5.get).toString } else { "-" }
     val totalLossRate = if (orderStatus.step5.get > 0) { 
       val lossCount = (orderStatus.inputCount.get - orderStatus.step5.get).toDouble 
