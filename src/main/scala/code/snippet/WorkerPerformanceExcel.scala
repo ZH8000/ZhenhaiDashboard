@@ -57,9 +57,12 @@ class ProductCostEditor {
       record      <- ProductCost.find(("productCode" -> productCode))
     } yield record
 
+    val isProductCodeEmpty = productCodeBox.filterNot(_.trim.isEmpty).isEmpty
+
     oldRecord match {
       case Full(record) => S.error("此產品尺寸資料已存在，請使用下面表格編輯")
       case Empty => createNewRecord()
+      case _ if isProductCodeEmpty => S.error("請輸入產品尺吋代碼")
       case _ => S.error("無法取得資料庫資料，請稍候再試")
     }
   }
