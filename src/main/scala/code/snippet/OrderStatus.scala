@@ -50,7 +50,7 @@ class OrderStatus {
     ".cardCustomer" #> sortedCustomers.filter(existsCustomers.contains _).map { customerID =>
       val customerName = getCustomerName(customerID)
       "a [href]" #> s"/orderStatus/$customerID" &
-      "a *"      #> customerName
+      "a *"      #> s"customerName ($customerID)"
     }
   }
 
@@ -104,7 +104,11 @@ class OrderStatus {
           val step4Percent = scala.math.min(((record.step4.get.toDouble / requireCount) * 100).toLong, 100)
           val step5Percent = scala.math.min(((record.step5.get.toDouble / requireCount) * 100).toLong, 100)
 
+          val urlEncodedLotNo = urlEncode(record.lotNo.get)
+          val productionCardURL = s"/productionCard/$urlEncodedLotNo"
+
           ".lotNo *" #> record.lotNo &
+          ".lotNo [href]" #> productionCardURL &
           ".partNo *" #> record.partNo &
           ".customer *" #> customerName &
           ".inputCount *" #> record.inputCount &
