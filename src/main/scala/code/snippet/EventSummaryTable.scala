@@ -41,6 +41,8 @@ object EventSummaryTable {
       eventSummary += (defactID -> sumEventCount)
     }
 
+    val totalEventCount = eventSummary.values.sum
+
     case class EventTable(title: String, count: Long)
 
     val eventSummaryTable = eventSummary.toList.map { case(eventID, count) => 
@@ -66,7 +68,8 @@ object EventSummaryTable {
     ".label *" #> currentLevel &
     ".eventRow" #> sortedTable.map { event =>
       ".eventName *" #> event.title &
-      ".eventCount *" #> event.count
+      ".eventCount *" #> event.count &
+      ".percentage *" #> f"${event.count / totalEventCount.toDouble * 100}%.2f"
     }
  }
 }
