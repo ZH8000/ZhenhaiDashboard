@@ -34,12 +34,12 @@ object TodayOrderCSV {
       val step4Status = ProductionStatus.getStatus(orderStatusHolder, 4, record.step4Status.get)
       val step5Status = ProductionStatus.getStatus(orderStatusHolder, 5, record.step5Status.get)
 
-      s""""${record.lotNo}","${record.customer}","${record.product}","${step1Status}",""" ++
-      s""""${step2Status}", "${step3Status}", "${step4Status}", "${step5Status}""""
+      s""""${record.lotNo}","${record.partNo}","${record.customer}","${record.product}","${step1Status}",""" ++
+      s""""${step2Status}","${step3Status}","${step4Status}","${step5Status}""""
     }
 
     // CSV 標頭
-    val header = s""""製令編號","客戶","產品","加締捲取","組立","老化","選別","加工切角"""" + "\n" 
+    val header = s""""製令編號","料號","客戶","產品","加締捲取","組立","老化","選別","加工切角"""" + "\n" 
 
     // 將 lines 中的 Element 的每一個字串用 \n 連接，並加上 CSV 標頭成完一整個
     // 大的完整的 CSV 字串

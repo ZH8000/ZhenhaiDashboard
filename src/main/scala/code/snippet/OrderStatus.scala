@@ -50,7 +50,7 @@ class OrderStatus {
     ".cardCustomer" #> sortedCustomers.filter(existsCustomers.contains _).map { customerID =>
       val customerName = getCustomerName(customerID)
       "a [href]" #> s"/orderStatus/$customerID" &
-      "a *"      #> s"customerName ($customerID)"
+      "a *"      #> s"$customerName ($customerID)"
     }
   }
 
