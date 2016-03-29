@@ -109,7 +109,13 @@ function barChart(options) {
 
     // The top label, which is the actually data value
     bar.append("text").
-        attr("x", function(d, i) { return getXOffset(i) }).
+        attr("x", function(d, i) { 
+          if (i == 0 && (d.value + "").length >= 6) {
+            return 7;
+          } else {
+            return getXOffset(i);
+          }
+        }).
         attr("y", calculateTopLabelYPosition).
         attr("dy", "-15px").
         attr("dx", "30px").
@@ -117,7 +123,7 @@ function barChart(options) {
 
     // The bottom label, the name of current data
     bar.append("text").
-        attr("x", function(d, i) { return getXOffset(i) }).
+        attr("x", function(d, i) { return getXOffset(i); }).
         attr("y", options.totalHeight-10).
         attr("dx", "35px").
         text(options.extractName)
