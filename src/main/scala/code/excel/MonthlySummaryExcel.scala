@@ -7,6 +7,8 @@ import code.model._
 import com.mongodb.casbah.Imports._
 import jxl._
 import jxl.write._
+import java.util.Calendar
+import java.text.SimpleDateFormat
 
 /**
  *  「產量統計」－＞「重點統計」的 Excel 表的產生程式需要用到的公
@@ -38,6 +40,8 @@ class MonthlySummaryExcel(year: Int, month: Int, capacityRange: String, outputSt
   
   val zhenhaiDB = MongoDB.zhenhaiDB
   val maxDate = new GregorianCalendar(year, month-1, 1).getActualMaximum(Calendar.DAY_OF_MONTH)
+  val dateFormatter = new SimpleDateFormat("yyyy-MM-dd")
+
 
   /**
    *  全部φ別的標頭（只有尺吋的直徑，例如 5x11 中的 5），用來做為 column 的標頭
@@ -131,6 +135,21 @@ class MonthlySummaryExcel(year: Int, month: Int, capacityRange: String, outputSt
     sheet.mergeCells(2, 0, maxDate, 0)
   }
 
+  def getWeekDay(date: String) = {
+    val calendar = Calendar.getInstance
+    calendar.setTime(dateFormatter.parse(date))
+    val weekDay = calendar.get(Calendar.DAY_OF_WEEK)
+    weekDay match {
+      case Calendar.SUNDAY     => "日"
+      case Calendar.MONDAY     => "一"
+      case Calendar.TUESDAY    => "二"
+      case Calendar.WEDNESDAY  => "三"
+      case Calendar.THURSDAY   => "四"
+      case Calendar.FRIDAY     => "五"
+      case Calendar.SATURDAY   => "六"
+    }
+  }
+
   /**
    *  建立 Excel 報表上面該月的日期的標頭
    *
@@ -140,22 +159,26 @@ class MonthlySummaryExcel(year: Int, month: Int, capacityRange: String, outputSt
    */
   def createDateAndTargetRow(sheet: WritableSheet) {
 
+  
     // 1 號到該月最後一天
     for (date <- 1 to maxDate) {
       val fullDate = f"$year-$month%02d-$date%02d"
-      val dateTitleCell = new Label(1 + date, 1, date.toString, greyBackgroundFormat)
+
+      val dateTitleCell = new Label(1 + date, 1, fullDate, greyBackgroundFormat)
+      val weekTitleCell = new Label(1 + date, 2, getWeekDay(fullDate), greyBackgroundFormat)
       val targetCell = MonthlySummaryExcelSaved.get(fullDate, 10, capacityRange) match {
-        case None => new Blank(1 + date, 2, greenBackgroundFormat)
-        case Some(value) => new Number(1 + date, 2, value, greenBackgroundFormat)
+        case None => new Blank(1 + date, 3, greenBackgroundFormat)
+        case Some(value) => new Number(1 + date, 3, value, greenBackgroundFormat)
       }
       sheet.addCell(dateTitleCell)
+      sheet.addCell(weekTitleCell)
       sheet.addCell(targetCell)
     }
 
     // 最後一欄的總計
     val sumTitleCell = new Label(1 + maxDate + 1, 1, "總計", greyBackgroundFormat)
-    val sumTargetFormula = s"SUM(C3:${CellReferenceHelper.getColumnReference(1+maxDate)}3)"
-    val sumTargetCell = new Formula(1 + maxDate + 1, 2, sumTargetFormula, greenBackgroundFormat)
+    val sumTargetFormula = s"SUM(C3:${CellReferenceHelper.getColumnReference(1+maxDate)}4)"
+    val sumTargetCell = new Formula(1 + maxDate + 1, 3, sumTargetFormula, greenBackgroundFormat)
     sheet.addCell(sumTitleCell)
     sheet.addCell(sumTargetCell)
   }
@@ -170,13 +193,13 @@ class MonthlySummaryExcel(year: Int, month: Int, capacityRange: String, outputSt
   def createLeftPinnedTitleColumn(sheet: WritableSheet) {
 
     // 左上兩欄
-    val capacityRangeTitle = new Label(0, 2, capacityRange + "∮", greenBackgroundFormat)
-    val targetTitle = new Label(1, 2, "目標", greenBackgroundFormat)
+    val capacityRangeTitle = new Label(0, 3, capacityRange + "∮", greenBackgroundFormat)
+    val targetTitle = new Label(1, 3, "目標", greenBackgroundFormat)
     sheet.addCell(capacityRangeTitle)
     sheet.addCell(targetTitle)
 
     // φ 別
-    var rowCount: Int = 3
+    var rowCount: Int = 4
 
     allProductPrefixWithTotal.zipWithIndex.foreach { case(productPrefix, index) =>
       val startRow = (index * 7) + rowCount
@@ -206,7 +229,7 @@ class MonthlySummaryExcel(year: Int, month: Int, capacityRange: String, outputSt
       3 -> dateRange.map(date => (date, getDaily(date, 3))).toMap
     )
 
-    var rowCount = 3
+    var rowCount = 4
     var columnCount = 2
 
     def getCountHolder(machineType: Int, date: Int, productPrefix: String): Option[Long] = {
@@ -269,11 +292,11 @@ class MonthlySummaryExcel(year: Int, month: Int, capacityRange: String, outputSt
       
       val currentRow = 
         (allProductPrefix.size * 7) + // 每個 φ 別有七項，共有 allProductPrefix.size 
-        3                           + // Excel 最上方有固定三行的表頭
+        4                           + // Excel 最上方有固定四行的表頭
         rowOffset                     // 目前計算的是第幾個加總（0 = 卷取， 1 = 含浸 …… ，6 = 出貨）
 
       val dateColumnLabel = CellReferenceHelper.getColumnReference(date + 1)
-      val sumCells = (0 until allProductPrefix.size).map(i => s"${dateColumnLabel}${i * 7 + 4 + rowOffset}").mkString("+")
+      val sumCells = (0 until allProductPrefix.size).map(i => s"${dateColumnLabel}${i * 7 + 5 + rowOffset}").mkString("+")
       val formula = new Formula(date + 1, currentRow, sumCells, centeredNumberFormat)
 
       sheet.addCell(formula)
@@ -290,7 +313,7 @@ class MonthlySummaryExcel(year: Int, month: Int, capacityRange: String, outputSt
    */
   def createRowSum(sheet: WritableSheet) {
 
-    var rowCount = 3  // Excel 上方固定三行的表頭，所以從第三行（從零開始算）開始計算
+    var rowCount = 4  // Excel 上方固定三行的表頭，所以從第四行（從零開始算）開始計算
 
     for {
       productPrefix   <- allProductPrefixWithTotal
@@ -313,7 +336,7 @@ class MonthlySummaryExcel(year: Int, month: Int, capacityRange: String, outputSt
     val sheet = workbook.createSheet("重點統計", 0)
     val sheetSettings = sheet.getSettings
     sheetSettings.setDefaultRowHeight(400)
-    sheetSettings.setDefaultColumnWidth(10)
+    sheetSettings.setDefaultColumnWidth(15)
     sheetSettings.setVerticalFreeze(3)
     sheetSettings.setHorizontalFreeze(2)
 

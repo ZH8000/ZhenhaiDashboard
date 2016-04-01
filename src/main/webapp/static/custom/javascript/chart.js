@@ -48,7 +48,7 @@ function barChart(options) {
   var draw = function (selection, dataSet) {
 
     function getXOffset(index) {
-      return index * options.barWidth + index * options.barPadding;
+      return index * options.barWidth + index * options.barPadding + 30;
     }
 
     function getDataValue(data) { 
@@ -109,13 +109,7 @@ function barChart(options) {
 
     // The top label, which is the actually data value
     bar.append("text").
-        attr("x", function(d, i) { 
-          if (i == 0 && (d.value + "").length >= 6) {
-            return 7;
-          } else {
-            return getXOffset(i);
-          }
-        }).
+        attr("x", function(d, i) { return getXOffset(i);}).
         attr("y", calculateTopLabelYPosition).
         attr("dy", "-15px").
         attr("dx", "30px").
