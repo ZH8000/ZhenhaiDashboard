@@ -325,7 +325,7 @@ class WorkerPerformanceExcel(year: Int, month: Int, filepath: String) {
 
       val operationTimeFormula = s"SUM(G${startRow+1}:G${rowCount})"
       val operationTimeCell = new Formula(6, rowCount, operationTimeFormula, centeredNumberFormat)
-      val lockTimeFormula = s"SUM(H${startRow+1}:H${rowCount})"
+      val lockTimeFormula = s"SUM(G${startRow+1}:G${rowCount})"
       val lockTimeCell = new Formula(7, rowCount, operationTimeFormula, centeredNumberFormat)
 
       val kadouFormula = s"F${rowCount+1} / D${rowCount+1}"

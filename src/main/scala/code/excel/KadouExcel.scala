@@ -105,26 +105,27 @@ class KadouExcel(year: Int, month: Int, outputStream: OutputStream) {
   def createDocumentTitleRow(sheet: WritableSheet) {
 
     // 第一列的大標題
-    val month = (new SimpleDateFormat("M")).format(new Date)
     val sheetTitleCell = new Label(0, 0, s"製 造 部 各 工 程 稼 動 率 一 覽 表", centeredTitleFormat)
     val monthTitleCell = new Label(0, 1, s"月份：$month", centeredTitleFormat)
-    val targetTitleCell = new Label(6, 1, "目標", centeredTitleFormat)
+    val weekOfDayCell = new Label(1, 1, "星期", centeredTitleFormat)
+    val targetTitleCell = new Label(7, 1, "目標", centeredTitleFormat)
 
     // 第二列的子標題，每一個變數為第二列中的每一個 Column
-    val step1TitleCell = new Label(1, 2, "卷  取(%)", centeredTitleFormat)
-    val step2TitleCell = new Label(2, 2, "組  立(%)", centeredTitleFormat)
-    val step3TitleCell = new Label(3, 2, "老  化(%)", centeredTitleFormat)
-    val step4TitleCell = new Label(4, 2, "CUTTING(%)", centeredTitleFormat)
-    val step5TitleCell = new Label(5, 2, "TAPPING(%)", centeredTitleFormat)
-    val targetStep1TitleCell = new Label(6, 2, "加  締", centeredTitleFormat)
-    val targetStep2TitleCell = new Label(7, 2, "卷  取", centeredTitleFormat)
-    val targetStep3TitleCell = new Label(8, 2, "組  立", centeredTitleFormat)
-    val targetStep4TitleCell = new Label(9, 2, "老  化", centeredTitleFormat)
-    val targetStep5TitleCell = new Label(10, 2, "TAPPING", centeredTitleFormat)
-    val targetStep6TitleCell = new Label(11, 2, "CUTTING", centeredTitleFormat)
+    val step1TitleCell = new Label(2, 2, "卷  取(%)", centeredTitleFormat)
+    val step2TitleCell = new Label(3, 2, "組  立(%)", centeredTitleFormat)
+    val step3TitleCell = new Label(4, 2, "老  化(%)", centeredTitleFormat)
+    val step4TitleCell = new Label(5, 2, "CUTTING(%)", centeredTitleFormat)
+    val step5TitleCell = new Label(6, 2, "TAPPING(%)", centeredTitleFormat)
+    val targetStep1TitleCell = new Label(7, 2, "加  締", centeredTitleFormat)
+    val targetStep2TitleCell = new Label(8, 2, "卷  取", centeredTitleFormat)
+    val targetStep3TitleCell = new Label(9, 2, "組  立", centeredTitleFormat)
+    val targetStep4TitleCell = new Label(10, 2, "老  化", centeredTitleFormat)
+    val targetStep5TitleCell = new Label(11, 2, "TAPPING", centeredTitleFormat)
+    val targetStep6TitleCell = new Label(12, 2, "CUTTING", centeredTitleFormat)
 
     sheet.addCell(sheetTitleCell)
     sheet.addCell(monthTitleCell)
+    sheet.addCell(weekOfDayCell)
     sheet.addCell(targetTitleCell)
     sheet.addCell(step1TitleCell)
     sheet.addCell(step2TitleCell)
@@ -138,7 +139,7 @@ class KadouExcel(year: Int, month: Int, outputStream: OutputStream) {
     sheet.addCell(targetStep5TitleCell)
     sheet.addCell(targetStep6TitleCell)
 
-    sheet.mergeCells(0, 0, 5, 0)
+    sheet.mergeCells(0, 0, 6, 0)
   }
 
   /**
@@ -225,46 +226,61 @@ class KadouExcel(year: Int, month: Int, outputStream: OutputStream) {
     
     // 整份 Excel 表格的標頭佔了兩列
     val rowOffset = 2
+    val dateFormatter = new SimpleDateFormat("yyyy-MM-dd")
+    val calendar = Calendar.getInstance
 
     // 從該月 1 號到最後一天，每一天都會有相對應的一個 row
     (1 to maxDate).foreach { date =>
 
-      val dateTitle = new Label(0, rowOffset + date, date.toString, centeredTitleFormat)
-      val step1TargetTitle = new Label(6, rowOffset + date, "85.00", centeredTitleFormat)
-      val step2TargetTitle = new Label(7, rowOffset + date, "85.00", centeredTitleFormat)
-      val step3TargetTitle = new Label(8, rowOffset + date, "85.00", centeredTitleFormat)
-      val step4TargetTitle = new Label(9, rowOffset + date, "85.00", centeredTitleFormat)
-      val step5TargetTitle = new Label(10, rowOffset + date, "85.00", centeredTitleFormat)
-      val step6TargetTitle = new Label(11, rowOffset + date, "85.00", centeredTitleFormat)
+      val dateTime = dateFormatter.parse(f"$year%02d-$month%02d-$date%02d")
+      calendar.setTime(dateTime)
+      val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) match {
+        case Calendar.SUNDAY => "日"
+        case Calendar.MONDAY => "一"
+        case Calendar.TUESDAY => "二"
+        case Calendar.WEDNESDAY => "三"
+        case Calendar.THURSDAY => "四"
+        case Calendar.FRIDAY => "五"
+        case Calendar.SATURDAY => "六"
+      }
+      val dateTitle = new Label(0, rowOffset + date, f"$year%02d-$month%02d-$date%02d", centeredTitleFormat)
+      val dayOfWeekTitle = new Label(1, rowOffset + date, dayOfWeek, centeredTitleFormat)
+      val step1TargetTitle = new Label(7, rowOffset + date, "85.00", centeredTitleFormat)
+      val step2TargetTitle = new Label(8, rowOffset + date, "85.00", centeredTitleFormat)
+      val step3TargetTitle = new Label(9, rowOffset + date, "85.00", centeredTitleFormat)
+      val step4TargetTitle = new Label(10, rowOffset + date, "85.00", centeredTitleFormat)
+      val step5TargetTitle = new Label(11, rowOffset + date, "85.00", centeredTitleFormat)
+      val step6TargetTitle = new Label(12, rowOffset + date, "85.00", centeredTitleFormat)
 
       val (step1Kadou, step2Kadou, step3Kadou, step4Kadou, step5Kadou) = getData(date)
 
       val step1KadouCell = step1Kadou match {
-        case Some(value) => new Number(1, rowOffset + date, value, centeredPercentFormat)
-        case None  => new Label(1, rowOffset + date, "請先設定製造應生產數", centeredPercentFormat)
-      }
-
-      val step2KadouCell = step2Kadou match {
         case Some(value) => new Number(2, rowOffset + date, value, centeredPercentFormat)
         case None  => new Label(2, rowOffset + date, "請先設定製造應生產數", centeredPercentFormat)
       }
 
-      val step3KadouCell = step3Kadou match {
+      val step2KadouCell = step2Kadou match {
         case Some(value) => new Number(3, rowOffset + date, value, centeredPercentFormat)
         case None  => new Label(3, rowOffset + date, "請先設定製造應生產數", centeredPercentFormat)
       }
 
-      val step4KadouCell = step4Kadou match {
+      val step3KadouCell = step3Kadou match {
         case Some(value) => new Number(4, rowOffset + date, value, centeredPercentFormat)
         case None  => new Label(4, rowOffset + date, "請先設定製造應生產數", centeredPercentFormat)
       }
 
-      val step5KadouCell = step5Kadou match {
+      val step4KadouCell = step4Kadou match {
         case Some(value) => new Number(5, rowOffset + date, value, centeredPercentFormat)
         case None  => new Label(5, rowOffset + date, "請先設定製造應生產數", centeredPercentFormat)
       }
 
+      val step5KadouCell = step5Kadou match {
+        case Some(value) => new Number(6, rowOffset + date, value, centeredPercentFormat)
+        case None  => new Label(6, rowOffset + date, "請先設定製造應生產數", centeredPercentFormat)
+      }
+
       sheet.addCell(dateTitle)
+      sheet.addCell(dayOfWeekTitle)
       sheet.addCell(step1TargetTitle)
       sheet.addCell(step2TargetTitle)
       sheet.addCell(step3TargetTitle)

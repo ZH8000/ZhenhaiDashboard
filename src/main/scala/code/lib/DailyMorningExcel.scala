@@ -16,7 +16,8 @@ object DailyMorningExcel {
     "12x15", "12x20", "12x25", "12x30", "12x35", "12x40", "12x45",
     "12x50", "16x20", "16x25", "16x30", "16x35", "16x40", "18x16",
     "18x20", "18x25", "18x30", "18x35", "18x40", "18x45", "18x50",
-    "20x40", "22x40"
+    "20x40", "22x40", "8x18", "8x12", "12x31", "8x13", "10x17",
+    "12x35", "8x16", "10x18", "8x17", "10x31", "8x18"
   )
 
   def getAllProducts = {
@@ -163,7 +164,7 @@ class DailyMorningExcel(year: Int, month: Int, outputStream: OutputStream) {
   }
 
   def createDocumentTitleRow(sheet: WritableSheet) {
-    val sheetTitleCell = new Label(4, 0, s"每日晨間檢討成積表", centeredTitleFormat)
+    val sheetTitleCell = new Label(4, 0, s"每日晨間檢討成績表", centeredTitleFormat)
     sheet.addCell(sheetTitleCell)
     sheet.mergeCells(4, 0, 20, 0)
   }
@@ -373,7 +374,7 @@ class DailyMorningExcel(year: Int, month: Int, outputStream: OutputStream) {
 
     (1 to maxDate).foreach { date =>
       val row = date + rowOffset
-      val titleCell = new Label(0, row, f"$month%02d 月 $date%02d 日", centeredTitleFormat)
+      val titleCell = new Label(0, row, f"$year/$month%02d/$date%02d", centeredTitleFormat)
       val plannedCellsLoc = columnStartList.map(columnStart => CellReferenceHelper.getCellReference(columnStart, row))
       val countQtyCellsLoc = columnStartList.map(columnStart => CellReferenceHelper.getCellReference(columnStart + 1, row))
       val diffCellsLoc = columnStartList.map(columnStart => CellReferenceHelper.getCellReference(columnStart + 2, row))
