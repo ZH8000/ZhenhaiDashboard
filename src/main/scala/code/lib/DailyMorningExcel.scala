@@ -2,11 +2,12 @@ package code.lib
 
 import java.io.OutputStream
 import java.util.{Calendar, GregorianCalendar}
-
+import java.text.SimpleDateFormat
 import code.model._
 import com.mongodb.casbah.Imports._
 import jxl._
 import jxl.write._
+
 
 object DailyMorningExcel {
 
@@ -160,13 +161,13 @@ class DailyMorningExcel(year: Int, month: Int, outputStream: OutputStream) {
   lazy val allProducts = DailyMorningExcel.getAllProducts
   
   private lazy val columnAfterAllProducts = {
-    ((allProducts.size) * 3) + 4
+    ((allProducts.size) * 3) + 5
   }
 
   def createDocumentTitleRow(sheet: WritableSheet) {
-    val sheetTitleCell = new Label(4, 0, s"每日晨間檢討成績表", centeredTitleFormat)
+    val sheetTitleCell = new Label(5, 0, s"每日晨間檢討成績表", centeredTitleFormat)
     sheet.addCell(sheetTitleCell)
-    sheet.mergeCells(4, 0, 20, 0)
+    sheet.mergeCells(5, 0, 20, 0)
   }
 
   def createHandInColumn(sheet: WritableSheet) {
@@ -370,20 +371,35 @@ class DailyMorningExcel(year: Int, month: Int, outputStream: OutputStream) {
   def createLeftPinnedMatrix(sheet: WritableSheet) {
 
     val rowOffset = 4
-    val columnStartList = (0 until allProducts.size).map(_  * 3 + 4)
+    val columnStartList = (0 until allProducts.size).map(_  * 3 + 5)
+    val dateFormatter = new SimpleDateFormat("yyyy-MM-dd")
+    val calendar = Calendar.getInstance
 
     (1 to maxDate).foreach { date =>
       val row = date + rowOffset
+      val dateTime = dateFormatter.parse(f"$year-$month%02d-$date%02d")
+      calendar.setTime(dateTime)
+      val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) match {
+        case Calendar.SUNDAY     => "日"
+        case Calendar.MONDAY     => "一"
+        case Calendar.TUESDAY    => "二"
+        case Calendar.WEDNESDAY  => "三"
+        case Calendar.THURSDAY   => "四"
+        case Calendar.FRIDAY     => "五"
+        case Calendar.SATURDAY   => "六"
+      }
       val titleCell = new Label(0, row, f"$year/$month%02d/$date%02d", centeredTitleFormat)
+      val dayOfWeekTitle = new Label(1, row, dayOfWeek, centeredTitleFormat)
       val plannedCellsLoc = columnStartList.map(columnStart => CellReferenceHelper.getCellReference(columnStart, row))
       val countQtyCellsLoc = columnStartList.map(columnStart => CellReferenceHelper.getCellReference(columnStart + 1, row))
       val diffCellsLoc = columnStartList.map(columnStart => CellReferenceHelper.getCellReference(columnStart + 2, row))
 
-      val plannedFormula = new Formula(1, row, plannedCellsLoc.mkString(" + "), centeredYellowNumberFormat)
-      val countQtyFormula = new Formula(2, row, countQtyCellsLoc.mkString(" + "), centeredGreenNumberFormat)
-      val diffFormula = new Formula(3, row, diffCellsLoc.mkString(" + "), centeredBlueNumberFormat)
+      val plannedFormula = new Formula(2, row, plannedCellsLoc.mkString(" + "), centeredYellowNumberFormat)
+      val countQtyFormula = new Formula(3, row, countQtyCellsLoc.mkString(" + "), centeredGreenNumberFormat)
+      val diffFormula = new Formula(4, row, diffCellsLoc.mkString(" + "), centeredBlueNumberFormat)
 
       sheet.addCell(titleCell)
+      sheet.addCell(dayOfWeekTitle)
       sheet.addCell(plannedFormula)
       sheet.addCell(countQtyFormula)
       sheet.addCell(diffFormula)
@@ -393,21 +409,21 @@ class DailyMorningExcel(year: Int, month: Int, outputStream: OutputStream) {
   }
 
   def createLeftPinnedColumnHeader(sheet: WritableSheet) {
-    val planned = new Label(1, 1, "計劃生產量", centeredTitleFormat)
-    val produced = new Label(2, 1, "實際組立量", centeredTitleFormat)
-    val diff = new Label(3, 1, "差異量", centeredTitleFormat)
+    val planned = new Label(2, 1, "計劃生產量", centeredTitleFormat)
+    val produced = new Label(3, 1, "實際組立量", centeredTitleFormat)
+    val diff = new Label(4, 1, "差異量", centeredTitleFormat)
 
     sheet.addCell(planned)
     sheet.addCell(produced)
     sheet.addCell(diff)
-    sheet.mergeCells(1, 1, 1, 3)
     sheet.mergeCells(2, 1, 2, 3)
     sheet.mergeCells(3, 1, 3, 3)
+    sheet.mergeCells(4, 1, 4, 3)
   }
 
   def createHeaderForEachProduct(sheet: WritableSheet) {
     
-    val offsetForPinnedColumn = 4
+    val offsetForPinnedColumn = 5
 
     allProducts.zipWithIndex.foreach { case (product, index) =>
       val columnIndex = index * 3 + offsetForPinnedColumn
@@ -481,7 +497,7 @@ class DailyMorningExcel(year: Int, month: Int, outputStream: OutputStream) {
   def createMatrix(sheet: WritableSheet) {
 
     val rowOffset = 4
-    val columnOffset = 4
+    val columnOffset = 5
 
     for {
       (product, index) <- allProducts.zipWithIndex
@@ -528,12 +544,12 @@ class DailyMorningExcel(year: Int, month: Int, outputStream: OutputStream) {
       sheet.addCell(formulaCell)
     }
 
-    val columnFor102 = (allProducts.size + 1) * 3 + 5
-    val columnFor118 = (allProducts.size + 1) * 3 + 6
-    val columnForYieldRate = (allProducts.size + 1) * 3 + 8
+    val columnFor102 = (allProducts.size + 1) * 3 + 6
+    val columnFor118 = (allProducts.size + 1) * 3 + 7
+    val columnForYieldRate = (allProducts.size + 1) * 3 + 9
 
-    val columnForHandIn = (allProducts.size + 1) * 3 + 1
-    val columnForHandOut = (allProducts.size + 1) * 3 + 4
+    val columnForHandIn = (allProducts.size + 1) * 3 + 2
+    val columnForHandOut = (allProducts.size + 1) * 3 + 5
 
     val formulaFor102 = 
       s"${CellReferenceHelper.getCellReference(columnFor102, 4)} + " +
@@ -562,7 +578,7 @@ class DailyMorningExcel(year: Int, month: Int, outputStream: OutputStream) {
     sheetSettings.setDefaultRowHeight(400)
     sheetSettings.setDefaultColumnWidth(15)
     sheetSettings.setVerticalFreeze(5)
-    sheetSettings.setHorizontalFreeze(4)
+    sheetSettings.setHorizontalFreeze(5)
 
     createDocumentTitleRow(sheet)
     createLeftPinnedColumnHeader(sheet)
