@@ -1,0 +1,52 @@
+<div data-lift="Surround?with=default;at=content">
+  <div class="center aligned one column ui grid">
+    <div class="ui fixedColumn column">
+      <div class="ui two steps">
+        <a href="#" class="ui active step">損耗率查詢</a>
+        <a href="#" class="ui step">查詢結果</a>
+      </div>
+    </div>
+    <div class="ui below column" >
+      <div class="ui page grid">
+        <div class="column">
+          <div>
+            <div>
+              <div data-lift="lift:msgs?showAll=true">
+                <lift:error_msg class="ui red sys message"></lift:error_msg>
+                <lift:warning_msg class="ui yellow sys message"></lift:warning_msg>
+                <lift:notice_msg class="ui green sys message"></lift:notice_msg>
+              </div>
+              <form action="/lossRate/result" class="ui form" method="get">
+                <div class="field">
+                  <label>開始日期</label>
+                  <input placeholder="開始日期" type="text" id="startDate" name="startDate">
+                </div>
+                <div class="field">
+                  <label>結束日期</label>
+                  <input placeholder="開始日期" type="text" id="endDate" name="endDate">
+                </div>
+                <div class="field">
+                  <label>製程</label>
+                  <select class="ui dropdown" name="machineType" id="machineType">
+                    <option value="1" selected>加締</option>
+                    <option value="2">組立</option>
+                    <option value="3">老化</option>
+                    <option value="4">選別</option>
+                    <option value="5">加工切腳</option>
+                  </select>
+                </div>
+                <button type="submit">查詢</button>
+
+                <script>
+                  $('#startDate').datepicker({dateFormat: 'yy-mm-dd'});
+                  $('#endDate').datepicker({dateFormat: 'yy-mm-dd'});
+                  $('#machineType').dropdown();
+                </script>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

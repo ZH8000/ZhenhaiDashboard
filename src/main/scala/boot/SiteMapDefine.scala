@@ -427,6 +427,17 @@ object SiteMapDefine {
       >> needLogin
       >> hasPermission(PermissionContent.ReportOrderStatus),
 
+    Menu("LossRateQueryIndex") / "lossRate"  / "index"
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportOrderStatus),
+    Menu("LossRateResult") / "lossRate"  / "result"
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportOrderStatus),
+    Menu("LossRateResultDetial") / "lossRate"  / "detail"
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportOrderStatus),
+
+
     Menu("Announcement") / "management" / "announcement" 
       >> needLogin
       >> hasPermission(PermissionContent.ManagementAnnouncement)

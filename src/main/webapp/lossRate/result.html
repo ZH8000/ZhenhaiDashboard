@@ -1,0 +1,49 @@
+<div data-lift="Surround?with=default;at=content">
+  <div class="center aligned one column ui grid">
+    <div class="ui fixedColumn column">
+      <div class="ui two steps">
+        <a href="/lossRate/" class="ui active step">損耗率查詢</a>
+        <a href="#" class="ui active step">查詢結果</a>
+      </div>
+    </div>
+    <div class="ui below column" >
+      <div class="ui page grid">
+        <div class="column">
+          <div>
+            <div data-lift="LossRateQueryResult">
+              <div data-lift="lift:msgs?showAll=true">
+                <lift:error_msg class="ui red sys message"></lift:error_msg>
+                <lift:warning_msg class="ui yellow sys message"></lift:warning_msg>
+                <lift:notice_msg class="ui green sys message"></lift:notice_msg>
+              </div>
+              <div>
+                <table class="ui celled striped table">
+                  <thead>
+                    <tr>
+                      <th class="center aligned">機台</th>
+                      <th class="center aligned">良品數</th>
+                      <th class="center aligned">不良數</th>
+                      <th class="center aligned">損耗率 (%)</th>
+                      <th class="center aligned">損耗金額 (RMB)</th>
+                      <th class="center aligned">損耗排名</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="dataRow">
+                      <td class="center aligned"><a href="#" class="machineID">A01</a></td>
+                      <td class="center aligned countQty">10000</td>
+                      <td class="center aligned badQty">20000</td>
+                      <td class="center aligned lossRate">4.4</td>
+                      <td class="center aligned lossMoney">300</td>
+                      <td class="center aligned order">1</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
