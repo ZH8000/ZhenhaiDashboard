@@ -433,6 +433,10 @@ object SiteMapDefine {
     Menu("LossRateResult") / "lossRate"  / "result"
       >> needLogin
       >> hasPermission(PermissionContent.ReportOrderStatus),
+    Menu("LossRateResultDetial") / "lossRate"  / "detail"
+      >> needLogin
+      >> hasPermission(PermissionContent.ReportOrderStatus),
+
 
     Menu("Announcement") / "management" / "announcement" 
       >> needLogin

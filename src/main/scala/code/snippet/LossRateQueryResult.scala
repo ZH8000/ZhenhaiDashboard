@@ -10,16 +10,27 @@ import scala.xml.NodeSeq
 import java.text.SimpleDateFormat
 import java.util.Date
 import scala.util.Try
+import org.joda.time.Days
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.LocalDate
+
+
 
 class LossRateQueryResult {
 
   case class RawData(machineID: String, countQty: Long, badQty: Long, lossMoney: BigDecimal)
   case class ResultTableRow(machineID: String, countQty: Long, badQty: Long, lossRate: Double, lossMoney: BigDecimal)
 
+  def getDaysBetween(firstDateString: String, secondDateString: String): Int = {
+    val dateFormatter = DateTimeFormat.forPattern("yyyy-MM-dd")
+    val firstDate = dateFormatter.parseDateTime(firstDateString)
+    val secondDate = dateFormatter.parseDateTime(secondDateString)
+    Days.daysBetween(new LocalDate(secondDate), new LocalDate(firstDate)).getDays.abs
+  }
+
   def getSortedLossRate(startDate: String, endDate: String, machineType: String): List[ResultTableRow] = {
     val table = MongoDB.zhenhaiDB("dailyLossRate")
-    //val rawData = table.find($and("shiftDate" $gte startDate $lte endDate, "machineType" $eq machineType)).toList
-    val rawMongoDBRecord = table.find($and("shiftDate" $gte startDate $lte endDate)).toList
+    val rawMongoDBRecord = table.find($and("shiftDate" $gte startDate $lte endDate, "machineType" $eq machineType.toInt)).toList
     val rawDataList = rawMongoDBRecord.map { record =>
       val fullProductCode = Try{record.get("partNo").toString.substring(10, 15)}.getOrElse("Unknown")
       val badQty = Try{record.get("event_qty").toString.toLong}.getOrElse(0L)
@@ -45,10 +56,12 @@ class LossRateQueryResult {
   def showDataTable(tableData: List[ResultTableRow]) = {
     val startDate = S.param("startDate").getOrElse("")
     val endDate = S.param("endDate").getOrElse("")
+    val machineType = S.param("machineType").getOrElse("")
+
     tableData.zipWithIndex.map { case (record, index) =>
       val lossRatePercent = (record.lossRate * 100)
       ".machineID *" #> record.machineID &
-      ".machineID [href]" #> s"/lossRate/detial?machineID=${record.machineID}&startDate=$startDate&endDate=$endDate" &
+      ".machineID [href]" #> s"/lossRate/detail?machineType=$machineType&machineID=${record.machineID}&startDate=$startDate&endDate=$endDate" &
       ".countQty *"  #> record.countQty &
       ".badQty *"    #> record.badQty &
       ".lossRate *"  #> "%.02f".format(lossRatePercent) &
@@ -57,21 +70,27 @@ class LossRateQueryResult {
     }
   }
 
+
   def render = {
     val startDateHolder = S.param("startDate")
     val endDateHolder = S.param("endDate")
     val machineTypeHolder = S.param("machineType")
 
     val resultData = for {
-      startDate <- startDateHolder.filter(_.trim.size > 0)
-      endDate <- endDateHolder.filter(_.trim.size > 0)
+      startDate   <- startDateHolder.filter(_.trim.size > 0)
+      endDate     <- endDateHolder.filter(_.trim.size > 0)
       machineType <- machineTypeHolder.filter(_.trim.size > 0)
     } yield {
-      getSortedLossRate(startDate, endDate, machineType)
+      if (getDaysBetween(startDate, endDate) > 31) {
+        S.error("僅提供開始與結束日期為一個月內的範圍的查詢。")
+        Nil
+      } else {
+        getSortedLossRate(startDate, endDate, machineType)
+      }
     }
 
     resultData match {
-      case Full(tableData) => 
+      case Full(tableData) if tableData.size > 0 => 
         ".dataRow" #> showDataTable(tableData)
       case _ =>
         S.error("查無資料，請重新設定查詢條件。")
