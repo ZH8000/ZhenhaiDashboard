@@ -43,6 +43,8 @@ class Dashboard {
   def aliveLink = {
     if (S.hostAndPath contains "221.4.141.146") {
       "#aliveButton [href]" #> "http://221.4.141.146:8080/pic" 
+    } else if (S.hostAndPath contains "218.4.250.102") {
+      "#aliveButton [href]" #> "http://218.4.250.102:8080/pic" 
     } else {
       "#aliveButton [href]" #> "#" &
       "#aliveButton [class+]" #> "disabled"
