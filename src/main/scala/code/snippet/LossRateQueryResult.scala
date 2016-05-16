@@ -115,7 +115,7 @@ class LossRateQueryResult {
       ".badQty *"    #> record.badQty &
       ".lossRate *"  #> "%.02f".format(lossRatePercent) &
       ".lossMoney *" #> record.lossMoney &
-      ".order *"     #> index
+      ".order *"     #> (index + 1) // zipWithIndex 是從 0 開始，因此要加 1 第一筆才會顯示「1」
     }
   }
 
