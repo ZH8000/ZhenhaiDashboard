@@ -18,6 +18,8 @@ class TodayOrder {
   val dateFormatter = new SimpleDateFormat("yyyy-MM-dd")
   val customers = Customer.getCustomers
 
+  println(customers)
+
   /**
    *  今日工單的資料
    */ 
@@ -50,12 +52,13 @@ class TodayOrder {
           val step5Status = ProductionStatus.getStatus(orderStatusHolder, 5, record.step5Status.get)
           val urlEncodedLotNo = urlEncode(record.lotNo.get)
           val productionCardURL = s"/productionCard/$urlEncodedLotNo"
-          val customer = customers.get(record.customerCode).get
+          val customerCode = record.customerCode
+          val customerTitle = customers.get(customerCode).getOrElse("Unknown")
 
           ".lotNo *" #> record.lotNo &
           ".lotNo [href]" #> productionCardURL &
           ".partNo *" #> record.partNo &
-          ".customer *" #> customer &
+          ".customer *" #> customerTitle &
           ".product *" #> record.product &
           ".step1Status *" #> step1Status &
           ".step2Status *" #> step2Status &
