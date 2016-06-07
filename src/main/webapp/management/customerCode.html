@@ -1,0 +1,55 @@
+<div data-lift="Surround?with=default;at=content">
+  <div class="ui one column grid">
+
+    <div class="ui fixedColumn center aligned column">
+      <div class="ui two steps">
+        <a href="/management/" class="ui step active">網站管理</a>
+        <a href="/management/customerCode" class="ui step active">客戶代碼設定</a>
+      </div>
+    </div>
+  </div>
+  <div class="ui one column page grid">
+    <div class="column" style="margin-top: 3em;">
+      <div data-lift="lift:msgs?showAll=true">
+        <lift:error_msg class="ui red sys message"></lift:error_msg>
+        <lift:warning_msg class="ui yellow sys message"></lift:warning_msg>
+        <lift:notice_msg class="ui green sys message"></lift:notice_msg>
+      </div>
+
+      <form style="margin-top: 1em;" data-lift="CustomerCodeEditor.editor?form=post">
+        <table class="ui celled stripped table">
+          <thead>
+            <tr><th>客戶代碼</th><th>客戶名稱</th><th></th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input type="text" class="ui input customerCode"/></td>
+              <td><input type="text" class="ui input customerTitle"/></td>
+              <td><input type="submit" class="ui submit" value="新增"/></td>
+            </tr>
+          </tbody>
+        </table>
+      </form>
+    </div>
+  </div>
+
+  <div class="ui one column page grid">
+    <div class="column">
+      <table id="dataTable" class="ui celled stripped table" data-lift="CustomerCodeEditor.table">
+        <thead>
+          <tr><th>客戶代碼</th><th>客戶名稱</th><th></th></tr>
+        </thead>
+        <tbody>
+          <tr class="dataRow">
+            <td><span class="customerCode">1234</span></td>
+            <td><input class="customerTitle" type="text" value="客戶名稱" /></td>
+            <td><button class="deleteButton ui primary delete">刪除</button></td>
+          </tr>
+        </tbody>
+      </table>
+      <script>
+         $('#dataTable').floatThead({scrollingTop: 105});
+      </script>
+    </div>
+  </div>
+</div>

@@ -360,6 +360,9 @@ object SiteMapDefine {
     Menu("Managemen9") / "management" / "productCost" 
       >> needLogin
       >> hasPermission(PermissionContent.ManagementAccount),
+    Menu("Managemen9") / "management" / "customerCode" 
+      >> needLogin
+      >> hasPermission(PermissionContent.ManagementAccount),
 
     Menu("Workers") / "workers" / "index" 
       >> needLogin

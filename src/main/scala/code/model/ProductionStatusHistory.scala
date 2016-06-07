@@ -73,9 +73,9 @@ class ProductionStatusHistory extends MongoRecord[ProductionStatusHistory] with 
   val shiftDate = new StringField(this, 10)
 
   /**
-   *  從料號取得的客戶名稱
+   *  從料號取得的客戶代碼
    */
-  def customer = Customer.fromPartNo(partNo.get)
+  def customerCode = Customer.fromPartNo(partNo.get)
 
 
   /**

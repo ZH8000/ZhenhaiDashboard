@@ -2,6 +2,7 @@ package code.snippet
 
 import java.text.SimpleDateFormat
 
+import code.lib._
 import code.model._
 import net.liftweb.http.S
 import net.liftweb.util.Helpers._
@@ -14,6 +15,7 @@ import scala.xml.NodeSeq
 class ProductionStatusHistory {
 
   val dateFormatter = new SimpleDateFormat("yyyy-MM-dd")
+  val customers = Customer.getCustomers
 
   /**
    *  從 URL 取出的查詢日期（工班日期）
@@ -56,7 +58,7 @@ class ProductionStatusHistory {
           ".lotNo [href]" #> productionCardURL &
           ".lotNo *" #> record.lotNo &
           ".partNo *" #> record.partNo &
-          ".customer *" #> record.customer &
+          ".customer *" #> customers.get(record.customerCode).getOrElse("Unknown") &
           ".product *" #> record.product &
           ".step1Status *" #> step1Status &
           ".step2Status *" #> step2Status &

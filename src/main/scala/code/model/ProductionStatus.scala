@@ -111,9 +111,9 @@ class ProductionStatus extends MongoRecord[ProductionStatus] with ObjectIdPk[Pro
   val lastUpdatedShifted = new StringField(this, 10)
 
   /**
-   *  從料號取出的客戶名稱
+   *  從料號取出的客戶代碼
    */
-  def customer = Customer.fromPartNo(partNo.get)
+  def customerCode = Customer.fromPartNo(partNo.get)
 
   /**
    *  從料號中取得 φ 別

@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 import code.model._
+import code.lib._
 import net.liftweb.http.S
 import net.liftweb.util.Helpers._
 
@@ -15,6 +16,7 @@ import scala.xml.NodeSeq
 class TodayOrder {
 
   val dateFormatter = new SimpleDateFormat("yyyy-MM-dd")
+  val customers = Customer.getCustomers
 
   /**
    *  今日工單的資料
@@ -48,11 +50,12 @@ class TodayOrder {
           val step5Status = ProductionStatus.getStatus(orderStatusHolder, 5, record.step5Status.get)
           val urlEncodedLotNo = urlEncode(record.lotNo.get)
           val productionCardURL = s"/productionCard/$urlEncodedLotNo"
+          val customer = customers.get(record.customerCode).get
 
           ".lotNo *" #> record.lotNo &
           ".lotNo [href]" #> productionCardURL &
           ".partNo *" #> record.partNo &
-          ".customer *" #> record.customer &
+          ".customer *" #> customer &
           ".product *" #> record.product &
           ".step1Status *" #> step1Status &
           ".step2Status *" #> step2Status &

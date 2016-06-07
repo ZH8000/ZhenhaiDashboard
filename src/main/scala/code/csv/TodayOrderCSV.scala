@@ -3,6 +3,7 @@ package code.csv
 import java.text.SimpleDateFormat
 
 import code.model._
+import code.lib._
 import net.liftweb.util.Helpers._
 
 /**
@@ -11,6 +12,7 @@ import net.liftweb.util.Helpers._
 object TodayOrderCSV {
 
   val dateFormatter = new SimpleDateFormat("yyyy-MM-dd")
+  val customers = Customer.getCustomers
 
   /**
    *  今日工單的資料的 CSV 檔
@@ -33,8 +35,9 @@ object TodayOrderCSV {
       val step3Status = ProductionStatus.getStatus(orderStatusHolder, 3, record.step3Status.get)
       val step4Status = ProductionStatus.getStatus(orderStatusHolder, 4, record.step4Status.get)
       val step5Status = ProductionStatus.getStatus(orderStatusHolder, 5, record.step5Status.get)
+      val customer = customers.get(record.customerCode).getOrElse("Unknown")
 
-      s""""${record.lotNo}","${record.partNo}","${record.customer}","${record.product}","${step1Status}",""" ++
+      s""""${record.lotNo}","${record.partNo}","${customer}","${record.product}","${step1Status}",""" ++
       s""""${step2Status}","${step3Status}","${step4Status}","${step5Status}""""
     }
 

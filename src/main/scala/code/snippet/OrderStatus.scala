@@ -15,13 +15,15 @@ import scala.xml.NodeSeq
  */
 class OrderStatus {
 
+  val customers = Customer.getCustomers
+
   /**
    *  從客戶代碼取得客戶名稱
    *
    *  @param      customerID        料號裡的四碼客戶代碼
    *  @return                       客戶名稱                      
    */
-  def getCustomerName(customerID: String) = Customer.customers.get(customerID).getOrElse("Unknown")
+  def getCustomerName(customerID: String) = customers.get(customerID).getOrElse("Unknown")
 
   /**
    *  訂單狀態
@@ -42,8 +44,8 @@ class OrderStatus {
   def customerList = {
 
     val sortedCustomers = 
-      Customer.customers.keys.toList
-              .sortWith((customerID1, customerID2) => getCustomerName(customerID1) < getCustomerName(customerID2))
+      customers.keys.toList
+               .sortWith((customerID1, customerID2) => getCustomerName(customerID1) < getCustomerName(customerID2))
 
     val existsCustomers = OrderStatus.useColl(collection => collection.distinct("customer")).toList
 

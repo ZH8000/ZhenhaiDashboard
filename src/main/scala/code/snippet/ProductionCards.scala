@@ -15,6 +15,7 @@ import scala.xml.NodeSeq
 class ProductionCard {
 
   private var searchBox: String = _     // 用來記錄網頁上工單號搜尋框的內容
+  private val customers = Customer.getCustomers
 
   /**
    *  用來顯示「查無此製令編號」的錯誤訊息，並隱藏 HTML 中 class="dataBlock" 元素下的所有子節點
@@ -54,7 +55,8 @@ class ProductionCard {
   def renderTable(orderStatus: code.model.OrderStatus) = {
 
     val requireCount = (orderStatus.inputCount.get / 1.03).toLong
-    val customer = Customer.fromPartNo(orderStatus.partNo.get)
+    val customerCode = Customer.fromPartNo(orderStatus.partNo.get)
+    val customer = customers.get(customerCode).getOrElse("Unknown")
     val step1LossCount = DefactByLotNo.getCount(orderStatus.lotNo.get, orderStatus.step1machineID.get).getOrElse(0L)
     val step2LossCount = DefactByLotNo.getCount(orderStatus.lotNo.get, orderStatus.step2machineID.get).getOrElse(0L)
     val step3LossCount = DefactByLotNo.getCount(orderStatus.lotNo.get, orderStatus.step3machineID.get).getOrElse(0L)
