@@ -168,4 +168,11 @@ object CsvRestAPI extends RestHelper {
   serve("api" / "csv" / "orderStatus" prefix {
     case Req(date :: Nil, "csv", GetRequest) => toCSVResponse(OrderStatusCSV(date))
   })
+
+  // 定義 /api/csv/csv/lossRate/ 的網址，用在網頁上的「訂單狀態」下的 Export CSV 按鈕。
+  serve("api" / "csv" / "lossRate" prefix {
+    case Req("result" :: startDate :: endDate :: machineType :: Nil, "csv", GetRequest) => toCSVResponse(LossRate(startDate, endDate, machineType))
+    case Req("detail" :: startDate :: endDate :: machineType :: machineID :: Nil, "csv", GetRequest) => toCSVResponse(LossRate(startDate, endDate, machineType, machineID))
+  })
+
 }

@@ -11,11 +11,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import scala.util.Try
 
-/**
- *  用來顯示「損耗查詢」結果第二頁機台每日結果的 Snippet
- */
-class LossRateQueryDetial {
-
+object LossRateQueryDetial {
   /**
    *  用來代表 MongoDB 查詢結果的原始資料
    *
@@ -78,6 +74,15 @@ class LossRateQueryDetial {
     // 最後以 shiftDate 做降冪排序
     aggreatedData.toList.sortWith(_.shiftDate < _.shiftDate)
   }
+
+}
+
+/**
+ *  用來顯示「損耗查詢」結果第二頁機台每日結果的 Snippet
+ */
+class LossRateQueryDetial {
+
+  import LossRateQueryDetial._
 
   /**
    *  顯示表格的 Binding
@@ -144,8 +149,8 @@ class LossRateQueryDetial {
     ".machineType *"  #> machineTypeDescriptionHolder &
     ".machineID *"    #> machineIDHolder &
     ".queryRange *"   #> s"${startDateHolder.getOrElse("")} - ${endDateHolder.getOrElse("")}" &
-    ".queryRange [href]" #> s"/lossRate/result?startDate=${startDateHolder.getOrElse("")}&endDate=${endDateHolder.getOrElse("")}&machineType=${machineTypeHolder.getOrElse("")}"
-
+    ".queryRange [href]" #> s"/lossRate/result?startDate=${startDateHolder.getOrElse("")}&endDate=${endDateHolder.getOrElse("")}&machineType=${machineTypeHolder.getOrElse("")}" &
+    "#csvURL [href]"  #> s"/api/csv/lossRate/detail/${startDateHolder.getOrElse("")}/${endDateHolder.getOrElse("")}/${machineTypeHolder.getOrElse("")}/${machineIDHolder.getOrElse("")}.csv"
   }
 
 }

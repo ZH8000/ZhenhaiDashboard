@@ -3,6 +3,9 @@ package code.csv
 import java.text.SimpleDateFormat
 
 import code.model._
+import code.snippet.LossRateQueryResult
+import code.snippet.LossRateQueryDetial
+
 import net.liftweb.common._
 
 /**

@@ -14,12 +14,7 @@ import org.joda.time.Days
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.LocalDate
 
-
-/**
- *  用來顯示「損耗查詢」結果第一頁機台排名列表的 Snippet
- */
-class LossRateQueryResult {
-
+object LossRateQueryResult {
   /**
    *  用來代表 MongoDB 裡的 raw data 的資料
    *
@@ -96,6 +91,15 @@ class LossRateQueryResult {
     aggreatedData.toList.sortWith(_.lossRate > _.lossRate)
   }
 
+}
+
+/**
+ *  用來顯示「損耗查詢」結果第一頁機台排名列表的 Snippet
+ */
+class LossRateQueryResult {
+
+  import LossRateQueryResult._
+
   /**
    *  顯示查詢結果表格的 Binding
    *
@@ -163,8 +167,8 @@ class LossRateQueryResult {
     ".endDate *"      #> endDateHolder &
     ".machineType *"  #> machineTypeDescriptionHolder &
     ".queryRange *"   #> s"${startDateHolder.getOrElse("")} - ${endDateHolder.getOrElse("")}" &
-    ".queryRange [href]" #> s"/lossRate/result?startDate=${startDateHolder.getOrElse("")}&endDate=${endDateHolder.getOrElse("")}&machineType=${machineTypeHolder.getOrElse("")}"
-
+    ".queryRange [href]" #> s"/lossRate/result?startDate=${startDateHolder.getOrElse("")}&endDate=${endDateHolder.getOrElse("")}&machineType=${machineTypeHolder.getOrElse("")}" &
+    "#csvURL [href]"  #> s"/api/csv/lossRate/result/${startDateHolder.getOrElse("")}/${endDateHolder.getOrElse("")}/${machineTypeHolder.getOrElse("")}.csv"
   }
 
 }
