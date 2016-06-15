@@ -23,6 +23,12 @@
           </div>
         </div>
         <div class="field">
+          <label>姓名</label>
+          <div class="ui input">
+            <input type="text" name="workerName" id="workerName">
+          </div>
+        </div>
+        <div class="field">
           <label>電子郵件</label>
           <div class="ui input">
             <input type="text" name="email" id="email">
@@ -70,6 +76,13 @@
             "prompt": "請輸入員工工號"
           }]
         },
+        "workerName": {
+          "identifier": "workerName",
+          "rules": [{
+            "type": "empty",
+            "prompt": "請輸入員工名稱"
+          }]
+        },
         "email": {
           "identifier": "email",
           "rules": [{
@@ -80,32 +93,12 @@
             "prompt": "電子郵件格式錯誤"
           }]
         },
-        "password": {
-          "identifier": "password",
-          "rules": [{
-            "type": "empty",
-            "prompt": "請輸入密碼"
-          },
-          {
-            "type": "length[8]",
-            "prompt": "請輸入至少八個字元"
-          }]
-        },
         "confirmPassword": {
           "identifier": "confirmPassword",
           "rules": [{
-            "type": "empty",
-            "prompt": "請輸入密碼"
-          },
-          {
             "type": "match[password]",
             "prompt": "與密碼不符，請檢查"
-          },
-          {
-            "type": "length[8]",
-            "prompt": "請輸入至少八個字元"
           }]
-
         }
       }
 

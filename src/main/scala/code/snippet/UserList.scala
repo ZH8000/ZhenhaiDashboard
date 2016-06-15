@@ -24,11 +24,12 @@ class UserList {
    *  用來列出帳號列表
    */
   def render = {
-    ".row" #> User.findAll.map { user =>
+    ".row" #> User.findAll.sortBy(_.username.get).map { user =>
 
       ".row [id]" #> s"row-${user.id}" &
       ".username *" #> user.username &
       ".workID *" #> user.employeeID &
+      ".workName *" #> user.name &
       ".email *" #> user.email &
       ".permission *" #> user.permission &
       ".editLink [href]" #> s"/management/account/edit/${user.id}" &

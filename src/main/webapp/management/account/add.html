@@ -23,6 +23,12 @@
           </div>
         </div>
         <div class="field">
+          <label>姓名</label>
+          <div class="ui input">
+            <input type="text" name="workerName" id="workerName">
+          </div>
+        </div>
+        <div class="field">
           <label>電子郵件</label>
           <div class="ui input">
             <input type="text" name="email" id="email">
@@ -68,6 +74,13 @@
           "rules": [{
             "type": "empty",
             "prompt": "請輸入員工工號"
+          }]
+        },
+        "workerName": {
+          "identifier": "workerName",
+          "rules": [{
+            "type": "empty",
+            "prompt": "請輸入員工名稱"
           }]
         },
         "email": {

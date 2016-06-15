@@ -1,22 +1,30 @@
 <div data-lift="Surround?with=default;at=content">
-  <div class="center aligned one column ui grid">
+  <div class="center aligned one column ui grid" data-lift="LossRateQueryDetial">
     <div class="ui fixedColumn column">
-      <div class="ui two steps">
+      <div class="ui four steps">
         <a href="/lossRate/" class="ui active step">損耗率查詢</a>
-        <a href="#" class="ui active step">查詢結果</a>
+        <a href="#" class="ui active step machineType">機台類型</a>
+        <a href="#" class="ui active step queryRange">查詢區間</a>
+        <a href="#" class="ui active step machineID">機台</a>
       </div>
     </div>
     <div class="ui below column" >
       <div class="ui page grid">
         <div class="column">
           <div>
-            <div data-lift="LossRateQueryDetial">
+            <div>
               <div data-lift="lift:msgs?showAll=true">
                 <lift:error_msg class="ui red sys message"></lift:error_msg>
                 <lift:warning_msg class="ui yellow sys message"></lift:warning_msg>
                 <lift:notice_msg class="ui green sys message"></lift:notice_msg>
               </div>
               <div>
+                <div>
+                  <span>機台類型：<span class="machineType">類型</span></span>
+                  <span style="margin-left: 10em">查詢區間：<span class="startDate">YYYY-mm-dd</span> ~ <span class="endDate">YYYY-mm-dd</span></span>
+                  <span style="margin-left: 10em">機台號：<span class="machineID">機台號</span></span>
+                </div>
+             
                 <table class="ui celled striped table">
                   <thead>
                     <tr>

@@ -127,6 +127,15 @@ class LossRateQueryResult {
     val startDateHolder = S.param("startDate")
     val endDateHolder = S.param("endDate")
     val machineTypeHolder = S.param("machineType")
+    val machineTypeDescriptionHolder = machineTypeHolder.map { machineType =>
+      machineType.trim match {
+        case "1" => "加締"
+        case "2" => "組立"
+        case "3" => "老化"
+        case "4" => "選別"
+        case "5" => "加工切腳"
+      }
+    }
 
     val resultData = for {
       startDate   <- startDateHolder.filter(_.trim.size > 0)
@@ -141,13 +150,21 @@ class LossRateQueryResult {
       }
     }
 
-    resultData match {
+    val tableCSSBinding = resultData match {
       case Full(tableData) if tableData.size > 0 => 
         ".dataRow" #> showDataTable(tableData)
       case _ =>
         S.error("查無資料，請重新設定查詢條件。")
         ".table" #> NodeSeq.Empty
     }
+
+    tableCSSBinding &
+    ".startDate *"    #> startDateHolder &
+    ".endDate *"      #> endDateHolder &
+    ".machineType *"  #> machineTypeDescriptionHolder &
+    ".queryRange *"   #> s"${startDateHolder.getOrElse("")} - ${endDateHolder.getOrElse("")}" &
+    ".queryRange [href]" #> s"/lossRate/result?startDate=${startDateHolder.getOrElse("")}&endDate=${endDateHolder.getOrElse("")}&machineType=${machineTypeHolder.getOrElse("")}"
+
   }
 
 }

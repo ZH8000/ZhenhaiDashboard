@@ -59,6 +59,11 @@ class User extends MongoRecord[User] with ObjectIdPk[User] {
   val username = new StringField(this,20)
 
   /**
+   *  姓名
+   */
+  val name = new StringField(this, 20)
+
+  /**
    *  使用者的台容員工編號
    */
   val employeeID = new StringField(this, 20)

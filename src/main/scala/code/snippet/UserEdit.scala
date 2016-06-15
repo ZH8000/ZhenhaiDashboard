@@ -15,6 +15,7 @@ class UserEdit(user: User) extends StatefulSnippet {
   
   private var username: String = user.username.get      // 用來儲存從 HTML 表單傳入的使用者帳號
   private var workerID: String = user.employeeID.get    // 用來儲存從 HTML 表單傳入的台容的工號
+  private var workerName: String = user.name.get        // 用來儲存從 HTML 表單傳入的台容的員工名稱
   private var email: String = user.email.get            // 用來儲存從 HTML 表單傳入的Email
   private var password: String = ""                     // 用來儲存從 HTML 表單傳入的密碼
   private var confirmPassword: String = ""              // 用來儲存從 HTML 表單傳入的確認密碼
@@ -27,15 +28,23 @@ class UserEdit(user: User) extends StatefulSnippet {
 
     val updatedUser = for {
       workerIDValue <- Option(workerID).filterNot(_.trim.isEmpty) ?~ "請輸入工號"
+      workerNameValue <- Option(workerName).filterNot(_.trim.isEmpty) ?~ "請輸入姓名"
       emailValue    <- Option(email).filterNot(_.trim.isEmpty) ?~ "請輸入電子郵件帳號"
       permissionValue <- Option(permission).filterNot(_.trim.isEmpty) ?~ "請選擇帳號的權限"
-      passwordValue <- Option(password).filterNot(_.trim.isEmpty) ?~ "請輸入密碼"
-      confirmPasswordValue <- Option(confirmPassword).filter(_ == passwordValue) ?~ "兩個密碼不符，請重新檢查"
     } yield {
-      user.employeeID(workerIDValue)
-          .email(emailValue)
-          .permission(permissionValue)
-          .password(passwordValue)
+
+      if (password.trim.size > 0 && confirmPassword.trim.size > 0 && password == confirmPassword) {
+        user.employeeID(workerIDValue)
+            .name(workerNameValue)
+            .email(emailValue)
+            .permission(permissionValue)
+            .password(password)
+      } else {
+        user.employeeID(workerIDValue)
+            .name(workerNameValue)
+            .email(emailValue)
+            .permission(permissionValue)
+      }
     }
 
 
@@ -44,7 +53,7 @@ class UserEdit(user: User) extends StatefulSnippet {
       case Failure(message, _, _) => S.error(message)
       case Full(user) => 
         user.saveTheRecord() match {
-          case Full(_) => S.redirectTo("/management/account/", () => S.notice(s"已成功新增帳號【${user.username}】"))
+          case Full(_) => S.redirectTo("/management/account/", () => S.notice(s"已成功編輯帳號【${user.username}】"))
           case _ => S.error("無法儲存至資料庫，請稍候再試")
         }
     }
@@ -70,6 +79,7 @@ class UserEdit(user: User) extends StatefulSnippet {
     } andThen
     "name=username [value]" #> username &
     "name=workerID" #> SHtml.text(workerID, workerID = _) &
+    "name=workerName" #> SHtml.text(workerName, workerName = _) &
     "name=email"    #> SHtml.text(email, email = _) &
     "name=password" #> SHtml.password(password, password = _) &
     "name=confirmPassword" #> SHtml.password(confirmPassword, confirmPassword = _) &
